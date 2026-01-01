@@ -24,7 +24,6 @@ Before you begin, ensure you have:
 - A development environment capable of making HTTPS requests
 - Valid business documents for account verification
 
-## Authentication Overview
 
 ARP Digital uses **HMAC SHA256 signature authentication** for maximum security. Every API request must include:
 
