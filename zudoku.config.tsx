@@ -79,7 +79,12 @@ const config: ZudokuConfig = {
           label: "Webhooks",
           icon: "webhook",
         },
-
+        {
+          type: "doc",
+          file: "transfer-verification",
+          label: "Transfer Verification",
+         icon: "send",
+        },
         /* ✅ BANK ACCOUNT VERIFICATION DROPDOWN */
         {
           type: "category",
