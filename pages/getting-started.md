@@ -1,0 +1,508 @@
+# Getting Started
+
+Welcome to the ARP Digital API documentation. This comprehensive guide will help you integrate our cross-border transfer and settlement orchestration quickly and securely.
+
+## Introduction
+
+ARP Digital provides a programmable layer for sending funds across borders with security, compliance, and transparency built directly into the API. You can use the platform to:
+
+- **Send Money Globally**: Transfer funds to 190+ countries
+- **Manage Recipients**: Create and verify recipient profiles with KYC compliance
+- **Real-time Quotes**: Get live exchange rates and fees
+- **Transaction Tracking**: Monitor transfer status in real-time
+- **Compliance Built-in**: Automated AML/KYC verification
+- **Developer-Friendly**: RESTful API with comprehensive documentation
+- **Cryptocurrency Checkouts**: Process crypto transactions with our Gate services
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- A verified ARP Digital business account
+- API credentials (API Key and Secret) from your dashboard
+- Basic understanding of REST APIs and HMAC authentication
+- A development environment capable of making HTTPS requests
+- Valid business documents for account verification
+
+## Authentication Overview
+
+ARP Digital uses **HMAC SHA256 signature authentication** for maximum security. Every API request must include:
+
+- `X-API-Key`: Your unique API key
+- `X-Timestamp`: Current Unix timestamp (in seconds)
+- `X-Signature`: HMAC SHA256 signature
+
+### Quick Authentication Test
+
+Before building your integration, test your authentication setup:
+
+```bash
+# Test your credentials with our authentication endpoint
+curl -X POST "https://platform.arpdigital.io/services/test-auth" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: your_api_key" \
+  -H "X-Timestamp: $(date +%s)" \
+  -H "X-Signature: generated_signature" \
+  -d '{"message": "Hello World"}'
+```
+
+**Need help generating signatures?** Check our [Authentication Guide](/authentication) with code examples and an interactive signature generator.
+
+## Environment Setup
+
+### 1. API Endpoints
+
+| Environment    | Base URL                                           | Purpose                 |
+| -------------- | -------------------------------------------------- | ----------------------- |
+| **Sandbox**    | `https://platform.arpdigital.io/services`    | Development and testing |
+
+### 2. Get Your API Credentials
+
+1. Log into your ARP Digital dashboard
+2. Navigate to **API Keys**
+3. Generate new API credentials for your environment
+4. Store your `API Key` and `API Secret` securely
+
+**Security Note**: Never expose your API secret in client-side code or public repositories.
+
+## Quick Start Integration
+
+### Step 1: Install Dependencies
+
+Choose your preferred programming language:
+
+**JavaScript/Node.js:**
+
+```bash
+npm install crypto axios
+```
+
+**Python:**
+
+```bash
+pip install requests
+```
+
+<!-- **PHP:**
+
+```bash
+# No additional dependencies required
+``` -->
+
+### Step 2: Authentication Helper
+
+Create a signature generation function:
+
+**JavaScript:**
+
+```javascript
+const crypto = require("crypto");
+const axios = require("axios");
+
+class ARPDigitalGPS {
+  constructor(
+    apiKey,
+    apiSecret,
+    baseURL = "https://platform.arpdigital.io/services"
+  ) {
+    this.apiKey = apiKey;
+    this.apiSecret = apiSecret;
+    this.baseURL = baseURL;
+  }
+
+  generateSignature(requestBody, timestamp) {
+    const message = this.apiKey + requestBody + timestamp;
+    return crypto
+      .createHmac("sha256", this.apiSecret)
+      .update(message)
+      .digest("hex");
+  }
+
+  async request(method, endpoint, data = {}) {
+    const timestamp = Math.floor(Date.now() / 1000);
+    const requestBody = Object.keys(data).length ? JSON.stringify(data) : "";
+    const signature = this.generateSignature(requestBody, timestamp);
+
+    const config = {
+      method,
+      url: `${this.baseURL}${endpoint}`,
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": this.apiKey,
+        "X-Timestamp": timestamp.toString(),
+        "X-Signature": signature,
+      },
+    };
+
+    if (requestBody) {
+      config.data = requestBody;
+    }
+
+    return axios(config);
+  }
+}
+
+// Initialize client
+const client = new ARPDigitalGPS("your_api_key", "your_api_secret");
+```
+
+**Python:**
+
+```python
+import hmac
+import hashlib
+import json
+import time
+import requests
+
+class ARPDigitalGPS:
+    def __init__(self, api_key, api_secret, base_url='https://platform.arpdigital.io/services'):
+        self.api_key = api_key
+        self.api_secret = api_secret
+        self.base_url = base_url
+
+    def generate_signature(self, request_body, timestamp):
+        message = self.api_key + request_body + str(timestamp)
+        return hmac.new(
+            self.api_secret.encode('utf-8'),
+            message.encode('utf-8'),
+            hashlib.sha256
+        ).hexdigest()
+
+    def request(self, method, endpoint, data=None):
+        timestamp = int(time.time())
+        request_body = json.dumps(data) if data else ''
+        signature = self.generate_signature(request_body, timestamp)
+
+        headers = {
+            'Content-Type': 'application/json',
+            'X-API-Key': self.api_key,
+            'X-Timestamp': str(timestamp),
+            'X-Signature': signature
+        }
+
+        url = f"{self.base_url}{endpoint}"
+
+        if method.upper() == 'GET':
+            return requests.get(url, headers=headers)
+        elif method.upper() == 'POST':
+            return requests.post(url, headers=headers, data=request_body)
+        elif method.upper() == 'PUT':
+            return requests.put(url, headers=headers, data=request_body)
+
+# Initialize client
+client = ARPDigitalGPS('your_api_key', 'your_api_secret')
+```
+
+### Step 3: Test Your Connection
+
+```javascript
+// Test authentication
+async function testConnection() {
+  try {
+    const response = await client.request("POST", "/test-auth", {
+      message: "Hello ARP Digital GPS!",
+    });
+    console.log("Authentication successful:", response.data);
+  } catch (error) {
+    console.error("Authentication failed:", error.response.data);
+  }
+}
+
+testConnection();
+```
+
+### Step 4: Your First Transaction Flow
+
+Here's a complete example of sending money internationally:
+
+```javascript
+async function sendMoney() {
+  try {
+    // 1. Create a recipient
+    const recipient = await client.request("POST", "/recipients", {
+      senderId: "your-sender-id", // You need to get this from /senders endpoint
+      type: "INDIVIDUAL",
+      country: "PHL",
+      verificationInfo: {
+        firstName: "Juan",
+        lastName: "Dela Cruz",
+        birthdate: "1990-01-01",
+        address: "123 Main St, Manila",
+      },
+      paymentMethods: [
+        {
+          type: "BANK_ACCOUNT",
+          metadata: {
+            bankName: "BPI",
+            accountNumber: "1234567890",
+            accountHolderName: "Juan Dela Cruz",
+          },
+        },
+      ],
+    });
+
+    console.log("Recipient created:", recipient.data);
+
+    // 2. Get a quote
+    const quote = await client.request("POST", "/quote", {
+      senderId: "your-sender-id",
+      recipientId: recipient.data.data.id,
+      fromCurrency: "USD",
+      toCurrency: "PHP",
+      fromAmount: 1000,
+    });
+
+    console.log("Quote received:", quote.data);
+
+    // 3. Execute the transaction
+    const transaction = await client.request("POST", "/transaction", {
+      quoteId: quote.data.data.id,
+      senderId: "your-sender-id",
+      recipientId: recipient.data.data.id,
+      notes: "Monthly family support",
+    });
+
+    console.log("Transaction created:", transaction.data);
+
+    return transaction.data;
+  } catch (error) {
+    console.error("Error:", error.response?.data || error.message);
+  }
+}
+
+sendMoney();
+```
+
+## Core API Endpoints
+
+### Recipients
+
+| Method | Endpoint                          | Description               |
+| ------ | --------------------------------- | ------------------------- |
+| `GET`  | `/recipients`                     | List all recipients       |
+| `POST` | `/recipients`                     | Create new recipient      |
+| `GET`  | `/recipients/verificationFields`  | Get required KYC fields   |
+| `GET`  | `/recipients/paymentMethodFields` | Get payment method fields |
+| `GET`  | `/recipients/{id}`                | Get recipient details     |
+
+### Transactions
+
+| Method | Endpoint             | Description             |
+| ------ | -------------------- | ----------------------- |
+| `POST` | `/quote`             | Get exchange rate quote |
+| `POST` | `/transaction`       | Execute transaction     |
+| `GET`  | `/transactions`      | List transactions       |
+| `GET`  | `/transactions/{id}` | Get transaction details |
+
+### Senders
+
+| Method | Endpoint   | Description      |
+| ------ | ---------- | ---------------- |
+| `GET`  | `/senders` | List all senders |
+
+### Testing
+
+| Method | Endpoint     | Description               |
+| ------ | ------------ | ------------------------- |
+| `POST` | `/test-auth` | Test authentication setup |
+
+## Error Handling
+
+The API uses standard HTTP status codes with detailed error information:
+
+```json
+{
+  "success": false,
+  "message": "Invalid recipient information",
+  "code": "VALIDATION_ERROR",
+  "details": {
+    "field": "email",
+    "error": "Invalid email format"
+  }
+}
+```
+
+### Common Error Codes
+
+| Status | Code                  | Description                              |
+| ------ | --------------------- | ---------------------------------------- |
+| `400`  | `VALIDATION_ERROR`    | Request validation failed                |
+| `401`  | `UNAUTHORIZED`        | Invalid or missing authentication        |
+| `403`  | `FORBIDDEN`           | Insufficient permissions or KYC required |
+| `404`  | `NOT_FOUND`           | Resource not found                       |
+| `429`  | `RATE_LIMIT_EXCEEDED` | Too many requests                        |
+
+### Handling Authentication Errors
+
+```javascript
+try {
+  const response = await client.request("GET", "/transactions");
+} catch (error) {
+  if (error.response?.status === 401) {
+    console.log("Authentication failed. Check your signature generation.");
+    console.log("Debug info:", error.response.data);
+  }
+}
+```
+
+## Rate Limits
+
+| Environment    | Limit         | Window         |
+| -------------- | ------------- | -------------- |
+| **Sandbox**    | 500 requests  | Per 15 minutes |
+| **Production** | 5000 requests | Per 15 minutes |
+
+Rate limit headers are included in responses:
+
+```
+X-RateLimit-Limit: 500
+X-RateLimit-Remaining: 495
+X-RateLimit-Reset: 1641658800
+```
+
+## Webhooks
+
+The GPS API sends webhook notifications to configured endpoints for transaction status updates. Webhooks are sent to partner services automatically when transactions change status.
+
+### Webhook Events
+
+Your webhook endpoint will receive events for:
+
+- `transaction.created` - New transaction initiated
+- `transaction.completed` - Transaction successfully completed
+- `transaction.failed` - Transaction failed
+- `recipient.created` - New recipient added
+- `recipient.updated` - Recipient information updated
+
+### Webhook Payload Structure
+
+```json
+{
+  "event": "transaction.completed",
+  "data": {
+    "id": "txn_abc123",
+    "status": "COMPLETED",
+    "fromCurrency": "USD",
+    "toCurrency": "PHP",
+    "fromAmount": "100.00",
+    "toAmount": "5500.00",
+    "sender": {
+      "id": "sender_123",
+      "email": "sender@example.com",
+      "type": "INDIVIDUAL"
+    },
+    "recipient": {
+      "id": "recipient_456",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "type": "INDIVIDUAL"
+    },
+    "completedAt": "2024-01-15T10:30:00Z",
+    "createdAt": "2024-01-15T10:25:00Z",
+    "updatedAt": "2024-01-15T10:30:00Z"
+  },
+  "timestamp": "2024-01-15T10:30:01Z",
+  "webhook_id": "webhook_xyz789"
+}
+```
+
+### Webhook Security
+
+Webhook signatures are verified by the receiving partner services. Contact our support team to configure webhook endpoints for your integration.
+
+## Testing & Sandbox
+
+### Sandbox Features
+
+- All API endpoints available
+- Simulated transaction processing
+- Test KYC verification
+- Webhook testing
+- No real money movement
+
+### Test Scenarios
+
+| Amount    | Result  | Processing Time |
+| --------- | ------- | --------------- |
+| `$100.00` | Success | Instant         |
+| `$500.00` | Pending | 5 minutes       |
+| `$999.99` | Failed  | Instant         |
+
+### Test Data
+
+Use these test recipient details in sandbox:
+
+```json
+{
+  "firstName": "Test",
+  "lastName": "Recipient",
+  "email": "test@example.com",
+  "phone": "+1234567890",
+  "country": "PH",
+  "paymentMethod": {
+    "type": "BANK_TRANSFER",
+    "accountNumber": "1234567890",
+    "bankName": "Test Bank"
+  }
+}
+```
+
+## Security Best Practices
+
+### API Security
+
+- Store API credentials in environment variables
+- Use HTTPS for all requests
+- Implement proper signature generation
+- Rotate API keys regularly
+- Validate webhook signatures
+
+### Development Tips
+
+- Use sandbox for all development and testing
+- Implement proper error handling
+- Add request/response logging
+- Handle rate limits gracefully
+- Test authentication with `/test-auth` endpoint
+
+## Next Steps
+
+Now that you're set up, explore these resources:
+
+### Essential Guides
+
+- **[Authentication Guide](/authentication)** - Detailed auth setup with code examples
+- **[API Reference](/introduction)** - Complete endpoint documentation
+
+### Integration Examples
+
+- **Recipient Management** - KYC verification workflows
+- **Transaction Processing** - End-to-end transfer flows
+- **Webhook Integration** - Real-time status updates
+- **Error Handling** - Robust error management
+
+### Advanced Features
+
+- **Batch Transfers** - Process multiple transactions
+- **Compliance Tools** - AML/KYC automation
+- **Reporting** - Transaction analytics and reports
+
+## Support & Resources
+
+### Get Help
+
+- **Email**: support@arpdigital.io
+- **Documentation**: Complete API reference
+- **Status Page**: status.arpdigital.io
+- **Response Time**: < 24 hours for technical inquiries
+
+### Useful Links
+
+- [Dashboard](https://dashboard.arpdigital.io) - Manage your account
+- [API Status](https://status.arpdigital.io) - Service uptime
+- [Changelog](https://docs.arpdigital.io/changelog) - Latest updates
+
+---
+
+**Ready to go live?** Contact our team to upgrade to production credentials and start processing real transactions.

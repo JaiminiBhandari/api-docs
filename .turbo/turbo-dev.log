@@ -1,0 +1,1019 @@
+[?9001h[?1004h[?25l[2J[m[H]0;npm[?25h]0;npm run dev⠙[K[?25l[H[?25h⠹[K[?25l[H[?25h⠸[K[?25l[H[?25h[?25l[K
+> arp-digital-docs@0.0.1 dev
+> zudoku dev[5;1H[K[?25h]0;C:\WINDOWS\system32\cmd.exe [2m8:08:28 PM[22m [36m[1mzudoku[m [36mloaded config file [m[2mC:\Users\niyat\arp-digital-monorepo\apps\api-docs\zudoku.config.tsx
+[22mSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+[34m[1mServer-side rendering enabled[m
+[34m[1mCtrl+C to exit[m
+
+[34m[1m🚀 Running Zudoku v0.66.3: http://localhost:3000[m[K
+
+[vite] connected.
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\remittance-openap
+[12;95Hpi.json
+
+
+
+
+
+
+
+
+
+
+
+[?25l
+[H[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[H[?25h[?25l[2m8:09:25 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/remittance-openapi.json[13;1H[?25h[?25l[22m
+[2m[H8:09:25 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/remittance-openapi.json[22m [33m(x2)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hRe-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\remittance-openapi.json
+[?25l[13;1H[?25h
+
+
+[?25l[2m[H8:10:06 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/remittance-openapi.json[22m [33m(x3)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[2m[H8:10:06 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/remittance-openapi.json[22m [33m(x4)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25h[?25lRe-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\remittance-openapi.json[13;1H[?25h
+
+[?25l
+[2m[H8:10:06 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/remittance-openapi.json[22m [33m(x5)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[2m[H8:10:06 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/remittance-openapi.json[22m [33m(x6)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hRe-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\trade-openapi.json
+[?25l[13;1H[?25h
+
+
+[?25l[H[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[H[?25h[?25l[2m8:10:48 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/trade-openapi.json[13;1H[?25h[?25l[22m
+[2m[H8:10:48 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/trade-openapi.json[22m [33m(x2)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hRe-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\trade-openapi.json
+[?25l[13;1H[?25h
+
+[?25l
+[2m[H8:11:00 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/trade-openapi.json[22m [33m(x3)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[2m[H8:11:00 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/trade-openapi.json[22m [33m(x4)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hRe-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json
+[?25l[13;1H[?25h
+
+
+[?25l[2m[H8:12:07 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25h[?25l[13;1H[?25h[?25l
+[2m[H8:12:07 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x2)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25h[?25lRe-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json[13;1H[?25h
+
+[?25l
+[2m[H8:12:07 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x3)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[2m[H8:12:07 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x4)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Schema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.
+[12;95H.json
+
+
+
+
+
+
+
+
+
+
+
+[?25l
+[2m[H8:12:18 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x5)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[2m[H8:12:18 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x6)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json
+[?25l[13;1H[?25h
+
+
+
+
+
+
+
+
+[?25l[H[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[H[?25h[2m8:12:32 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x7)
+[m[?25l[13;1H[?25h
+[?25l[2m[H8:12:32 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x8)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hRe-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json
+[?25l[13;1H[?25h
+
+[?25l
+[2m[H8:12:32 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x9)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[2m[H8:12:32 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x10)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Schema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.
+[12;95H.json
+
+
+
+
+
+
+
+
+
+
+
+[?25l
+[2m[H8:12:34 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x11)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[2m[H8:12:34 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x12)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json
+[?25l[13;1H[?25h
+
+
+
+
+
+
+
+[?25l
+[2m[H8:12:39 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x13)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[2m[H8:12:39 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x14)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json
+[?25l[13;1H[?25h
+
+
+
+
+
+
+
+[?25l
+[2m[H8:12:43 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x15)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[2m[H8:12:43 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x16)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json
+[?25l[13;1H[?25h
+
+
+
+
+
+
+
+[?25l
+[2m[H8:12:47 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x17)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[2m[H8:12:47 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x18)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json
+[?25l[13;1H[?25h
+
+
+
+
+
+
+
+[?25l
+[H[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[H[?25h[?25l[2m8:12:53 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x19)[13;1H[?25h[?25l[m
+[2m[H8:12:53 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x20)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25h[?25lRe-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json[13;1H[?25h
+
+[?25l
+[2m[H8:12:53 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x21)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[2m[H8:12:53 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x22)[K[m
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\trade-openapi.json[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h
+
+[?25l
+[2m[H8:12:53 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/trade-openapi.json[22m[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25h[?25l[13;1H[?25h[?25l
+[2m[H8:12:53 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/trade-openapi.json[22m [33m(x2)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Schema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.
+[12;95H.json
+
+
+
+
+
+
+
+
+
+
+
+[?25l
+[2m[H8:13:08 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[2m[H8:13:08 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x2)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json
+[?25l[13;1H[?25h
+
+
+
+
+
+
+
+
+[?25l[H[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[H[?25h[2m8:13:21 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x3)
+[m[?25l[13;1H[?25h
+[?25l[2m[H8:13:21 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x4)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hRe-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json
+[?25l[13;1H[?25h
+
+[?25l
+[2m[H8:13:21 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x5)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[H[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[H[?25h[2m8:13:21 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x6)
+[mSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Schema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.
+[12;95H.json
+
+
+
+
+
+
+
+
+
+
+
+[?25l
+[2m[H8:13:25 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x7)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[2m[H8:13:25 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x8)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Failed to load shadcn registry theme: Error: Failed to fetch shadcn registry item from https://shadcnstudio.com/r/themes/corporate.json
+    at fetchShadcnRegistryItem [90m(file:///C:/Users/niyat/arp-digital-monorepo/apps/api-docs/[mnode_modules/[4mzudoku[24m/dist/vite/shadcn-registry.js:23:15[90m)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[m
+    at async LoadPluginContext.load [90m(file:///C:/Users/niyat/arp-digital-monorepo/apps/api-docs/[m
+[90m[12;95H/[mnode_modules/[4mzudoku[24m/dist/vite/plugin-theme.js:185:42[90m)[K[m
+    at async EnvironmentPluginContainer.load (file:///C:/Users/niyat/arp-digital-monorepo/node_
+[12;95H_modules/[4mvite[24m/dist/node/chunks/dep-D4NMHUTW.js:42293:22)[K
+    at async loadAndTransform (file:///C:/Users/niyat/arp-digital-monorepo/node_modules/[4mvite[24m/di
+[12;95Hist/node/chunks/dep-D4NMHUTW.js:35673:22)
+    at async fetchModule (file:///C:/Users/niyat/arp-digital-monorepo/node_modules/[4mvite[24m/dist/no
+[12;95Hode/chunks/dep-D4NMHUTW.js:46858:16)
+    at async handleInvoke (file:///C:/Users/niyat/arp-digital-monorepo/node_modules/[4mvite[24m/dist/n
+[12;95Hnode/chunks/dep-D4NMHUTW.js:39002:22)
+    at async EventEmitter.listenerForInvokeHandler (file:///C:/Users/niyat/arp-digital-monorepo
+[12;95Ho/node_modules/[4mvite[24m/dist/node/chunks/dep-D4NMHUTW.js:39075:19)[K
+Failed to load shadcn registry theme: Error: Failed to fetch shadcn registry item from https://
+[12;95H/shadcnstudio.com/r/themes/corporate.json
+    at fetchShadcnRegistryItem [90m(file:///C:/Users/niyat/arp-digital-monorepo/apps/api-docs/[mnode_
+[12;95H_modules/[4mzudoku[24m/dist/vite/shadcn-registry.js:23:15[90m)[K[m
+[90m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[m
+    at async LoadPluginContext.load [90m(file:///C:/Users/niyat/arp-digital-monorepo/apps/api-docs/[m
+[90m[12;95H/[mnode_modules/[4mzudoku[24m/dist/vite/plugin-theme.js:185:42[90m)[K[m
+    at async EnvironmentPluginContainer.load (file:///C:/Users/niyat/arp-digital-monorepo/node_
+[12;95H_modules/[4mvite[24m/dist/node/chunks/dep-D4NMHUTW.js:42293:22)[K
+    at async loadAndTransform (file:///C:/Users/niyat/arp-digital-monorepo/node_modules/[4mvite[24m/di
+[12;95Hist/node/chunks/dep-D4NMHUTW.js:35673:22)
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.
+[12;95H.json
+
+
+
+
+
+
+
+
+
+
+
+[?25l
+[H[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[H[?25h[?25l[2m8:14:04 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x9)[13;1H[?25h[?25l[m
+[2m[H8:14:04 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x10)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json
+[?25l[13;1H[?25h
+
+
+
+
+
+
+
+[?25l
+[2m[H8:14:06 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x11)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[2m[H8:14:06 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x12)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json
+[?25l[13;1H[?25h
+
+
+
+
+
+
+
+[?25l
+[2m[H8:14:07 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x13)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[?25h[?25l
+[2m[H8:14:07 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x14)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Failed to load shadcn registry theme: Error: Failed to fetch shadcn registry item from https://shadcnstudio.com/r/themes/corporate.json
+    at fetchShadcnRegistryItem [90m(file:///C:/Users/niyat/arp-digital-monorepo/apps/api-docs/[mnode_modules/[4mzudoku[24m/dist/vite/shadcn-registry.js:23:15[90m)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[m
+    at async LoadPluginContext.load [90m(file:///C:/Users/niyat/arp-digital-monorepo/apps/api-docs/[m
+[90m[12;95H/[mnode_modules/[4mzudoku[24m/dist/vite/plugin-theme.js:185:42[90m)[K[m
+    at async EnvironmentPluginContainer.load (file:///C:/Users/niyat/arp-digital-monorepo/node_
+[12;95H_modules/[4mvite[24m/dist/node/chunks/dep-D4NMHUTW.js:42293:22)[K
+    at async loadAndTransform (file:///C:/Users/niyat/arp-digital-monorepo/node_modules/[4mvite[24m/di
+[12;95Hist/node/chunks/dep-D4NMHUTW.js:35673:22)
+    at async fetchModule (file:///C:/Users/niyat/arp-digital-monorepo/node_modules/[4mvite[24m/dist/no
+[12;95Hode/chunks/dep-D4NMHUTW.js:46858:16)
+    at async handleInvoke (file:///C:/Users/niyat/arp-digital-monorepo/node_modules/[4mvite[24m/dist/n
+[12;95Hnode/chunks/dep-D4NMHUTW.js:39002:22)
+    at async EventEmitter.listenerForInvokeHandler (file:///C:/Users/niyat/arp-digital-monorepo
+[12;95Ho/node_modules/[4mvite[24m/dist/node/chunks/dep-D4NMHUTW.js:39075:19)[K
+Re-processing schema C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.
+[12;95H.json
+
+
+
+
+
+
+
+
+
+
+
+[?25l
+[H[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[H[?25h[?25l[2m8:14:13 PM[22m [36m[1mzudoku[m [90m[2m(client)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x15)[13;1H[?25h[?25l[m
+[2m[H8:14:13 PM[22m [36m[1mzudoku[m [34m[2m(ssr)[m [32mpage reload [m[2mschema/checkout-openapi.json[22m [33m(x16)[K[m
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[2;1H[?25hSchema warnings in C:\Users\niyat\arp-digital-monorepo\apps\api-docs\schema\checkout-openapi.json:
+{
+  message: [32m"must have required property '$ref'"[m,
+  path: [32m'/paths/~1checkout/get/responses/200'[m
+}
+Failed to load shadcn registry theme: Error: Failed to fetch shadcn registry item from https://shadcnstudio.com/r/themes/corporate.json
+    at fetchShadcnRegistryItem [90m(file:///C:/Users/niyat/arp-digital-monorepo/apps/api-docs/[mnode_modules/[4mzudoku[24m/dist/vite/shadcn-registry.js:23:15[90m)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[m
+    at async LoadPluginContext.load [90m(file:///C:/Users/niyat/arp-digital-monorepo/apps/api-docs/[m
+[90m[12;95H/[mnode_modules/[4mzudoku[24m/dist/vite/plugin-theme.js:185:42[90m)[K[m
+    at async EnvironmentPluginContainer.load (file:///C:/Users/niyat/arp-digital-monorepo/node_
+[12;95H_modules/[4mvite[24m/dist/node/chunks/dep-D4NMHUTW.js:42293:22)[K
+    at async loadAndTransform (file:///C:/Users/niyat/arp-digital-monorepo/node_modules/[4mvite[24m/di
+[12;95Hist/node/chunks/dep-D4NMHUTW.js:35673:22)
+    at async fetchModule (file:///C:/Users/niyat/arp-digital-monorepo/node_modules/[4mvite[24m/dist/no
+[12;95Hode/chunks/dep-D4NMHUTW.js:46858:16)
+    at async handleInvoke (file:///C:/Users/niyat/arp-digital-monorepo/node_modules/[4mvite[24m/dist/n
+[12;95Hnode/chunks/dep-D4NMHUTW.js:39002:22)
+    at async EventEmitter.listenerForInvokeHandler (file:///C:/Users/niyat/arp-digital-monorepo
+[12;95Ho/node_modules/[4mvite[24m/dist/node/chunks/dep-D4NMHUTW.js:39075:19)[K
+Failed to load shadcn registry theme: Error: Failed to fetch shadcn registry item from https://
+[12;95H/shadcnstudio.com/r/themes/corporate.json
+    at fetchShadcnRegistryItem [90m(file:///C:/Users/niyat/arp-digital-monorepo/apps/api-docs/[mnode_
+[12;95H_modules/[4mzudoku[24m/dist/vite/shadcn-registry.js:23:15[90m)[K[m
+[90m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[m
+    at async LoadPluginContext.load [90m(file:///C:/Users/niyat/arp-digital-monorepo/apps/api-docs/[m
+[90m[12;95H/[mnode_modules/[4mzudoku[24m/dist/vite/plugin-theme.js:185:42[90m)[K[m
+    at async EnvironmentPluginContainer.load (file:///C:/Users/niyat/arp-digital-monorepo/node_
+[12;95H_modules/[4mvite[24m/dist/node/chunks/dep-D4NMHUTW.js:42293:22)[K
+    at async loadAndTransform (file:///C:/Users/niyat/arp-digital-monorepo/node_modules/[4mvite[24m/di
+[12;95Hist/node/chunks/dep-D4NMHUTW.js:35673:22)
+    at async DevEnvironment.warmupRequest (file:///C:/Users/niyat/arp-digital-monorepo/node_mod
+[12;95Hdules/[4mvite[24m/dist/node/chunks/dep-D4NMHUTW.js:47948:7)[K

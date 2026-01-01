@@ -1,0 +1,2036 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ARP Digital GATE API",
+    "description": "GATE API for checkout and vault management services",
+    "version": "1.0.0",
+    "contact": {
+      "name": "ARP Digital Support",
+      "email": "support@arpdigital.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://platform.arpdigital.io/services/gate/api/v1"
+    }
+  ],
+  "components": {
+    "parameters": {
+      "Environment": {
+        "name": "X-Environment",
+        "in": "header",
+        "description": "Specifies the environment to use (sandbox or production). This determines which database the API interacts with.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": ["sandbox", "production"],
+          "default": "sandbox"
+        }
+      }
+    }
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "description": "Check the health status of the GATE service",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "service": {
+                      "type": "string",
+                      "example": "gate"
+                    },
+                    "redis": {
+                      "type": "string",
+                      "example": "up"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/checkout": {
+      "post": {
+        "summary": "Create checkout",
+        "description": "Create a new checkout session",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "successUrl": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Users will be redirected to this URL after a successfully completed transaction."
+                  },
+                  "externalClientId": {
+                    "type": "string",
+                    "description": "Identifier for the client creating the checkout."
+                  },
+                  "externalCheckoutId": {
+                    "type": "string",
+                    "description": "External reference for the checkout."
+                  },
+                  "vaultId": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Optional vault ID linked to the checkout."
+                  },
+
+                  "fromAmount": {
+                    "type": "number",
+                    "description": "Amount to convert or process."
+                  },
+
+                  "fromCurrencyId": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "FIAT currency ID. Required if 'fromCryptocurrencyId' is not provided."
+                  },
+
+                  "fromCryptocurrencyId": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Cryptocurrency ID. Required if 'fromCurrencyId' is not provided."
+                  }
+                },
+
+                "oneOf": [
+                  {
+                    "required": [
+                      "fromCurrencyId",
+                      "externalClientId",
+                      "externalCheckoutId",
+                      "fromAmount"
+                    ],
+                    "not": { "required": ["fromCryptocurrencyId"] }
+                  },
+                  {
+                    "required": [
+                      "fromCryptocurrencyId",
+                      "externalClientId",
+                      "externalCheckoutId",
+                      "fromAmount"
+                    ],
+                    "not": { "required": ["fromCurrencyId"] }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Checkout created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "checkoutId": {
+                          "type": "string",
+                          "description": "Unique identifier of the created checkout"
+                        },
+                        "checkoutUrl": {
+                          "type": "string",
+                          "description": "URL where the user can complete the checkout"
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Checkout created successfully"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your API key"
+          },
+          {
+            "name": "X-Timestamp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Current Unix timestamp in seconds"
+          },
+          {
+            "name": "X-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
+          },
+          { "$ref": "#/components/parameters/Environment" }
+        ]
+      },
+      "get": {
+        "summary": "List checkouts",
+        "description": "Retrieve a list of checkouts",
+        "parameters": [
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your API key"
+          },
+          {
+            "name": "X-Timestamp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Current Unix timestamp in seconds"
+          },
+          {
+            "name": "X-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
+          },
+          {
+            "name": "X-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["sandbox", "production"]
+            },
+            "description": "Environment where the request is executed"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Number of checkouts per page"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search query to filter checkouts by ID, External Checkout ID, or External Client ID"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter checkouts by their status"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of checkouts with detailed information and pagination metadata.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "checkouts": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": { "type": "string" },
+                              "externalCheckoutId": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "externalClientId": {
+                                "type": "string",
+                                "nullable": true
+                              },
+
+                              "fromAmount": { "type": "string" },
+                              "fromCurrencyId": { "type": "string" },
+                              "fromCryptocurrencyId": {
+                                "type": ["string", "null"]
+                              },
+
+                              "toAmount": { "type": "string" },
+                              "toCurrencyId": { "type": ["string", "null"] },
+                              "toCryptocurrencyId": {
+                                "type": ["string", "null"]
+                              },
+                              "toAmountReceived": { "type": "string" },
+
+                              "conversionRate": { "type": "string" },
+                              "feeRate": { "type": ["string", "null"] },
+
+                              "status": { "type": "string" },
+                              "checkoutType": { "type": "string" },
+
+                              "successUrl": { "type": ["string", "null"] },
+                              "orgLogoUrl": { "type": ["string", "null"] },
+                              "orgDisclaimer": { "type": ["string", "null"] },
+
+                              "vaultId": { "type": ["string", "null"] },
+                              "vaultWalletId": { "type": ["string", "null"] },
+
+                              "orgId": { "type": "string" },
+                              "createdByUserId": { "type": "string" },
+
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "expiresAt": {
+                                "type": ["string", "null"],
+                                "format": "date-time"
+                              },
+
+                              "pennyTest": {
+                                "type": "object",
+                                "properties": {
+                                  "amount": { "type": "string" },
+                                  "status": { "type": "string" },
+                                  "createdAt": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                  },
+                                  "updatedAt": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                  }
+                                }
+                              },
+
+                              "vaultWallet": { "type": ["object", "null"] },
+
+                              "transactions": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": { "type": "string" },
+                                    "checkoutId": { "type": "string" },
+
+                                    "fromAmount": { "type": "string" },
+                                    "fromCurrencyId": { "type": "string" },
+                                    "fromCryptocurrencyId": {
+                                      "type": ["string", "null"]
+                                    },
+
+                                    "toAmount": { "type": "string" },
+                                    "toCurrencyId": {
+                                      "type": ["string", "null"]
+                                    },
+                                    "toCryptocurrencyId": {
+                                      "type": ["string", "null"]
+                                    },
+
+                                    "conversionRate": { "type": "string" },
+                                    "vaultWalletId": {
+                                      "type": ["string", "null"]
+                                    },
+
+                                    "txHash": { "type": ["string", "null"] },
+                                    "status": { "type": "string" },
+                                    "orgId": { "type": "string" },
+
+                                    "createdAt": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    },
+                                    "updatedAt": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    }
+                                  }
+                                }
+                              },
+
+                              "fromCurrency": {
+                                "type": "object",
+                                "nullable": true,
+                                "properties": {
+                                  "id": { "type": "string" },
+                                  "name": { "type": "string" },
+                                  "type": { "type": "string" },
+                                  "symbol": { "type": "string" }
+                                }
+                              },
+
+                              "fromCryptocurrency": {
+                                "type": "object",
+                                "properties": {
+                                  "id": { "type": "string" },
+                                  "name": { "type": "string" },
+                                  "type": { "type": "string" },
+                                  "symbol": { "type": "string" }
+                                }
+                              },
+
+                              "toCurrency": {
+                                "type": "object",
+                                "properties": {
+                                  "id": { "type": "string" },
+                                  "name": { "type": "string" },
+                                  "type": { "type": "string" },
+                                  "symbol": { "type": "string" }
+                                }
+                              },
+
+                              "toCryptocurrency": {
+                                "type": "object",
+                                "properties": {
+                                  "id": { "type": "string" },
+                                  "name": { "type": "string" },
+                                  "symbol": { "type": "string" },
+                                  "chain": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": { "type": "string" },
+                                      "name": { "type": "string" },
+                                      "fireblocksId": { "type": "string" },
+                                      "nativeTokenSymbol": { "type": "string" }
+                                    }
+                                  }
+                                }
+                              },
+
+                              "brokerCheckout": { "type": ["object", "null"] }
+                            }
+                          }
+                        },
+
+                        "pagination": {
+                          "type": "object",
+                          "properties": {
+                            "page": { "type": "number" },
+                            "pageSize": { "type": "number" },
+                            "total": { "type": "number" },
+                            "totalPages": { "type": "number" },
+                            "hasNextPage": { "type": "boolean" },
+                            "hasPrevPage": { "type": "boolean" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/checkout/broker": {
+      "post": {
+        "summary": "Create broker checkout",
+        "description": "Create a new broker checkout session",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "externalClientId": {
+                    "type": "string",
+                    "description": "Identifier for the client creating the checkout."
+                  },
+                  "externalCheckoutId": {
+                    "type": "string",
+                    "description": "External reference for the checkout."
+                  },
+                  "fromAmount": {
+                    "type": "number",
+                    "description": "Amount to convert or process."
+                  },
+                  "fromCurrencyId": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "FIAT currency ID. Required if 'fromCryptocurrencyId' is not provided."
+                  },
+                  "fromCryptocurrencyId": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Cryptocurrency ID. Required if 'fromCurrencyId' is not provided."
+                  },
+                  "buyerKyc": {
+                    "type": "boolean",
+                    "nullable": true,
+                    "description": "Require the buyer to complete KYC verification."
+                  },
+                  "sellerKyc": {
+                    "type": "boolean",
+                    "nullable": true,
+                    "description": "Require the seller to complete KYC verification."
+                  }
+                },
+
+                "oneOf": [
+                  {
+                    "required": [
+                      "fromCurrencyId",
+                      "externalClientId",
+                      "externalCheckoutId",
+                      "fromAmount"
+                    ],
+                    "not": { "required": ["fromCryptocurrencyId"] }
+                  },
+                  {
+                    "required": [
+                      "fromCryptocurrencyId",
+                      "externalClientId",
+                      "externalCheckoutId",
+                      "fromAmount"
+                    ],
+                    "not": { "required": ["fromCurrencyId"] }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Checkout created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "checkoutId": {
+                          "type": "string",
+                          "description": "Unique identifier of the created checkout"
+                        },
+                        "buyerUrl": {
+                          "type": "string",
+                          "description": "URL where the buyer can complete the checkout"
+                        },
+                        "sellerUrl": {
+                          "type": "string",
+                          "description": "URL where the seller view the checkout"
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Checkout created successfully"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your API key"
+          },
+          {
+            "name": "X-Timestamp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Current Unix timestamp in seconds"
+          },
+          {
+            "name": "X-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
+          },
+          {
+            "name": "X-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["sandbox", "production"]
+            },
+            "description": "Environment where the request is executed"
+          }
+        ]
+      }
+    },
+    "/checkout/{checkoutId}": {
+      "get": {
+        "summary": "Get checkout",
+        "description": "Retrieve a specific checkout by ID",
+        "parameters": [
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your API key"
+          },
+          {
+            "name": "X-Timestamp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Current Unix timestamp in seconds"
+          },
+          {
+            "name": "X-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
+          },
+          {
+            "name": "X-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["sandbox", "production"]
+            },
+            "description": "Environment where the request is executed"
+          },
+          {
+            "name": "checkoutId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Checkout ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Checkout details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "checkout": {
+                          "type": "object",
+                          "properties": {
+                            "id": { "type": "string" },
+                            "externalCheckoutId": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "externalClientId": {
+                              "type": "string",
+                              "nullable": true
+                            },
+
+                            "fromAmount": { "type": "string" },
+                            "fromCurrencyId": { "type": "string" },
+                            "fromCryptocurrencyId": {
+                              "type": ["string", "null"]
+                            },
+
+                            "toAmount": { "type": "string" },
+                            "toCurrencyId": { "type": ["string", "null"] },
+                            "toCryptocurrencyId": {
+                              "type": ["string", "null"]
+                            },
+                            "toAmountReceived": { "type": "string" },
+
+                            "conversionRate": { "type": "string" },
+                            "feeRate": { "type": ["string", "null"] },
+
+                            "status": { "type": "string" },
+                            "checkoutType": { "type": "string" },
+
+                            "successUrl": { "type": ["string", "null"] },
+                            "orgLogoUrl": { "type": ["string", "null"] },
+                            "orgDisclaimer": { "type": ["string", "null"] },
+
+                            "vaultId": { "type": ["string", "null"] },
+                            "vaultWalletId": { "type": ["string", "null"] },
+
+                            "orgId": { "type": "string" },
+                            "createdByUserId": { "type": "string" },
+
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "expiresAt": {
+                              "type": ["string", "null"],
+                              "format": "date-time"
+                            },
+
+                            "pennyTest": {
+                              "type": "object",
+                              "properties": {
+                                "amount": { "type": "string" },
+                                "status": { "type": "string" },
+                                "createdAt": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "updatedAt": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                }
+                              }
+                            },
+
+                            "vaultWallet": { "type": ["object", "null"] },
+
+                            "transactions": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": { "type": "string" },
+                                  "checkoutId": { "type": "string" },
+
+                                  "fromAmount": { "type": "string" },
+                                  "fromCurrencyId": { "type": "string" },
+                                  "fromCryptocurrencyId": {
+                                    "type": ["string", "null"]
+                                  },
+
+                                  "toAmount": { "type": "string" },
+                                  "toCurrencyId": {
+                                    "type": ["string", "null"]
+                                  },
+                                  "toCryptocurrencyId": {
+                                    "type": ["string", "null"]
+                                  },
+
+                                  "conversionRate": { "type": "string" },
+                                  "vaultWalletId": {
+                                    "type": ["string", "null"]
+                                  },
+
+                                  "txHash": { "type": ["string", "null"] },
+                                  "status": { "type": "string" },
+                                  "orgId": { "type": "string" },
+
+                                  "createdAt": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                  },
+                                  "updatedAt": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                  }
+                                }
+                              }
+                            },
+
+                            "fromCurrency": {
+                              "type": "object",
+                              "nullable": true,
+                              "properties": {
+                                "id": { "type": "string" },
+                                "name": { "type": "string" },
+                                "type": { "type": "string" },
+                                "symbol": { "type": "string" }
+                              }
+                            },
+
+                            "fromCryptocurrency": {
+                              "type": "object",
+                              "properties": {
+                                "id": { "type": "string" },
+                                "name": { "type": "string" },
+                                "type": { "type": "string" },
+                                "symbol": { "type": "string" }
+                              }
+                            },
+
+                            "toCurrency": {
+                              "type": "object",
+                              "properties": {
+                                "id": { "type": "string" },
+                                "name": { "type": "string" },
+                                "type": { "type": "string" },
+                                "symbol": { "type": "string" }
+                              }
+                            },
+
+                            "toCryptocurrency": {
+                              "type": "object",
+                              "properties": {
+                                "id": { "type": "string" },
+                                "name": { "type": "string" },
+                                "symbol": { "type": "string" },
+                                "chain": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": { "type": "string" },
+                                    "name": { "type": "string" },
+                                    "fireblocksId": { "type": "string" },
+                                    "nativeTokenSymbol": { "type": "string" }
+                                  }
+                                }
+                              }
+                            },
+
+                            "brokerCheckout": { "type": ["object", "null"] }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/checkout/{checkoutId}/completion-url": {
+      "get": {
+        "summary": "Get checkout completion URL",
+        "description": "Retrieve the completion URL for a checkout",
+        "parameters": [
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your API key"
+          },
+          {
+            "name": "X-Timestamp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Current Unix timestamp in seconds"
+          },
+          {
+            "name": "X-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
+          },
+          {
+            "name": "X-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["sandbox", "production"]
+            },
+            "description": "Environment where the request is executed"
+          },
+          {
+            "name": "checkoutId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Checkout ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Completion URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "completionUrl": {
+                          "type": "string",
+                          "description": "URL where the user can complete the checkout"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/checkout/{checkoutId}/receipt": {
+      "get": {
+        "summary": "Get checkout receipt",
+        "description": "Retrieve the receipt for a completed checkout",
+        "parameters": [
+          {
+            "name": "X-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["sandbox", "production"]
+            },
+            "description": "Environment where the request is executed"
+          },
+          {
+            "name": "checkoutId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Checkout ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Receipt data",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "object",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/checkout/buyer/{checkoutId}": {
+      "get": {
+        "summary": "Get buyer checkout",
+        "description": "Retrieve checkout details for the buyer",
+        "parameters": [
+          {
+            "name": "X-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["sandbox", "production"]
+            },
+            "description": "Environment where the request is executed"
+          },
+          {
+            "name": "checkoutId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Checkout ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns checkout details. If buyer KYC is required, returns minimal details. Otherwise, returns full checkout object including optional QR code data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "description": "Buyer KYC is required",
+                      "properties": {
+                        "success": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "checkout": {
+                              "type": "object",
+                              "properties": {
+                                "id": { "type": "string" },
+                                "orgDisclaimer": { "type": ["string", "null"] },
+                                "orgLogoUrl": { "type": ["string", "null"] }
+                              }
+                            },
+                            "kycEnabled": { "type": "boolean" },
+                            "kycTarget": {
+                              "type": "string",
+                              "description": "Who needs to complete KYC (e.g., BUYER)"
+                            },
+                            "kycStatus": {
+                              "type": "string",
+                              "description": "Current KYC status (e.g., NOT_STARTED, PENDING, COMPLETED)"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "description": "Buyer KYC completed or not required",
+                      "properties": {
+                        "success": { "type": "boolean", "example": true },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "checkout": {
+                              "type": "object",
+                              "properties": {
+                                "id": { "type": "string" },
+                                "externalCheckoutId": { "type": "string" },
+                                "externalClientId": { "type": "string" },
+                                "fromAmount": { "type": "string" },
+                                "fromCurrencyId": { "type": "string" },
+                                "fromCryptocurrencyId": {
+                                  "type": ["string", "null"]
+                                },
+                                "toAmount": { "type": ["string", "null"] },
+                                "toCurrencyId": { "type": ["string", "null"] },
+                                "toCryptocurrencyId": {
+                                  "type": ["string", "null"]
+                                },
+                                "toAmountReceived": {
+                                  "type": ["string", "null"]
+                                },
+                                "conversionRate": {
+                                  "type": ["string", "null"]
+                                },
+                                "feeRate": { "type": ["string", "null"] },
+                                "status": { "type": "string" },
+                                "checkoutType": { "type": "string" },
+                                "successUrl": { "type": ["string", "null"] },
+                                "orgLogoUrl": { "type": ["string", "null"] },
+                                "orgDisclaimer": { "type": ["string", "null"] },
+                                "vaultId": { "type": ["string", "null"] },
+                                "vaultWalletId": { "type": ["string", "null"] },
+                                "orgId": { "type": "string" },
+                                "createdByUserId": { "type": "string" },
+                                "createdAt": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "updatedAt": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "expiresAt": {
+                                  "type": ["string", "null"],
+                                  "format": "date-time"
+                                },
+                                "pennyTest": { "type": ["object", "null"] },
+                                "vaultWallet": { "type": ["object", "null"] },
+                                "transactions": {
+                                  "type": "array",
+                                  "items": { "type": "object" }
+                                },
+                                "fromCurrency": { "type": "object" },
+                                "fromCryptocurrency": {
+                                  "type": ["object", "null"]
+                                },
+                                "toCurrency": { "type": ["object", "null"] },
+                                "toCryptocurrency": {
+                                  "type": ["object", "null"]
+                                },
+                                "brokerCheckout": { "type": ["object", "null"] }
+                              }
+                            },
+                            "qrCodeData": {
+                              "type": "object",
+                              "description": "QR code information. May be empty if checkout is not completed or required amount not received.",
+                              "properties": {
+                                "qrUrl": { "type": "string", "nullable": true },
+                                "qrCode": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "decimals": { "type": ["number", "null"] },
+                                "amountInBaseUnits": {
+                                  "type": ["string", "null"]
+                                }
+                              },
+                              "additionalProperties": false
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/checkout/seller/{checkoutId}": {
+      "get": {
+        "summary": "Get seller checkout",
+        "description": "Retrieve checkout details for the seller",
+        "parameters": [
+          {
+            "name": "X-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["sandbox", "production"]
+            },
+            "description": "Environment where the request is executed"
+          },
+          {
+            "name": "checkoutId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Checkout ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns checkout details. If seller KYC is required, returns minimal details. Otherwise, returns full checkout object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "description": "Seller KYC is required",
+                      "properties": {
+                        "success": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "checkout": {
+                              "type": "object",
+                              "properties": {
+                                "id": { "type": "string" },
+                                "orgDisclaimer": { "type": ["string", "null"] },
+                                "orgLogoUrl": { "type": ["string", "null"] }
+                              }
+                            },
+                            "kycEnabled": { "type": "boolean" },
+                            "kycTarget": {
+                              "type": "string",
+                              "description": "Who needs to complete KYC (e.g., SELLER)"
+                            },
+                            "kycStatus": {
+                              "type": "string",
+                              "description": "Current KYC status (e.g., NOT_STARTED, PENDING, COMPLETED)"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "description": "Seller KYC completed or not required",
+                      "properties": {
+                        "success": { "type": "boolean", "example": true },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "checkout": {
+                              "type": "object",
+                              "properties": {
+                                "id": { "type": "string" },
+                                "externalCheckoutId": { "type": "string" },
+                                "externalClientId": { "type": "string" },
+                                "fromAmount": { "type": "string" },
+                                "fromCurrencyId": { "type": "string" },
+                                "fromCryptocurrencyId": {
+                                  "type": ["string", "null"]
+                                },
+                                "toAmount": { "type": ["string", "null"] },
+                                "toCurrencyId": { "type": ["string", "null"] },
+                                "toCryptocurrencyId": {
+                                  "type": ["string", "null"]
+                                },
+                                "toAmountReceived": {
+                                  "type": ["string", "null"]
+                                },
+                                "conversionRate": {
+                                  "type": ["string", "null"]
+                                },
+                                "feeRate": { "type": ["string", "null"] },
+                                "status": { "type": "string" },
+                                "checkoutType": { "type": "string" },
+                                "successUrl": { "type": ["string", "null"] },
+                                "orgLogoUrl": { "type": ["string", "null"] },
+                                "orgDisclaimer": { "type": ["string", "null"] },
+                                "vaultId": { "type": ["string", "null"] },
+                                "vaultWalletId": { "type": ["string", "null"] },
+                                "orgId": { "type": "string" },
+                                "createdByUserId": { "type": "string" },
+                                "createdAt": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "updatedAt": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "expiresAt": {
+                                  "type": ["string", "null"],
+                                  "format": "date-time"
+                                },
+                                "vaultWallet": { "type": ["object", "null"] },
+                                "transactions": {
+                                  "type": "array",
+                                  "items": { "type": "object" }
+                                },
+                                "fromCurrency": { "type": "object" },
+                                "fromCryptocurrency": {
+                                  "type": ["object", "null"]
+                                },
+                                "toCurrency": { "type": ["object", "null"] },
+                                "toCryptocurrency": {
+                                  "type": ["object", "null"]
+                                },
+                                "brokerCheckout": { "type": ["object", "null"] }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/checkout/complete": {
+      "post": {
+        "summary": "Complete checkout",
+        "description": "Proceed to complete checkout",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "checkoutId": {
+                    "type": "string",
+                    "description": "The ID of the checkout to complete"
+                  },
+                  "toCryptocurrencyId": {
+                    "type": "string",
+                    "description": "The ID of the cryptocurrency that will be used to complete the checkout"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Checkout completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "checkoutId": { "type": "string" },
+                        "address": {
+                          "type": "string",
+                          "description": "Wallet address to send the funds"
+                        },
+                        "toAmount": {
+                          "type": "string",
+                          "description": "Amount that should be transferred to the cryptocurrency wallet"
+                        },
+                        "expiresAt": {
+                          "type": ["string", "null"],
+                          "format": "date-time"
+                        },
+                        "cancelledCheckoutsCount": { "type": "number" }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Checkout completed successfully"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["sandbox", "production"]
+            },
+            "description": "Environment where the request is executed"
+          }
+        ]
+      }
+    },
+    "/checkout/penny-test": {
+      "post": {
+        "summary": "Create penny test",
+        "description": "Create a penny test for a checkout",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["checkoutId", "amount"],
+                "properties": {
+                  "checkoutId": {
+                    "type": "string",
+                    "description": "The ID of the checkout to run the penny test against"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "description": "Amount to test (in units of the chosen cryptocurrency)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Penny test completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "pennyTest": {
+                          "type": "object",
+                          "properties": {
+                            "id": { "type": "string" },
+                            "checkoutId": { "type": "string" },
+                            "amount": { "type": "string" },
+                            "status": { "type": "string" },
+                            "orgId": { "type": "string" },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        },
+                        "qrCodeData": {
+                          "type": "object",
+                          "properties": {
+                            "qrUrl": { "type": "string" },
+                            "qrCode": {
+                              "type": "string",
+                              "description": "Base64-encoded PNG QR code"
+                            },
+                            "decimals": { "type": "number" },
+                            "amountInBaseUnits": { "type": "string" }
+                          }
+                        }
+                      }
+                    },
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["sandbox", "production"]
+            },
+            "description": "Environment where the request is executed"
+          }
+        ]
+      }
+    },
+    "/checkout/{checkoutId}/cancel": {
+      "post": {
+        "summary": "Cancel checkout",
+        "description": "Cancel a checkout session",
+        "parameters": [
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your API key"
+          },
+          {
+            "name": "X-Timestamp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Current Unix timestamp in seconds"
+          },
+          {
+            "name": "X-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
+          },
+          { "$ref": "#/components/parameters/Environment" },
+          {
+            "name": "checkoutId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Checkout ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Checkout canceled successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "checkout": {
+                          "type": "object",
+                          "properties": {
+                            "id": { "type": "string" },
+                            "externalCheckoutId": { "type": "string" },
+                            "externalClientId": { "type": "string" },
+                            "fromAmount": { "type": "string" },
+                            "fromCurrencyId": { "type": "string" },
+                            "fromCryptocurrencyId": {
+                              "type": ["string", "null"]
+                            },
+                            "toAmount": { "type": ["string", "null"] },
+                            "toCurrencyId": { "type": ["string", "null"] },
+                            "toCryptocurrencyId": {
+                              "type": ["string", "null"]
+                            },
+                            "toAmountReceived": { "type": ["string", "null"] },
+                            "conversionRate": { "type": ["string", "null"] },
+                            "feeRate": { "type": ["string", "null"] },
+                            "status": { "type": "string" },
+                            "checkoutType": { "type": "string" },
+                            "successUrl": { "type": ["string", "null"] },
+                            "orgLogoUrl": { "type": ["string", "null"] },
+                            "orgDisclaimer": { "type": ["string", "null"] },
+                            "vaultId": { "type": ["string", "null"] },
+                            "vaultWalletId": { "type": ["string", "null"] },
+                            "orgId": { "type": "string" },
+                            "createdByUserId": { "type": "string" },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "expiresAt": {
+                              "type": ["string", "null"],
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Checkout canceled successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. Checkout cannot be canceled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "type": { "type": "string", "example": "BAD_REQUEST" },
+                        "code": { "type": "string", "example": "RES_002" },
+                        "message": {
+                          "type": "string",
+                          "example": "Cannot cancel checkout with status paid. Only Pending checkouts can be canceled."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vaults": {
+      "post": {
+        "summary": "Create vaults and wallets",
+        "description": "Create new vaults and associated wallets",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "vaultName": {
+                    "type": "string"
+                  }
+                },
+                "required": ["vaultName"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Vaults and wallets created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "vault": {
+                          "type": "object",
+                          "properties": {
+                            "id": { "type": "string" },
+                            "vaultName": { "type": "string" },
+                            "vaultAccountId": { "type": "string" },
+                            "name": { "type": "string" },
+                            "hiddenOnUI": { "type": "boolean" },
+                            "autoFuel": { "type": "boolean" },
+                            "customCreated": { "type": "boolean" },
+                            "orgId": { "type": "string" },
+                            "createdByUserId": { "type": "string" },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "vaultName",
+                            "vaultAccountId",
+                            "name"
+                          ]
+                        },
+                        "wallets": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": { "type": "string" },
+                              "vaultId": { "type": "string" },
+                              "cryptocurrencyId": { "type": "string" },
+                              "address": { "type": "string" },
+                              "status": { "type": "string" },
+                              "lockedUntil": {
+                                "type": ["string", "null"],
+                                "format": "date-time"
+                              },
+                              "orgId": { "type": "string" },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "vaultId",
+                              "cryptocurrencyId",
+                              "address",
+                              "status"
+                            ]
+                          }
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Successfully created vault and 1 wallets"
+                        }
+                      },
+                      "required": ["vault", "wallets", "message"]
+                    }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your API key"
+          },
+          {
+            "name": "X-Timestamp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Current Unix timestamp in seconds"
+          },
+          {
+            "name": "X-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
+          },
+          { "$ref": "#/components/parameters/Environment" }
+        ]
+      }
+    },
+    "/vaults/detailed": {
+      "get": {
+        "summary": "Get detailed vaults",
+        "description": "Retrieve detailed information about vaults",
+        "responses": {
+          "200": {
+            "description": "Vaults retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "vaults": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": { "type": "string" },
+                              "vaultName": { "type": "string" },
+                              "vaultAccountId": { "type": "string" },
+                              "name": { "type": "string" },
+                              "hiddenOnUI": { "type": "boolean" },
+                              "autoFuel": { "type": "boolean" },
+                              "customCreated": { "type": "boolean" },
+                              "orgId": { "type": "string" },
+                              "createdByUserId": { "type": "string" },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "wallets": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": { "type": "string" },
+                                    "vaultId": { "type": "string" },
+                                    "cryptocurrencyId": { "type": "string" },
+                                    "address": { "type": "string" },
+                                    "status": { "type": "string" },
+                                    "lockedUntil": {
+                                      "type": ["string", "null"],
+                                      "format": "date-time"
+                                    },
+                                    "orgId": { "type": "string" },
+                                    "createdAt": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    },
+                                    "updatedAt": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    },
+                                    "cryptocurrency": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": { "type": "string" },
+                                        "symbol": { "type": "string" },
+                                        "name": { "type": "string" },
+                                        "fireblocksId": { "type": "string" }
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "checkouts": {
+                                "type": "array",
+                                "items": { "type": "object" }
+                              },
+                              "createdByUser": {
+                                "type": "object",
+                                "properties": {
+                                  "id": { "type": "string" },
+                                  "fullName": { "type": "string" },
+                                  "email": { "type": "string" }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "pagination": {
+                          "type": "object",
+                          "properties": {
+                            "page": { "type": "number" },
+                            "pageSize": { "type": "number" },
+                            "total": { "type": "number" },
+                            "totalPages": { "type": "number" },
+                            "hasNextPage": { "type": "boolean" },
+                            "hasPrevPage": { "type": "boolean" }
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Vaults retrieved successfully"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your API key"
+          },
+          {
+            "name": "X-Timestamp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Current Unix timestamp in seconds"
+          },
+          {
+            "name": "X-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
+          },
+          {
+            "name": "X-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["sandbox", "production"]
+            },
+            "description": "Environment where the request is executed"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Number of checkouts per page"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search query to filter vaults by ID, name, or account ID"
+          }
+        ]
+      }
+    },
+    "/vaults/basic": {
+      "get": {
+        "summary": "Get basic vaults",
+        "description": "Retrieve basic information about vaults",
+        "responses": {
+          "200": {
+            "description": "Vaults retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "vaults": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": { "type": "string" },
+                              "vaultName": { "type": "string" },
+                              "vaultAccountId": { "type": "string" },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "vaultName",
+                              "vaultAccountId",
+                              "createdAt"
+                            ]
+                          }
+                        }
+                      },
+                      "required": ["vaults"]
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Vaults retrieved successfully"
+                    }
+                  },
+                  "required": ["success", "data", "message"]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your API key"
+          },
+          {
+            "name": "X-Timestamp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Current Unix timestamp in seconds"
+          },
+          {
+            "name": "X-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
+          },
+          {
+            "name": "X-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["sandbox", "production"]
+            },
+            "description": "Environment where the request is executed"
+          }
+        ]
+      }
+    }
+  }
+}

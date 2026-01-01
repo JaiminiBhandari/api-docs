@@ -1,0 +1,134 @@
+---
+title: API Reference
+---
+
+This page contains all available endpoints for the ARP Digital API.
+
+## Overview
+
+The ARP Digital API provides comprehensive functionality for managing remittances, trades, checkouts, and account operations. All endpoints require authentication using API key and signature.
+
+## Authentication
+
+All API requests require authentication using API key and signature. You must include the following headers with each request:
+
+- `X-API-Key`: Your API key
+- `X-Timestamp`: Current Unix timestamp in seconds
+- `X-Signature`: HMAC SHA256 signature of `apiKey + requestBody + timestamp` using your API secret as the key
+
+## Endpoints by Category
+
+### Account Management
+
+<!--  - `GET /deposit-address` - Get deposit address for cryptocurrency
+- `GET /deposit-requests` - Get deposit requests
+- `POST /deposit-requests` - Create deposit request -->
+- `PUT /profile` - Update user profile
+- `POST /change-password` - Change password
+
+<!-- ### Sender -->
+<!-- - `GET /senders` - Get senders -->
+
+## Remittances API
+
+### Recipients
+
+- `GET /recipients` - Get recipients
+- `POST /recipients` - Create recipient
+- `GET /recipients/{id}` - Get recipient by ID
+- `GET /recipients/verificationFields` - Get recipient verification fields
+- `GET /recipients/paymentMethodFields` - Get recipient payment method fields
+
+### Quotes
+- `POST /quote` - Get exchange rate quote
+
+### Transactions
+
+- `POST /transaction` - Execute transaction
+- `GET /transactions` - Get transactions
+- `GET /transactions/{id}` - Get transaction by ID
+- `GET /transactions/report/excel` - Generate transactions report
+
+### Configuration
+
+- `GET /countries/{id}` - Get countries by ID
+
+## Trade API
+
+### Trades
+
+- `GET /api/v1/trades` - Get trades
+- `POST /api/v1/trades` - Create trades
+
+### Quotes
+
+- `POST /api/v1/quotes`  - Create exchange rate quote
+
+## Checkout API
+
+- `GET /health` - Check the health
+- `POST/checkout` - Create checkout
+- `GET/checkout` - Get all checkouts
+- `POST /checkout/broker` - Create broker checkout
+- `GET /checkout/{checkoutId}` - Get checkout by ID
+- `GET /checkout/{checkoutId}/completion-url` - Get the completion URL
+- `GET /checkout/{checkoutId}/receipt` - Get receipt
+- `GET /checkout/buyer/{checkoutId}` - Get buyer
+- `GET /checkout/seller/{checkoutId}` - Get seller
+- `POST /checkout/complete` - Proceed checkout
+- `POST /checkout/penny-test` - Create penny-test
+- `POST /checkout/{checkoutId}/cancel` - Cancel checkout by ID
+- `POST /vaults` - Create vault
+- `GET /vaults/detailed` - Get vault detailed
+- `GET /vaults/basic` - Get basic vault information
+
+## Wallet API
+
+### Balances
+
+- `GET /balance` - Get user balances
+
+### Wallets
+
+- `GET /wallets`  - Get user wallet
+- `POST /wallets` - Create wallet
+- `GET /wallets/{id}` - Get wallet by ID
+- `GET /wallet-transactions` - Get wallet transactions history
+
+### Bank Accounts
+
+- `GET /bank-accounts` - Get all bank accounts
+- `POST /bank-accounts` - Create bank account
+- `GET /bank-accounts/{id}` - Get bank account by ID
+
+## Deposits
+
+- `GET /deposits` - Get deposit
+- `POST /deposits` - Create deposit
+- `GET /deposits/{id}` - Get deposit by ID
+- `GET /beneficiary` - Get beneficiary details for fiat deposits
+
+## Withdrawals
+
+- `GET /withdrawals` - Get withdrawal
+- `POST /withdrawals` - Create withdrawal
+- `GET /withdrawals/{id}` - Get withdrawal by ID
+ 
+<!-- ### Webhooks
+
+- `GET /webhooks` - Get webhooks
+- `POST /webhooks` - Create webhook
+
+### KYC
+
+- `GET /kyc/{clientId}` - Get KYC link
+- `GET /kyc/{clientId}/status` - Get KYC status
+
+### Other
+
+- `GET /fiat-channels` - Get available fiat channels
+- `POST /test-auth` - Test authentication -->
+
+## Servers
+
+- **Sandbox Environment:** `https://platform.arpdigital.io/services`

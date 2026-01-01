@@ -1,0 +1,36 @@
+{
+  "name": "arp-digital-docs",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "postinstall": "node ../../scripts/link-react-deps.js",
+    "dev": "zudoku dev",
+    "build": "zudoku build",
+    "preview": "zudoku preview --no open",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+  },
+  "nx": {
+    "tags": [
+      "example"
+    ],
+    "targets": {
+      "build": {
+        "dependsOn": [
+          "zudoku:build"
+        ]
+      }
+    }
+  },
+  "dependencies": {
+    "@clerk/clerk-js": "^5.102.1",
+    "@sentry/node-core": "^10.32.1",
+    "crypto-js": "4.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zudoku": "0.66.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0"
+  }
+}

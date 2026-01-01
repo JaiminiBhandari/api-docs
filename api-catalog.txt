@@ -1,0 +1,687 @@
+import { useState, useMemo } from "react";
+import { Link } from "zudoku/components";
+
+export const API_CATALOG = {
+  overview: [
+    {
+      title: "Remittance API",
+      description: "Global remittance and payout APIs.",
+      path: "/remittance-api",
+    },
+    {
+      title: "Trade API",
+      description: "Trading, quotes, and execution APIs.",
+      path: "/trade-api",
+    },
+    {
+      title: "Checkout API",
+      description: "Hosted checkout and payment APIs.",
+      path: "/checkout-api",
+    },
+    {
+      title: "Wallet API",
+      description: "Balances, wallets, deposits, and withdrawals.",
+      path: "/wallet-api",
+    },
+  ],
+  remittance: [
+    {
+      title: "Remittance API",
+      description: "Recipients, quotes, and transactions.",
+      path: "/remittance-api",
+    },
+  ],
+  trade: [
+    {
+      title: "Trade API",
+      description: "Trades and exchange rate quotes.",
+      path: "/trade-api",
+    },
+  ],
+  checkout: [
+    {
+      title: "Checkout API",
+      description: "Checkout creation and completion.",
+      path: "/checkout-api",
+    },
+  ],
+  wallet: [
+    {
+      title: "Wallet API",
+      description: "Wallets, balances, deposits, and withdrawals.",
+      path: "/wallet-api",
+    },
+  ],
+};
+
+export function ApiCatalog() {
+  const [active, setActive] = useState("overview");
+
+  const sections = useMemo(() => Object.keys(API_CATALOG), []);
+  const activeTitle = active.charAt(0).toUpperCase() + active.slice(1);
+
+  return (
+    <div style={{ display: "flex", minHeight: "100vh", gap: 24 }}>
+      <aside
+        style={{
+          width: 260,
+          borderRight: "1px solid #e5e7eb",
+          padding: 24,
+        }}
+      >
+        <h4 style={{ marginBottom: 16, fontWeight: 600 }}>API Catalog</h4>
+
+        {sections.map((key) => {
+          const isActive = key === active;
+          return (
+            <button
+              key={key}
+              onClick={() => setActive(key)}
+              style={{
+                display: "block",
+                width: "100%",
+                textAlign: "left",
+                padding: "10px 12px",
+                marginBottom: 6,
+                borderRadius: 6,
+                border: "none",
+                background: isActive ? "#f3f4f6" : "transparent",
+                cursor: "pointer",
+                fontWeight: isActive ? 700 : 500,
+              }}
+            >
+              {key.charAt(0).toUpperCase() + key.slice(1)}
+            </button>
+          );
+        })}
+      </aside>
+
+      <main style={{ flex: 1, padding: 40 }}>
+        <h1 style={{ marginBottom: 24, fontWeight: 700 }}>
+          API Catalog – {activeTitle}
+        </h1>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: 24,
+            maxWidth: "1000px",
+          }}
+        >
+          {API_CATALOG[active].map((api) => (
+            <Link key={api.title} to={api.path} style={{ textDecoration: "none" }}>
+              <div
+                style={{
+                  border: "1px solid #e5e7eb",
+                  borderRadius: 12,
+                  padding: 40,
+                  background: "#fff",
+                  cursor: "pointer",
+                  transition: "box-shadow 160ms ease",
+                  minHeight: 200,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  color: "inherit",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.boxShadow =
+                    "0 6px 18px rgba(0,0,0,0.06)")
+                }
+                onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
+              >
+                <div>
+                  <h3 style={{ fontWeight: 600, margin: 0, fontSize: 20 }}>
+                    {api.title}
+                  </h3>
+                  <p style={{ marginTop: 12, color: "#374151", fontSize: 16 }}>
+                    {api.description}
+                  </p>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </main>
+    </div>
+  );
+}
+
+<ApiCatalog />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1>
+
+import { useState } from "react";
+
+export const API_CATALOG = [
+  {
+    title: "Remittance API",
+    description: "Global remittance and payout APIs.",
+    path: "/remittance-api",
+  },
+  {
+    title: "Trade API",
+    description: "Trading, quotes, and execution APIs.",
+    path: "/trade-api",
+  },
+  {
+    title: "Checkout API",
+    description: "Hosted checkout and payment APIs.",
+    path: "/checkout-api",
+  },
+  {
+    title: "Wallet API",
+    description: "Balances, wallets, deposits, and withdrawals.",
+    path: "/wallet-api",
+  },
+];
+
+export function ApiCatalog() {
+  const [isGeneralOpen, setIsGeneralOpen] = useState(true);
+  const [selectedApi, setSelectedApi] = useState(null);
+
+  const displayedApis = selectedApi ? [selectedApi] : API_CATALOG;
+
+  return (
+    <div className="flex min-h-screen">
+      <nav className="hidden max-w-[calc(var(--side-nav-width)+var(--padding-nav-item))] lg:flex scrollbar flex-col overflow-y-auto shrink-0 text-sm pe-3 ps-4 lg:ps-8 -mx-(--padding-nav-item) pb-[8vh] pt-(--padding-content-top) scroll-pt-2 gap-1 -mt-2.5" style={{ maskImage: "linear-gradient(180deg, transparent 1%, rgba(0, 0, 0, 1) 20px, rgba(0, 0, 0, 1) 90%, transparent 99%)" }}>
+        <button className="relative flex items-center gap-2 px-(--padding-nav-item) my-0.5 py-1.5 rounded-lg hover:bg-accent tabular-nums bg-accent font-medium active" onClick={() => setSelectedApi(null)}>
+          <span className="truncate flex-1" title="Overview">Overview</span>
+          <span className="flex items-center duration-200 transition-opacity text-center uppercase text-[0.65rem] leading-5 font-bold dark:text-zinc-50 h-full px-3 border border-border rounded-md text-foreground">{API_CATALOG.length}</span>
+        </button>
+        <div data-state="open" className="flex flex-col">
+          <div className="group relative flex items-center gap-2 px-(--padding-nav-item) my-0.5 py-1.5 rounded-lg hover:bg-accent tabular-nums text-foreground/80 group text-start font-medium cursor-default hover:bg-transparent" type="button" aria-controls="radix-general" aria-expanded={isGeneralOpen} data-state={isGeneralOpen ? "open" : "closed"} onClick={() => setIsGeneralOpen(!isGeneralOpen)} disabled="">
+            <div className="flex items-center justify-between w-full">
+              <div className="flex gap-2 truncate w-full">General</div>
+            </div>
+          </div>
+          {isGeneralOpen && (
+            <div data-state="open" id="radix-general" className="ms-6 my-1">
+              <ul className="relative after:absolute after:-start-(--padding-nav-item) after:translate-x-[1.5px] after:top-0 after:bottom-0 after:w-px after:bg-border">
+                {API_CATALOG.map((api) => (
+                  <button key={api.title} className="relative flex items-center gap-2 px-(--padding-nav-item) my-0.5 py-1.5 rounded-lg hover:bg-accent tabular-nums text-foreground/80 w-full text-left" onClick={() => setSelectedApi(api)}>
+                    <span className="truncate flex-1" title={api.title}>{api.title}</span>
+                    <span className="flex items-center duration-200 transition-opacity text-center uppercase text-[0.65rem] leading-5 font-bold dark:text-zinc-50 h-full px-3 border border-border rounded-md text-foreground">1</span>
+                  </button>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      <main data-pagefind-body="true" className="px-4 lg:pe-8 lg:px-8">
+        <section className="pt-(--padding-content-top)">
+          <div className="grid gap-4">
+            <h2 className="group relative text-2xl font-bold">API Catalog{selectedApi ? ` - ${selectedApi.title}` : ''}</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {displayedApis.map((api) => (
+                <a key={api.title} className="no-underline hover:!text-foreground" href={api.path} data-discover="true">
+                  <div className="border h-full rounded-lg p-4 flex flex-col gap-2 cursor-pointer hover:bg-border/20 font-normal">
+                    <span className="font-semibold">{api.title}</span>
+                    <div className="prose dark:prose-invert prose-neutral typography text-sm whitespace-pre-wrap mb-6 line-clamp-2">
+                      <p>{api.description}</p>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+<ApiCatalog />
+
+
+
+2> without side bar
+
+
+---
+title: API Catalog
+description: Explore all ARP Digital APIs
+---
+
+import { useState } from "react";
+
+export const API_CATALOG = [
+  {
+    title: "Remittance API",
+    description: "Global remittance and payout APIs.",
+    path: "/remittance-api",
+  },
+  {
+    title: "Trade API",
+    description: "Trading, quotes, and execution APIs.",
+    path: "/trade-api",
+  },
+  {
+    title: "Checkout API",
+    description: "Hosted checkout and payment APIs.",
+    path: "/checkout-api",
+  },
+  {
+    title: "Wallet API",
+    description: "Balances, wallets, deposits, and withdrawals.",
+    path: "/wallet-api",
+  },
+];
+
+export function ApiCatalog() {
+  const [isGeneralOpen, setIsGeneralOpen] = useState(true);
+  const [selectedApi, setSelectedApi] = useState(null);
+
+  const displayedApis = selectedApi ? [selectedApi] : API_CATALOG;
+
+  return (
+    <div className="flex">
+      {/* sidebar unchanged */}
+
+      <main data-pagefind-body="true" className="flex-1 px-6 lg:px-10">
+        <section className="pt-(--padding-content-top)">
+          <h2 className="text-2xl font-bold mb-6">API Catalog</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[1100px]">
+            {displayedApis.map((api) => (
+              <a
+                key={api.title}
+                href={api.path}
+                className="no-underline hover:!text-foreground"
+              >
+                <div className="h-full rounded-xl border border-border bg-background p-6 flex flex-col justify-between cursor-pointer transition-all duration-200 hover:shadow-md hover:bg-accent/20">
+                  <span className="text-base font-semibold text-foreground">
+                    {api.title}
+                  </span>
+
+                  <p className="text-sm text-muted-foreground leading-relaxed mt-2 line-clamp-2">
+                    {api.description}
+                  </p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+<ApiCatalog />
+
+
+
+
+
+3> Updated
+import { useState } from "react";
+
+export const API_CATALOG = [
+  {
+    title: "Remittance API",
+    description: "Global remittance and payout APIs.",
+    path: "/remittance-api",
+  },
+  {
+    title: "Trade API",
+    description: "Trading, quotes, and execution APIs.",
+    path: "/trade-api",
+  },
+  {
+    title: "Checkout API",
+    description: "Hosted checkout and payment APIs.",
+    path: "/checkout-api",
+  },
+  {
+    title: "Wallet API",
+    description: "Balances, wallets, deposits, and withdrawals.",
+    path: "/wallet-api",
+  },
+];
+
+export function ApiCatalog() {
+  const [isGeneralOpen, setIsGeneralOpen] = useState(true);
+  const [selectedApi, setSelectedApi] = useState(null);
+
+  const displayedApis = selectedApi ? [selectedApi] : API_CATALOG;
+
+  return (
+    <div className="flex">
+      <nav className="hidden max-w-[calc(var(--side-nav-width)+var(--padding-nav-item))] lg:flex scrollbar flex-col overflow-y-auto shrink-0 text-sm pe-3 ps-4 lg:ps-8 -mx-(--padding-nav-item) pb-[8vh] pt-(--padding-content-top) scroll-pt-2 gap-1 -mt-2.5" style={{ maskImage: "linear-gradient(180deg, transparent 1%, rgba(0, 0, 0, 1) 20px, rgba(0, 0, 0, 1) 90%, transparent 99%)" }}>
+        <button className="relative flex items-center gap-2 px-(--padding-nav-item) my-0.5 py-1.5 rounded-lg hover:bg-accent tabular-nums bg-accent font-medium active" onClick={() => setSelectedApi(null)}>
+          <span className="truncate flex-1" title="Overview">Overview</span>
+          <span className="flex items-center duration-200 transition-opacity text-center uppercase text-[0.65rem] leading-5 font-bold dark:text-zinc-50 h-full px-3 border border-border rounded-md text-foreground">{API_CATALOG.length}</span>
+        </button>
+        <div data-state="open" className="flex flex-col">
+          <div className="group relative flex items-center gap-2 px-(--padding-nav-item) my-0.5 py-1.5 rounded-lg hover:bg-accent tabular-nums text-foreground/80 group text-start font-medium cursor-default hover:bg-transparent" type="button" aria-controls="radix-general" aria-expanded={isGeneralOpen} data-state={isGeneralOpen ? "open" : "closed"} onClick={() => setIsGeneralOpen(!isGeneralOpen)} disabled="">
+            <div className="flex items-center justify-between w-full">
+              <div className="flex gap-2 w-full">General</div>
+            </div>
+          </div>
+          {isGeneralOpen && (
+            <div data-state="open" id="radix-general" className="ms-6 my-1">
+              <ul className="relative after:absolute after:-start-(--padding-nav-item) after:translate-x-[1.5px] after:top-0 after:bottom-0 after:w-px after:bg-border">
+                {API_CATALOG.map((api) => (
+                  <button key={api.title} className="relative flex items-center gap-2 px-(--padding-nav-item) my-0.5 py-1.5 rounded-lg hover:bg-accent tabular-nums text-foreground/80 w-full text-left" onClick={() => setSelectedApi(api)}>
+                    <span className="truncate flex-1" title={api.title}>{api.title}</span>
+                    <span className="flex items-center duration-200 transition-opacity text-center uppercase text-[0.65rem] leading-5 font-bold dark:text-zinc-50 h-full px-3 border border-border rounded-md text-foreground">1</span>
+                  </button>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      <main data-pagefind-body="true" className="px-4 lg:pe-8 lg:px-8">
+        <section className="pt-(--padding-content-top)">
+          <div className="w-250">
+            <h2 className="group relative text-2xl font-bold">API Catalog{selectedApi ? ` - ${selectedApi.title}` : ''}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {displayedApis.map((api) => (
+                <a key={api.title} className="no-underline hover:!text-foreground" href={api.path} data-discover="true">
+                  <div className="border h-full rounded-lg p-4 flex flex-col gap-2 cursor-pointer hover:bg-border/20 font-normal">
+                    <span className="font-semibold">{api.title}</span>
+                    <div className="prose dark:prose-invert prose-neutral typography text-sm whitespace-pre-wrap mb-6 line-clamp-2">
+                      <p>{api.description}</p>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+<ApiCatalog />
+
+4> General Title
+
+import { useState } from "react";
+
+export const API_CATALOG = [
+  {
+    title: "Remittance API",
+    description: "Global remittance and payout APIs.",
+    path: "/remittance-api",
+  },
+  {
+    title: "Trade API",
+    description: "Trading, quotes, and execution APIs.",
+    path: "/trade-api",
+  },
+  {
+    title: "Checkout API",
+    description: "Hosted checkout and payment APIs.",
+    path: "/checkout-api",
+  },
+  {
+    title: "Wallet API",
+    description: "Balances, wallets, deposits, and withdrawals.",
+    path: "/wallet-api",
+  },
+];
+
+export function ApiCatalog() {
+  const [selectedApi, setSelectedApi] = useState(null);
+
+  const displayedApis = selectedApi ? [selectedApi] : API_CATALOG;
+
+  return (
+    <div className="flex">
+      <nav className="hidden max-w-[calc(var(--side-nav-width)+var(--padding-nav-item))] lg:flex scrollbar flex-col overflow-y-auto shrink-0 text-sm pe-3 ps-4 lg:ps-8 -mx-(--padding-nav-item) pb-[8vh] pt-(--padding-content-top) scroll-pt-2 gap-1 -mt-2.5" style={{ maskImage: "linear-gradient(180deg, transparent 1%, rgba(0, 0, 0, 1) 20px, rgba(0, 0, 0, 1) 90%, transparent 99%)" }}>
+        <button className="relative flex items-center gap-2 px-(--padding-nav-item) my-0.5 py-1.5 rounded-lg hover:bg-accent tabular-nums bg-accent font-medium active" onClick={() => setSelectedApi(null)}>
+          <span className="truncate flex-1" title="Overview">Overview</span>
+          <span className="flex items-center duration-200 transition-opacity text-center uppercase text-[0.65rem] leading-5 font-bold dark:text-zinc-50 h-full px-3 border border-border rounded-md text-foreground">{API_CATALOG.length}</span>
+        </button>
+        <div data-state="open" className="flex flex-col">
+          <div className="group relative flex items-center gap-2 px-(--padding-nav-item) my-0.5 py-1.5 rounded-lg tabular-nums text-foreground/80 group text-start font-medium cursor-default">
+            <div className="flex items-center justify-between w-full">
+              <div className="flex gap-2 w-full">General</div>
+            </div>
+          </div>
+          <div data-state="open" id="radix-general" className="ms-6 my-1">
+            <ul className="relative after:absolute after:-start-(--padding-nav-item) after:translate-x-[1.5px] after:top-0 after:bottom-0 after:w-px after:bg-border">
+              {API_CATALOG.map((api) => (
+                <button key={api.title} className="relative flex items-center gap-2 px-(--padding-nav-item) my-0.5 py-1.5 rounded-lg hover:bg-accent tabular-nums text-foreground/80 w-full text-left" onClick={() => setSelectedApi(api)}>
+                  <span className="truncate flex-1" title={api.title}>{api.title}</span>
+                  <span className="flex items-center duration-200 transition-opacity text-center uppercase text-[0.65rem] leading-5 font-bold dark:text-zinc-50 h-full px-3 border border-border rounded-md text-foreground">1</span>
+                </button>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div className="mt-auto pt-4 text-xs text-muted-foreground text-center">
+          Powered by <a href="https://zudoku.dev" className="text-accent hover:underline">Zudoku</a>
+        </div>
+      </nav>
+
+      <main data-pagefind-body="true" className="px-4 lg:pe-8 lg:px-8">
+        <section className="pt-(--padding-content-top)">
+          <div className="w-250">
+            <h2 className="group relative text-2xl font-bold">API Catalog{selectedApi ? ` - ${selectedApi.title}` : ''}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {displayedApis.map((api) => (
+                <a key={api.title} className="no-underline hover:!text-foreground" href={api.path} data-discover="true">
+                  <div className="border h-full rounded-lg p-4 flex flex-col gap-2 cursor-pointer hover:bg-border/20 font-normal">
+                    <span className="font-semibold">{api.title}</span>
+                    <div className="prose dark:prose-invert prose-neutral typography text-sm whitespace-pre-wrap mb-6 line-clamp-2">
+                      <p>{api.description}</p>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+<ApiCatalog />
+
+
+
+5> ---------Final Update----------
+
+import { useState } from "react";
+
+export const API_CATALOG = [
+  {
+    title: "Remittance API",
+    description: "Global remittance and payout APIs.",
+    path: "/remittance-api",
+  },
+  {
+    title: "Trade API",
+    description: "Trading, quotes, and execution APIs.",
+    path: "/trade-api",
+  },
+  {
+    title: "Checkout API",
+    description: "Hosted checkout and payment APIs.",
+    path: "/checkout-api",
+  },
+  {
+    title: "Wallet API",
+    description: "Balances, wallets, deposits, and withdrawals.",
+    path: "/wallet-api",
+  },
+];
+
+export function ApiCatalog() {
+  const [selectedApi, setSelectedApi] = useState(null);
+
+  const displayedApis = selectedApi ? [selectedApi] : API_CATALOG;
+
+  return (
+    <div className="flex">
+      <nav className="hidden max-w-[calc(var(--side-nav-width)+var(--padding-nav-item))] lg:flex scrollbar flex-col overflow-y-auto shrink-0 text-sm pe-3 ps-4 lg:ps-8 -mx-(--padding-nav-item) pb-[8vh] pt-(--padding-content-top) scroll-pt-2 gap-1 -mt-2.5" style={{ maskImage: "linear-gradient(180deg, transparent 1%, rgba(0, 0, 0, 1) 20px, rgba(0, 0, 0, 1) 90%, transparent 99%)" }}>
+        <button className="relative flex items-center gap-2 px-(--padding-nav-item) my-0.5 py-1.5 rounded-lg hover:bg-accent tabular-nums bg-accent font-medium active" onClick={() => setSelectedApi(null)}>
+          <span className="truncate flex-1" title="Overview">Overview</span>
+          <span className="flex items-center duration-200 transition-opacity text-center uppercase text-[0.65rem] leading-5 font-bold dark:text-zinc-50 h-full px-3 border border-border rounded-md text-foreground">{API_CATALOG.length}</span>
+        </button>
+        <div data-state="open" className="flex flex-col">
+          <div className="group relative flex items-center gap-2 px-(--padding-nav-item) my-0.5 py-1.5 rounded-lg tabular-nums text-foreground/80 group text-start font-medium cursor-default">
+            <div className="flex items-center justify-between w-full">
+              <div className="flex gap-2 w-full">General</div>
+            </div>
+          </div>
+          <div data-state="open" id="radix-general" className="ms-6 my-1">
+            <ul className="relative after:absolute after:-start-(--padding-nav-item) after:translate-x-[1.5px] after:top-0 after:bottom-0 after:w-px after:bg-border">
+              {API_CATALOG.map((api) => (
+                <button key={api.title} className="relative flex items-center gap-2 px-(--padding-nav-item) my-0.5 py-1.5 rounded-lg hover:bg-accent tabular-nums text-foreground/80 w-full text-left" onClick={() => setSelectedApi(api)}>
+                  <span className="truncate flex-1" title={api.title}>{api.title}</span>
+                  <span className="flex items-center duration-200 transition-opacity text-center uppercase text-[0.65rem] leading-5 font-bold dark:text-zinc-50 h-full px-3 border border-border rounded-md text-foreground">1</span>
+                </button>
+              ))}
+            </ul>
+          </div>
+        </div>
+      
+      </nav>
+
+      <main data-pagefind-body="true" className="px-4 lg:pe-8 lg:px-8">
+        <section className="pt-(--padding-content-top)">
+          <div className="w-250">
+            <h2 className="group relative text-2xl font-bold">API Catalog{selectedApi ? ` - ${selectedApi.title}` : ''}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {displayedApis.map((api) => (
+                <a key={api.title} className="no-underline hover:!text-foreground" href={api.path} data-discover="true">
+                  <div className="border h-full rounded-lg p-4 flex flex-col gap-2 cursor-pointer hover:bg-border/20 font-normal">
+                    <span className="font-semibold">{api.title}</span>
+                    <div className="prose dark:prose-invert prose-neutral typography text-sm whitespace-pre-wrap mb-6 line-clamp-2">
+                      <p>{api.description}</p>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+<ApiCatalog />
+
+
+
+6) TSX file code 
+
+import { useState } from "react";
+
+export const API_CATALOG = [
+  {
+    title: "Remittance API",
+    description: "Global remittance and payout APIs.",
+    path: "/remittance-api",
+  },
+  {
+    title: "Trade API",
+    description: "Trading, quotes, and execution APIs.",
+    path: "/trade-api",
+  },
+  {
+    title: "Checkout API",
+    description: "Hosted checkout and payment APIs.",
+    path: "/checkout-api",
+  },
+  {
+    title: "Wallet API",
+    description: "Balances, wallets, deposits, and withdrawals.",
+    path: "/wallet-api",
+  },
+];
+
+export function ApiCatalog() {
+  const [selectedApi, setSelectedApi] = useState(null);
+
+  const displayedApis = selectedApi ? [selectedApi] : API_CATALOG;
+
+  return (
+    <div className="flex">
+      <nav className="hidden max-w-[calc(var(--side-nav-width)+var(--padding-nav-item))] lg:flex scrollbar flex-col overflow-y-auto shrink-0 text-sm pe-3 ps-4 lg:ps-8 -mx-(--padding-nav-item) pb-[8vh] pt-(--padding-content-top) scroll-pt-2 gap-1 -mt-2.5" style={{ maskImage: "linear-gradient(180deg, transparent 1%, rgba(0, 0, 0, 1) 20px, rgba(0, 0, 0, 1) 90%, transparent 99%)" }}>
+        <button className="relative flex items-center gap-2 px-(--padding-nav-item) my-0.5 py-1.5 rounded-lg hover:bg-accent tabular-nums bg-accent font-medium active" onClick={() => setSelectedApi(null)}>
+          <span className="truncate flex-1" title="Overview">Overview</span>
+          <span className="flex items-center duration-200 transition-opacity text-center uppercase text-[0.65rem] leading-5 font-bold dark:text-zinc-50 h-full px-3 border border-border rounded-md text-foreground">{API_CATALOG.length}</span>
+        </button>
+        <div data-state="open" className="flex flex-col">
+          <div className="group relative flex items-center gap-2 px-(--padding-nav-item) my-0.5 py-1.5 rounded-lg tabular-nums text-foreground/80 group text-start font-medium cursor-default">
+            <div className="flex items-center justify-between w-full">
+              <div className="flex gap-2 w-full">General</div>
+            </div>
+          </div>
+          <div data-state="open" id="radix-general" className="ms-6 my-1">
+            <ul className="relative after:absolute after:-start-(--padding-nav-item) after:translate-x-[1.5px] after:top-0 after:bottom-0 after:w-px after:bg-border">
+              {API_CATALOG.map((api) => (
+                <button key={api.title} className="relative flex items-center gap-2 px-(--padding-nav-item) my-0.5 py-1.5 rounded-lg hover:bg-accent tabular-nums text-foreground/80 w-full text-left" onClick={() => setSelectedApi(api)}>
+                  <span className="truncate flex-1" title={api.title}>{api.title}</span>
+                  <span className="flex items-center duration-200 transition-opacity text-center uppercase text-[0.65rem] leading-5 font-bold dark:text-zinc-50 h-full px-3 border border-border rounded-md text-foreground">1</span>
+                </button>
+              ))}
+            </ul>
+          </div>
+        </div>
+      
+      </nav>
+
+      <main data-pagefind-body="true" className="px-4 lg:pe-8 lg:px-8">
+        <section className="pt-(--padding-content-top)">
+          <div className="w-250">
+            <h2 className="group relative text-2xl font-bold">API Catalog{selectedApi ? ` - ${selectedApi.title}` : ''}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {displayedApis.map((api) => (
+                <a key={api.title} className="no-underline hover:text-foreground!" href={api.path} data-discover="true">
+                  <div className="border h-full rounded-lg p-4 flex flex-col gap-2 cursor-pointer hover:bg-border/20 font-normal">
+                    <span className="font-semibold">{api.title}</span>
+                    <div className="prose dark:prose-invert prose-neutral typography text-sm whitespace-pre-wrap mb-6 line-clamp-2">
+                      <p>{api.description}</p>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}

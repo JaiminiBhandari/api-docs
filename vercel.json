@@ -1,0 +1,8 @@
+{
+  "framework": null,
+  "devCommand": "npx nx run api-docs:dev",
+  "buildCommand": "npx nx run api-docs:build",
+  "outputDirectory": "dist",
+  "installCommand": "pnpm install",
+  "cleanUrls": true
+}

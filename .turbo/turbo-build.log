@@ -1,0 +1,10 @@
+[?9001h[?1004h[?25l[2J[m[H]0;npm[?25h]0;npm run build[?25l
+> ARP-DIGITAL@0.0.1 build
+> zudoku build[5;1H[?25h[K]0;C:\WINDOWS\system32\cmd.exe (node:26292) ExperimentalWarning: Importing JSON modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[34m[1mStarting Zudoku build v0.64.2
+[m
+
+[2m4:39:23 PM[22m [36m[1mzudoku[m [36mloaded config file [m[2mC:\Users\niyat\arp-digital-monorepo\apps\api-docs\zudoku.config.tsx[22m
+[36mvite v6.4.1 [32mbuilding for production...[m
+[Ktransforming (1) [2m..\..\node_modules\zudoku\src\app\entry.client.tsx[22m[K[67C[Ktransforming (5) [2m..\..\node_modules\react\cjs\react-jsx-runtime.production.js[22m[K[77Ctransforming (17) [2m..\..\node_modules\react\jsx-runtime.js[22m[K[57Ctransforming (21) [2m..\..\node_modules\zudoku\lib\index-FNRZUtwo.js[22m[K[65Ctransforming (25) [2m..\..\node_modules\zudoku\lib\useLatest-hmRS46UF.js[22m[K[69C[Ktransforming (1031) [2m..\..\node_modules\lucide-react\dist\esm\icons\list-plus.js[22m[K[79Ctransforming (1037) [2m..\..\node_modules\zudoku\lib\ErrorAlert--3alJ_-b.js[22m[K[72Ctransforming (1038) [2m..\..\node_modules\lucide-react\dist\esm\icons\list-restart.js[22m[K[82Ctransforming (1699) [2m..\..\node_modules\set-cookie-parser\lib\set-cookie.js[22m^C[?9001l[?1004l

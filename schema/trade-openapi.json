@@ -1,0 +1,528 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ARP Digital OTC API",
+    "description": "Over-The-Counter (OTC) trading API for managing trades and obtaining real-time quotes. This API enables authenticated users to execute buy/sell trades, retrieve their trading history, and request price quotes for various trading pairs. All requests require API key authentication with HMAC SHA256 signature verification for security.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "ARP Digital Support",
+      "email": "support@arpdigital.com"
+    },
+    "license": {
+      "name": "Proprietary",
+      "url": "https://arpdigital.com/license"
+    }
+  },
+  "externalDocs": {
+    "description": "Full API documentation and guides",
+    "url": "https://docs.arpdigital.com/otc-api"
+  },
+  "servers": [
+    {
+      "url": "https://platform.arpdigital.io/services/otc/api/v1"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "components": {
+    "parameters": {
+      "Environment": {
+        "name": "X-Environment",
+        "in": "header",
+        "description": "Specifies the environment to use (sandbox or production). This determines which database the API interacts with.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": ["sandbox", "production"],
+          "default": "sandbox"
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "API key for authentication"
+      }
+    },
+    "schemas": {
+      "Trade": {
+        "type": "object",
+        "required": ["id", "pair", "amount", "status", "createdAt"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique trade identifier",
+            "example": "trade_123abc"
+          },
+          "pair": {
+            "type": "string",
+            "description": "Trading pair (e.g., BTC/USD)",
+            "example": "BTC/USD"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "description": "Trade amount",
+            "example": 0.5
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "description": "Price at which trade was executed",
+            "example": 43500.5
+          },
+          "type": {
+            "type": "string",
+            "enum": ["buy", "sell"],
+            "description": "Trade type",
+            "example": "buy"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "completed", "failed", "cancelled"],
+            "description": "Trade status",
+            "example": "completed"
+          },
+          "executedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Execution timestamp",
+            "example": "2025-12-19T10:30:00Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Trade creation timestamp",
+            "example": "2025-12-19T10:25:00Z"
+          }
+        }
+      },
+      "CreateTradeRequest": {
+        "type": "object",
+        "required": ["pair", "amount", "type"],
+        "properties": {
+          "pair": {
+            "type": "string",
+            "description": "Trading pair (e.g., BTC/USD)",
+            "example": "BTC/USD"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "description": "Amount to trade",
+            "example": 0.5
+          },
+          "type": {
+            "type": "string",
+            "enum": ["buy", "sell"],
+            "description": "Buy or sell order",
+            "example": "buy"
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "description": "Optional limit price",
+            "example": 43500.0
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional trade notes",
+            "example": "Market order"
+          }
+        }
+      },
+      "TradeResponse": {
+        "type": "object",
+        "required": ["id", "status"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Trade ID",
+            "example": "trade_123abc"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "completed", "failed"],
+            "description": "Trade status",
+            "example": "pending"
+          }
+        }
+      },
+      "Quote": {
+        "type": "object",
+        "required": ["id", "pair", "amount", "rate", "expiresAt"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique quote identifier",
+            "example": "quote_456def"
+          },
+          "pair": {
+            "type": "string",
+            "description": "Trading pair",
+            "example": "BTC/USD"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "description": "Quote amount",
+            "example": 0.5
+          },
+          "rate": {
+            "type": "number",
+            "format": "double",
+            "description": "Exchange rate",
+            "example": 43500.5
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Quote expiration timestamp",
+            "example": "2025-12-19T10:35:00Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Quote creation timestamp"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "INVALID_PAIR"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Trading pair is not supported"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional error details"
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Invalid request parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Missing or invalid API key or signature",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Access denied",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/trades": {
+      "get": {
+        "tags": ["Trades"],
+        "operationId": "getTrades",
+        "summary": "Get trades",
+        "description": "Retrieve user's trading history with optional filtering and pagination",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by trade status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "completed",
+                "failed",
+                "cancelled",
+                "PROCESSING"
+              ]
+            }
+          },
+          {
+            "name": "fromCurrencyId",
+            "in": "query",
+            "description": "Filter by source currency ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "toCurrencyId",
+            "in": "query",
+            "description": "Filter by destination currency ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "description": "Filter trades from this date (ISO 8601 format)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "description": "Filter trades until this date (ISO 8601 format)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your API key"
+          },
+          {
+            "name": "X-Timestamp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Current Unix timestamp in seconds"
+          },
+          {
+            "name": "X-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of trades retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Trade"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Trades"],
+        "operationId": "createTrade",
+        "summary": "Create trade",
+        "description": "Create a new buy or sell trade. Submit the trade request and receive a trade ID with status.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTradeRequest"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your API key"
+          },
+          {
+            "name": "X-Timestamp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Current Unix timestamp in seconds"
+          },
+          {
+            "name": "X-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Trade created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TradeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/v1/quotes": {
+      "post": {
+        "tags": ["Quotes"],
+        "operationId": "createQuote",
+        "summary": "Create quote",
+        "description": "Create a new trading quote with current exchange rate. Quotes are typically valid for a limited time.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["pair", "amount"],
+                "properties": {
+                  "pair": {
+                    "type": "string",
+                    "description": "Trading pair (e.g., BTC/USD)",
+                    "example": "BTC/USD"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "Amount to quote",
+                    "example": 0.5
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your API key"
+          },
+          {
+            "name": "X-Timestamp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Current Unix timestamp in seconds"
+          },
+          {
+            "name": "X-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Quote created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quote"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  }
+}
