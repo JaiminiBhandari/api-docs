@@ -408,7 +408,7 @@ The following Sample data is used for testing purposes only and does not represe
 | --------------------- | ------------------------ |
 | Full Name             | Mohammed Al-Saud         |
 | Account Number (IBAN) | SA0380000000608010167519 |
-| Bank Name             | Al-Inma Bank            |
+| Bank Name             | Al-Inma Bank             |
 | Bank Code             | INMA                     |
 
 ---
