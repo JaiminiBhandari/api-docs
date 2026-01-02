@@ -59,7 +59,6 @@ Payment method requirements depend on the destination country and corridor confi
 Examples include:
 
 * Bank Account/Wallet-based payouts
-* Local Clearing Systems
 
 > Payment method details are validated against the selected country and currency.
 
