@@ -72,8 +72,8 @@ An **IBAN** uniquely identifies an individual bank account across national borde
 
 | Entity Type | Currency | Country Code | Beneficiary Name        | Bank Name                | Account Number | SWIFT / BIC | IBAN                 | Expected Result |
 | ----------- | -------- | ------------ | ----------------------- | ------------------------ | -------------- | ----------- | -------------------- | --------------- |
-| Individual  | BHD      | BHR          | Test Bahrain Individual | Bank of Bahrain & Kuwait | 3000000001     | TESTBHBM    | BH00TEST000000000001 | Success         |
-| Business    | BHD      | BHR          | Test Bahrain Business   | Bank of Bahrain & Kuwait | 3000000002     | TESTBHBM    | BH00TEST000000000002 | Success         |
+| Individual  | BHD      | BHR          | Test Bahrain Individual | Bank of Bahrain Kuwait | 3000000001     | TESTBHBM    | BH00TEST000000000001 | Success         |
+| Business    | BHD      | BHR          | Test Bahrain Business   | Bank of Bahrain Kuwait | 3000000002     | TESTBHBM    | BH00TEST000000000002 | Success         |
 
 
 ---

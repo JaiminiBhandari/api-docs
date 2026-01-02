@@ -73,7 +73,7 @@ An **IBAN** uniquely identifies an individual bank account across national borde
 | Entity Type | Currency | Country Code | Beneficiary Name   | Bank Name      | Account Number | SWIFT / BIC | IBAN             | Expected Result |
 | ----------- | -------- | ------------ | ------------------ | -------------- | -------------- | ----------- | ---------------- | --------------- |
 | Individual  | USD      | USA          | Test US Individual | JPMorgan Chase | 5000000001     | TESTUS33    | US00TEST00000001 | Success         |
-| Business    | USD      | USA          | Test US Business   | JPMorgan Chase | 5000000002     | TESTUS99    | US00TEST00000002 | Failure         |
+| Business    | USD      | USA          | Test US Business   | JPMorgan Chase | 5000000002     | TESTUS99    | US00TEST00000002 | Success         |
 
 ---
 

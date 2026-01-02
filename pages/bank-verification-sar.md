@@ -71,7 +71,7 @@ An **IBAN** uniquely identifies an individual bank account across national borde
 | Entity Type | Currency | Country Code | Beneficiary Name    | Bank Name     | Account Number | SWIFT / BIC | IBAN                 | Expected Result |
 | ----------- | -------- | ------------ | ------------------- | ------------- | -------------- | ----------- | -------------------- | --------------- |
 | Individual  | SAR      | SAU          | Test KSA Individual | Al Rajhi Bank | 2000000001     | TESTSARI    | SA00TEST000000000001 | Success         |
-| Business    | SAR      | SAU          | Test KSA Business   | Al Rajhi Bank | 2000000002     | TESTSARI    | SA00TEST000000000002 | Failure         |
+| Business    | SAR      | SAU          | Test KSA Business   | Al Rajhi Bank | 2000000002     | TESTSARI    | SA00TEST000000000002 | Success         |
 
 ---
 

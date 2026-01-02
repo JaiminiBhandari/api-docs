@@ -73,8 +73,7 @@ An **IBAN** uniquely identifies an individual bank account across national borde
 | Entity Type | Currency | Country Code | Beneficiary Name         | Bank Name    | Account Number | SWIFT / BIC | IBAN                 | Expected Result |
 | ----------- | -------- | ------------ | ------------------------ | ------------ | -------------- | ----------- | -------------------- | --------------- |
 | Individual  | AED      | ARE          | Test UAE Individual      | Emirates NBD | 1000000001     | TESTAEAD    | AE00TEST000000000001 | Success         |
-| Individual  | AED      | ARE          | Test UAE Individual Fail | Emirates NBD | 1000000002     | TESTAEAD    | AE00TEST000000000002 | Failure         |
-| Business    | AED      | ARE          | Test UAE Business        | Emirates NBD | 1000000003     | TESTAEAD    | AE00TEST000000000003 | Pending         |
+| Business    | AED      | ARE          | Test UAE Business        | Emirates NBD | 1000000003     | TESTAEAD    | AE00TEST000000000003 | Success  |
 
 ---
 
