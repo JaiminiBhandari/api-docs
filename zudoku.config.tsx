@@ -1,7 +1,4 @@
-import type {
-  ZudokuConfig,
-  ZudokuPlugin,
-} from "zudoku";
+import type { ZudokuConfig, ZudokuPlugin } from "zudoku";
 import { Landingpage } from "./src/Landingpage";
 import SignatureGenerator from "./src/SignatureGenerator";
 
@@ -79,13 +76,21 @@ const config: ZudokuConfig = {
           label: "Webhooks",
           icon: "webhook",
         },
+        /*  RECIPIENT VERIFICATION */
         {
           type: "doc",
-          file: "transfer-verification",
-          label: "Transfer Verification",
-         icon: "send",
+          file: "recipient-verification",
+          label: "Recipient Verification",
+          icon: "check-circle",
         },
-        /* ✅ BANK ACCOUNT VERIFICATION DROPDOWN */
+        /*  TRANSFER VERIFICATION */
+        {
+          type: "doc",
+          file: "remittance-verification",
+          label: "Remittance Verification",
+          icon: "send",
+        },
+        /*  BANK ACCOUNT VERIFICATION DROPDOWN */
         {
           type: "category",
           label: "Bank Account Verification",

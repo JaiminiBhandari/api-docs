@@ -12,14 +12,15 @@ Testing accounts support end-to-end validation of **deposits, withdrawals, payou
 
 1. Switch your environment to **Sandbox**.
 2. Go to Bank Accounts section from Sidebar.
-3. Choose the currency for the bank account.
-4. Select the country code that matches the chosen currency.
-5. Enter the beneficiary name  provided in the testing account table.
-6. Enter the bank name provided in the testing account table.
-7. Enter account number provided in the testing account table.
-8. Enter the SWIFT / BIC code exactly as shown in the testing account table.
-9. Enter the IBAN from the testing account details.
-10. Save and submit the bank account details.
+3. Click on button **Add Bank Account**.
+4. Choose the currency for the bank account.
+5. Select the country code that matches the chosen currency.
+6. Enter the beneficiary name  provided in the testing account table.
+7. Enter the bank name provided in the testing account table.
+8. Enter account number provided in the testing account table.
+9. Enter the SWIFT / BIC code exactly as shown in the testing account table.
+10. Enter the IBAN from the testing account details.
+11. Save and submit the bank account details.
 <!-- 5. Initiate a deposit, withdrawal, payout, or validation request. -->
 <!-- 6. Verify API responses and webhook events against the expected scenario. -->
 
