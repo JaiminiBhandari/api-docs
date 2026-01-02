@@ -83,7 +83,7 @@ const config: ZudokuConfig = {
           label: "Recipient Verification",
           icon: "check-circle",
         },
-        /*  Remittance VERIFICATION */
+        /*  REMITTANCE VERIFICATION */
         {
           type: "doc",
           file: "remittance-verification",
