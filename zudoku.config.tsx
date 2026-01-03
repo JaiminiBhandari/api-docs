@@ -22,13 +22,21 @@ const config: ZudokuConfig = {
 
   docs: {
     publishMarkdown: false,
-    llms: { llmsTxt: false, llmsTxtFull: false },
-    defaultOptions: { copyPage: false },
+    llms: {
+      llmsTxt: false,
+      llmsTxtFull: false,
+    },
+    defaultOptions: {
+      copyPage: false,
+    },
   },
 
   site: {
     logo: {
-      src: { light: "/logo_dark.png", dark: "/logo_light.png" },
+      src: {
+        light: "/logo_dark.png",
+        dark: "/logo_light.png",
+      },
       width: 130,
       alt: "ARP Digital",
     },
@@ -53,74 +61,100 @@ const config: ZudokuConfig = {
       element: <Landingpage />,
     },
 
+    // =========================
+    // GETTING STARTED (DROPDOWNS)
+    // =========================
     {
       type: "category",
       label: "Getting Started",
       icon: "book-open",
       items: [
-        {
-          type: "doc",
-          file: "getting-started",
-          label: "Getting Started",
-          icon: "user-plus",
-        },
-        {
-          type: "doc",
-          file: "authentication",
-          label: "Authentication",
-          icon: "key",
-        },
-        {
-          type: "doc",
-          file: "webhooks",
-          label: "Webhooks",
-          icon: "webhook",
-        },
-        /*  RECIPIENT VERIFICATION */
-        {
-          type: "doc",
-          file: "recipient-verification",
-          label: "Recipient Verification",
-          icon: "check-circle",
-        },
-        /*  REMITTANCE VERIFICATION */
-        {
-          type: "doc",
-          file: "remittance-verification",
-          label: "Remittance Verification",
-          icon: "send",
-        },
-        /*  BANK ACCOUNT VERIFICATION DROPDOWN */
+        // INTRODUCTION DROPDOWN
         {
           type: "category",
-          label: "Bank Account Verification",
+          label: "Introduction",
+          icon: "info",
+          items: [
+            {
+              type: "doc",
+              file: "getting-started",
+              label: "Getting Started",
+              icon: "user-plus",
+            },
+            {
+              type: "doc",
+              file: "authentication",
+              label: "Authentication",
+              icon: "key",
+            },
+            {
+              type: "doc",
+              file: "webhooks",
+              label: "Webhooks",
+              icon: "webhook",
+            },
+          ],
+        },
+
+        // VERIFICATION DROPDOWN
+        {
+          type: "category",
+          label: "Verification",
           icon: "shield-check",
           items: [
             {
               type: "doc",
-              file: "bank-verification-bhd",
-              label: "BHD - Bahrain Dinar",
+              file: "recipient-verification",
+              label: "Recipient",
+              icon: "users",
             },
             {
               type: "doc",
-              file: "bank-verification-sar",
-              label: "SAR - Saudi Riyal",
+              file: "remittance-verification",
+              label: "Remittance",
+              icon: "send",
             },
+
+            // BANK ACCOUNT VERIFICATION (3rd LEVEL)
             {
-              type: "doc",
-              file: "bank-verification-aed",
-              label: "AED - UAE Dirham",
-            },
-            {
-              type: "doc",
-              file: "bank-verification-usd",
-              label: "USD - US Dollar",
+              type: "category",
+              label: "Bank Account",
+              icon: "building-2",
+              items: [
+                {
+                  type: "doc",
+                  file: "bank-verification-bhd",
+                  label: "BHD - Bahrain Dinar",
+                 // icon: "dollar-sign",
+                },
+                {
+                  type: "doc",
+                  file: "bank-verification-sar",
+                  label: "SAR - Saudi Riyal",
+                  //icon: "saudi-riyal",
+                },
+                {
+                  type: "doc",
+                  file: "bank-verification-aed",
+                  label: "AED - UAE Dirham",
+                  //icon: "dollar-sign",
+                },
+                {
+                  type: "doc",
+                  file: "bank-verification-usd",
+                  label: "USD - US Dollar",
+                  //icon: "dollar-sign",
+                },
+              ],
             },
           ],
         },
       ],
     },
 
+    // =========================
+    // API REFERENCES
+    // =========================
     {
       type: "category",
       label: "API References",
@@ -149,6 +183,9 @@ const config: ZudokuConfig = {
       ],
     },
 
+    // =========================
+    // API CATALOG
+    // =========================
     {
       type: "link",
       label: "API Catalog",
