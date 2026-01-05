@@ -104,7 +104,7 @@ POST /v1/payouts
 
 --- -->
 
-## Error Code Mapping
+<!-- ## Error Code Mapping
 
 In the **Sandbox environment**, validation errors are returned based on specific bank account input fields. The table below explains which field causes which error and under what condition.
 
@@ -117,7 +117,7 @@ In the **Sandbox environment**, validation errors are returned based on specific
 | Account Number    | BANK_ACCOUNT_INVALID   | The account number is invalid or does not match testing data               |
 | SWIFT / BIC       | BANK_ACCOUNT_INVALID   | The SWIFT/BIC code is incorrect, incomplete, or not listed in test data    |
 | IBAN              | BANK_ACCOUNT_INVALID   | The IBAN is invalid or does not match the testing account details           |
-| Account Balance   | INSUFFICIENT_FUNDS     | The testing account is configured to simulate insufficient funds           |
+| Account Balance   | INSUFFICIENT_FUNDS     | The testing account is configured to simulate insufficient funds           | -->
 
 ### Notes
 - All validations apply **only in Sandbox**.

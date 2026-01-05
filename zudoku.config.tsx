@@ -125,7 +125,7 @@ const config: ZudokuConfig = {
                   type: "doc",
                   file: "bank-verification-bhd",
                   label: "BHD - Bahrain Dinar",
-                 // icon: "dollar-sign",
+                  // icon: "dollar-sign",
                 },
                 {
                   type: "doc",
@@ -162,26 +162,51 @@ const config: ZudokuConfig = {
       items: [
         {
           type: "link",
+          label: "All Endpoints",
+          to: "/api-reference",
+          icon: "list",
+        },
+        {
+          type: "link",
           label: "Remittance API",
           to: "/remittance-api",
+          icon: "dollar-sign",
         },
         {
           type: "link",
           label: "Trade API",
           to: "/trade-api",
+          icon: "chart-line",
         },
         {
           type: "link",
           label: "Checkout API",
           to: "/checkout-api",
+          icon: "credit-card",
         },
         {
           type: "link",
           label: "Wallet API",
           to: "/wallet-api",
+          icon: "wallet",
         },
       ],
     },
+
+    {
+      type: "link",
+      label: "Remittance API",
+      to: "/remittance-api",
+      icon: "dollar-sign",
+    },
+    { type: "link", label: "Trade API", to: "/trade-api", icon: "chart-line" },
+    {
+      type: "link",
+      label: "Checkout API",
+      to: "/checkout-api",
+      icon: "credit-card",
+    },
+    { type: "link", label: "Wallet API", to: "/wallet-api", icon: "wallet" },
 
     // =========================
     // API CATALOG
