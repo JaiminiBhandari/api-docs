@@ -61,7 +61,8 @@ A **SWIFT** (Society for Worldwide Interbank Financial Telecommunication) or **B
 An **IBAN** uniquely identifies an individual bank account across national borders.
 
 - Length: **Up to 34 alphanumeric characters**
-- Example: `DE89 3704 0044 0532 0130 00`
+- The structure of an IBAN consists of a two-letter country code, which must be in uppercase.
+- Example: `AE89 3704 0044 0532 0130 00`
 
 > The IBAN helps reduce errors and ensures faster, more accurate payment processing.
 
@@ -124,7 +125,7 @@ In the **Sandbox environment**, validation errors are returned based on specific
 ### Notes
 - All validations apply **only in Sandbox**.
 - Field values must match the **Testing Account Table exactly**.
-- Any mismatch results in a deterministic error code suitable for automated testing.
+<!-- Any mismatch results in a deterministic error code suitable for automated testing.-->
 
 ---
 

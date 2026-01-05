@@ -486,9 +486,6 @@ export function ApiCatalog() {
             </ul>
           </div>
         </div>
-        <div className="mt-auto pt-4 text-xs text-muted-foreground text-center">
-          Powered by <a href="https://zudoku.dev" className="text-accent hover:underline">Zudoku</a>
-        </div>
       </nav>
 
       <main data-pagefind-body="true" className="px-4 lg:pe-8 lg:px-8">

@@ -27,8 +27,7 @@ const config: ZudokuConfig = {
       llmsTxtFull: false,
     },
     defaultOptions: {
-      copyPage: false,
-    },
+      copyPage: false,},
   },
 
   site: {
@@ -41,8 +40,9 @@ const config: ZudokuConfig = {
       alt: "ARP Digital",
     },
     footer: {
-      copyright: "Powered by Zudoku",
+      copyright: "",
     },
+
   },
 
   plugins: [commonPlugin],
@@ -76,11 +76,60 @@ const config: ZudokuConfig = {
           icon: "info",
           items: [
             {
-              type: "doc",
-              file: "getting-started",
+              type: "category",
               label: "Getting Started",
-              icon: "user-plus",
+              icon: "rocket",
+              items: [
+                {
+                  type: "doc",
+                  file: "getting-started",
+                  label: "Welcome",
+                  // icon: "layers",
+                },
+                {
+                  type: "doc",
+                  file: "platform-overview",
+                  label: "Platform Overview",
+                  // icon: "compass",
+                },
+                {
+                  type:"doc",
+                  file:"setup-guide",
+                  label:"Setup Guide",
+                },
+                {
+                  type:"doc",
+                  file:"balance",
+                  label:"Account Balance",
+                },
+                {
+                  type:"doc",
+                  file:"deposit",
+                  label:"Deposit Funds",
+                },
+                {
+                  type:"doc",
+                  file:"withdraw",
+                  label:"Withdraw Funds",
+                },
+                {
+                  type:"doc",
+                  file:"bank-accounts",
+                  label:"Bank Accounts",
+                },
+                {
+                  type:"doc",
+                  file:"crypto-wallets",
+                  label:"Crypto Wallets",
+                },
+                {
+                  type:"doc",
+                  file:"pro-trading",
+                  label:"Pro Trading",
+                },
+              ],
             },
+
             {
               type: "doc",
               file: "authentication",
