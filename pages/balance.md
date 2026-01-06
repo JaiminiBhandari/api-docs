@@ -23,7 +23,7 @@ Your account balance represents the total balance available in your ARP Digital 
 | AED   | $0.272264 | 115.67 AED | $31.49 |
 | SAR   | $0.266542 | 111 SAR    | $29.59 |
 | BHD   | $2.652731 | 5 BHD      | $13.26 |
-| USD   | $1.000000 | 7          | $7     |
+| USD   | $1.000000 | 7 USD      | $7     |
 
 ### Cryptocurrency Balances
 
@@ -32,59 +32,127 @@ Your account balance represents the total balance available in your ARP Digital 
 | USDT  | $1.000000 | 8.64 USDT  | $31.49 |
 | USDC  | $1.000000 | 13.25 USDC | $13.25 |
 
-## Balance History
+### Recent Transactions 
 
-### Recent Transactions Affecting Balance
+| Currency | Type       | Date       | Time        | Amount |
+| -------- | ---------- | ---------- | ----------- | ------ |
+| SAR      | Deposite   | 12/30/2025 | 3:30:20 PM  | 1.00   |
+| USDC     | Trade      | 12/24/2025 | 4:30:40 PM  | 13. 27 |
+| BHD      | Withdrawal | 1/4/2026   | 10:44:39 AM | -5.00  |
+| USDT     | Deposite   | 12/30/2025 | 11:54:52 AM | 3.00   |
+| USDT     | Trade      | 10/16/2025 | 9:30:20 PM  | 14.60  |
 
-| Date       | Type       | Amount   | Currency | Status    | Balance After |
-| ---------- | ---------- | -------- | -------- | --------- | ------------- |
-| 2024-01-15 | Deposit    | +$500.00 | USD      | Completed | $1,250.00     |
-| 2024-01-14 | Trade      | -$200.00 | USD      | Completed | $750.00       |
-| 2024-01-13 | Withdrawal | -$100.00 | USD      | Pending   | $950.00       |
+## Send Funds
+
+Send funds from your wallet to another user or account within the ARP Digital platform.
+
+### Transfer to Another User
+
+1. **Initiate Transfer**
+
+   - Log in to your dashboard
+   - Navigate to **Balance** > **Send**
+   - Select **Send**
+
+2. **Enter Recipient Details**
+
+   - Recipient's Country  or name 
+   - Add Transfer amount and currency
+   - Confirm & Send 
+
+<!-- 3. **Confirm and Send**
+   - Review transfer details
+   - 2FA verification required
+   - Instant processing for internal transfers -->
 
 
-| Date       | Type       | Amount   | Currency | Status    | Balance After |
-| ---------- | ---------- | -------- | -------- | --------- | ------------- |
-| 2024-01-15 | Deposit    | +$500.00 | USD      | Completed | $1,250.00     |
-| 2024-01-14 | Trade      | -$200.00 | USD      | Completed | $750.00       |
-| 2024-01-13 | Withdrawal | -$100.00 | USD      | Pending   | $950.00       |
 
+## Withdraw Funds
 
-## Balance Alerts
+Withdraw funds from your account <!--to external bank accounts--> or cryptocurrency wallets.
 
-Set up balance alerts to stay informed:
+### Withdraw to Bank Account
 
-### Low Balance Alert
+- **Supported Banks**: International wire transfers and local bank networks
+- **Processing Time**: 1-5 business days
+- **Fees**: $5 - $35 depending on amount
+- **Limits**: Based on verification level ($1,000 - $50,000 daily)
 
-- Get notified when your balance falls below a threshold
-- Set minimum balance requirements
+### Withdraw to Crypto Wallet
 
-### High Balance Alert
+- **Supported Cryptos**: BTC, ETH, USDT, USDC, and 50+ others
+- **Processing Time**: 10-60 minutes
+- **Fees**: 0.1% platform fee + network fees
+- **Limits**: Network-dependent, up to unlimited for verified users
 
-- Monitor large balance increases
-- Useful for security monitoring
+<!-- For complete withdrawal options and requirements, see [Withdraw Funds](withdraw.md). -->
 
-### Currency-Specific Alerts
+## Convert Assets
 
-- Set alerts for specific currencies
-- Track crypto price movements
+Exchange between your currencies instantly within the platform.
 
-## Balance Security
+### Supported Conversions
 
-### Multi-Signature Protection
+- **From Currencies**: BHD, SAR, AED, USD
+- **To Currencies**: USDT, USDC
+- **Exchange Rate**: Real-time market rates with competitive spreads
+- **Processing Time**: Instant
 
-- All balance transfers require multiple approvals
-- Enhanced security for large amounts
+### How to Convert
 
-### Cold Storage
+1. **Access Converter**
 
-- High-value balances stored in offline cold storage
-- Protected from online threats
+   - Go to "Balance" > "Convert Assets"
+   - Select source and target currencies
 
-### Insurance Coverage
+2. **Enter Amount**
 
-- Balances up to $100,000 insured against platform risks
-- Additional coverage available for higher amounts
+   - Input conversion amount
+   - Preview exchange rate and fees
+
+3. **Execute Conversion**
+   - Confirm transaction
+   - Funds converted instantly
+
+### Conversion Fees
+
+- **Spread**: 0.5% - 2% depending on pair
+- **Platform Fee**: 0.1% of converted amount
+
+For advanced trading and conversion options, explore our [Pro Trading](pro-trading.md) platform with professional tools and analytics.
+
+## Receive Funds
+
+Add funds to your wallet through deposits or generate payment orders.
+
+### Deposit Funds
+
+- **Bank Transfer**: Wire transfers from your bank account
+- **Credit/Debit Card**: Instant deposits with 3D Secure
+- **Cryptocurrency**: Direct crypto transfers to your wallet
+- **Processing Time**: Instant to 3 business days
+- **Fees**: 0.1% - $35 depending on method
+
+### Create Checkout
+
+Generate a payment order to receive funds from customers or partners.
+
+1. **Create Payment Order**
+
+   - Select "Receive Funds" > "Create Checkout"
+   - Enter payment details (amount, currency, description)
+
+2. **Generate Payment Link**
+
+   - Receive unique payment URL
+   - Share with payer via email or messaging
+
+3. **Track Payment**
+   - Real-time status updates
+   - Automatic notifications
+   - Funds credited upon completion
+
+For detailed deposit methods and limits, see [Deposit Funds](deposit.md).
 
 <!--## Balance Conversion
 
@@ -102,31 +170,28 @@ const conversion = await api.convertBalance({
 
 ```
 
-### Auto-Conversion
+<!-- ### Auto-Conversion
 - Set up automatic conversion rules
-- Convert incoming payments to preferred currency
-- Maintain optimal currency mix
+- Convert incoming payments to preferred currency -->
 
-## Balance Reports
+
+<!-- ## Balance Reports
 
 ### Daily Balance Reports
 - Email summary of daily balance changes
-- Transaction summaries and analytics
+- Transaction summaries and analytics -->
 
-### Monthly Statements
+<!-- ### Monthly Statements
 - Comprehensive monthly balance reports
 - Tax-ready transaction history
-- Performance analytics
+- Performance analytics -->
 
-## Support
+<!-- ## Support
 
 If you have questions about your balance:
 
 - **Email**: support@arpdigital.io
 - **Live Chat**: Available 24/7 in dashboard
-- **Phone**: +1 (555) 123-4567 (business hours)
+- **Phone**: +1 (555) 123-4567 (business hours) -->
 
----
-
-**Need help with your balance?** Contact our support team for assistance.
 ```

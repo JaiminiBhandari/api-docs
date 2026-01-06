@@ -6,11 +6,11 @@ Welcome to the ARP Digital API documentation. This comprehensive guide will help
 
 ARP Digital provides a programmable layer for sending funds across borders with security, compliance, and transparency built directly into the API. <!--You can use the platform to:-->
 
-### What Can You Build with ARP Digital?
+### What Can You Build with ARP Digital ?
 
-- **Send Money Globally**: Transfer funds to 190+ countries
+- **Send Money Globally**: Transfer funds to 10+ countries
 - **Manage Recipients**: Create and verify recipient profiles with KYC compliance
-- **Real-time Quotes**: Get live exchange rates and fees
+- **Real-time Quotes**: Get live exchange rates quote
 - **Transaction Tracking**: Monitor transfer status in real-time
 - **Compliance Built-in**: Automated AML/KYC verification
 - **Developer-Friendly**: RESTful API with comprehensive documentation

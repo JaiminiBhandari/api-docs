@@ -21,22 +21,6 @@ ARP Digital uses **HMAC SHA256 signature authentication** for maximum security. 
 - `X-Signature`: HMAC SHA256 signature
 - `X-Environment`: sandbox | production
 
-## Environment Setup
-
-### How X-Environment Works
-
-The `X-Environment` header determines which environment your API requests are routed to:
-
-- **`sandbox`**: Routes requests to the testing environment where you can safely test integrations without affecting real accounts or processing actual payments. All transactions are simulated, and test data is used.
-- **`production`**: Routes requests to the live environment for processing real transactions. Requires production API credentials and verified accounts.
-
-**Important Notes:**
-
-- Sandbox and production environments are completely isolated - data, transactions, and balances do not sync between them.
-- Use `sandbox` for all development and testing to avoid accidental real money transfers.
-- Switch to `production` only after thorough testing in sandbox and obtaining production credentials.
-- API credentials are environment-specific - sandbox keys won't work in production <!--and vice versa-->.
-
 ### Quick Authentication Test
 
 Before building your integration, test your authentication setup:
@@ -48,7 +32,6 @@ curl -X POST "https://platform.arpdigital.io/services/test-auth" \
   -H "X-API-Key: your_api_key" \
   -H "X-Timestamp: $(date +%s)" \
   -H "X-Signature: generated_signature" \
-  -H "X-Environment: sandbox | production" \
   -d '{"message": "Hello World"}'
 ```
 
@@ -64,7 +47,7 @@ curl -X POST "https://platform.arpdigital.io/services/test-auth" \
 
 ### 2. Get Your API Credentials
 
-1. Log into your ARP Digital dashboard
+1. Log into your ARP Digital dashboard 
 2. Navigate to the API Keys section from the sidebar.
 3. Generate new API credentials for your environment
 4. Store your `API Key` and `API Secret` securely
@@ -109,13 +92,11 @@ class ARPDigitalGPS {
   constructor(
     apiKey,
     apiSecret,
-    baseURL = "https://platform.arpdigital.io/services",
-    environment = "sandbox | production"
+    baseURL = "https://platform.arpdigital.io/services"
   ) {
     this.apiKey = apiKey;
     this.apiSecret = apiSecret;
     this.baseURL = baseURL;
-    this.environment = environment;
   }
 
   generateSignature(requestBody, timestamp) {
@@ -139,7 +120,6 @@ class ARPDigitalGPS {
         "X-API-Key": this.apiKey,
         "X-Timestamp": timestamp.toString(),
         "X-Signature": signature,
-        "X-Environment": this.environment,
       },
     };
 
@@ -187,8 +167,7 @@ class ARPDigitalGPS:
             'Content-Type': 'application/json',
             'X-API-Key': self.api_key,
             'X-Timestamp': str(timestamp),
-            'X-Signature': signature,
-            'X-Environment': self.environment
+            'X-Signature': signature
         }
 
         url = f"{self.base_url}{endpoint}"
@@ -230,15 +209,19 @@ Here's a complete example of sending money internationally:
 async function sendMoney() {
   try {
     // 1. Create a recipient
-    const recipient = await client.request("POST", "/gps/api/v1/recipients", {
+    const recipient = await client.request("POST", "/recipients", {
+      // senderId: "your-sender-id", // You need to get this from /senders endpoint 
       type: "INDIVIDUAL",
       country: "PHL",
       verificationInfo: {
         firstName: "Juan",
         lastName: "Dela Cruz",
+        // birthdate: "1990-01-01",
+        // address: "123 Main St, Manila",
       },
       paymentMethods: [
         {
+          // type: <!-- "BANK_ACCOUNT" -->,
           type: "INSTAPAY",
           metadata: {
             bankName: "BPI",
@@ -252,24 +235,23 @@ async function sendMoney() {
     console.log("Recipient created successfully:", recipient.data);
 
     // 2. Get a quote
-    const quote = await client.request("POST", "/gps/api/v1/quote", {
+    const quote = await client.request("POST", "/quote", {
+      // senderId: "your-sender-id",
       recipientId: recipient.data.data.id,
-      fromAmount: 1000,
       fromCurrency: "USD",
       toCurrency: "PHP",
+      fromAmount: 1000,
     });
 
     console.log("Quote updated:", quote.data);
 
     // 3. Execute the transaction
-    const transaction = await client.request(
-      "POST",
-      "/gps/api/v1/transaction",
-      {
-        quoteId: quote.data.data.id,
-        recipientId: recipient.data.data.id,
-      }
-    );
+    const transaction = await client.request("POST", "/transaction", {
+      quoteId: quote.data.data.id,
+      // senderId: "your-sender-id",
+      recipientId: recipient.data.data.id,
+      // notes: "Monthly family support",
+    });
 
     console.log("Transaction created:", transaction.data);
 
@@ -286,27 +268,27 @@ sendMoney();
 
 ### Recipients
 
-| Method | Endpoint                                     | Description               |
-| ------ | -------------------------------------------- | ------------------------- |
-| `GET`  | `gps/api/v1/recipients`                      | List all recipients       |
-| `POST` | `/gps/api/v1/recipients`                     | Create new recipient      |
-| `GET`  | `/gps/api/v1/recipients/{id}`                | Get recipient details     |
-| `GET`  | `/gps/api/v1/recipients/verificationFields`  | Get required KYC fields   |
-| `GET`  | `/gps/api/v1/recipients/paymentMethodFields` | Get payment method fields |
+| Method | Endpoint                          | Description               |
+| ------ | --------------------------------- | ------------------------- |
+| `GET`  | `/recipients`                     | List all recipients       |
+| `POST` | `/recipients`                     | Create new recipient      |
+| `GET`  | `/recipients/{id}`                | Get recipient details     |
+| `GET`  | `/recipients/verificationFields`  | Get required KYC fields   |
+| `GET`  | `/recipients/paymentMethodFields` | Get payment method fields |
 
 ### Quote
 
-| Method | Endpoint            | Description             |
-| ------ | ------------------- | ----------------------- |
-| `POST` | `/gps/api/v1/quote` | Get exchange rate quote |
+| Method | Endpoint | Description             |
+| ------ | -------- | ----------------------- |
+| `POST` | `/quote` | Get exchange rate quote |
 
 ### Transactions
 
-| Method | Endpoint                   | Description             |
-| ------ | -------------------------- | ----------------------- |
-| `POST` | `/gps/api/v1/transaction`  | Execute transaction     |
-| `GET`  | `/gps/api/v1/transactions` | List transactions       |
-<!-- | `GET`  | `/transactions/{id}`       | Get transaction details | -->
+| Method | Endpoint             | Description             |
+| ------ | -------------------- | ----------------------- |
+| `POST` | `/transaction`       | Execute transaction     |
+| `GET`  | `/transactions`      | List transactions       |
+| `GET`  | `/transactions/{id}` | Get transaction details |
 
 <!--### Senders
 
@@ -350,7 +332,7 @@ The API uses standard HTTP status codes with detailed error information:
 
 ```javascript
 try {
-  const response = await client.request("GET", "/gps/api/v1/transactions");
+  const response = await client.request("GET", "/transactions");
 } catch (error) {
   if (error.response?.status === 401) {
     console.log("Authentication failed. Check your signature generation.");
@@ -385,6 +367,8 @@ Your webhook endpoint will receive events for:
 - `transaction.created` - New transaction initiated
 - `transaction.completed` - Transaction successfully completed
 - `transaction.failed` - Transaction failed
+- `recipient.created` - New recipient added
+- `recipient.updated` - Recipient information updated
 
 ### Webhook Payload Structure
 
@@ -450,7 +434,7 @@ Use these test recipient details in sandbox:
   "lastName": "Recipient",
   "email": "test@example.com",
   "phone": "+1234567890",
-  "country": "PHL",
+  "country": "PH",
   "paymentMethod": {
     "type": "BANK_TRANSFER",
     "accountNumber": "1234567890",

@@ -19,7 +19,7 @@
   },
   "servers": [
     {
-      "url": "https://platform.arpdigital.io/services/otc/api/v1"
+      "url": "https://platform.arpdigital.io/services/otc"
     }
   ],
   "security": [
