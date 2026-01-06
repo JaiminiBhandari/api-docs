@@ -19,7 +19,7 @@ ARP Digital uses **HMAC SHA256 signature authentication** for maximum security. 
 - `X-API-Key`: Your unique API key
 - `X-Timestamp`: Current Unix timestamp (in seconds)
 - `X-Signature`: HMAC SHA256 signature
-- `X-Environment`: sandbox | production
+- `X-Environment`: `sandbox` | `production`
 
 ### Quick Authentication Test
 
@@ -224,7 +224,7 @@ async function sendMoney() {
           // type: <!-- "BANK_ACCOUNT" -->,
           type: "INSTAPAY",
           metadata: {
-            bankName: "BPI",
+            channel: "BPI",
             name: "Juan Dela Cruz",
             accountNumber: "1234567890",
           },

@@ -19,7 +19,7 @@ ARP Digital uses **HMAC SHA256 signature authentication** for maximum security. 
 - `X-API-Key`: Your unique API key
 - `X-Timestamp`: Current Unix timestamp (in seconds)
 - `X-Signature`: HMAC SHA256 signature
-- `X-Environment`: sandbox | production
+- `X-Environment`: `sandbox` | `production`
 
 ## Environment Setup
 
@@ -110,7 +110,7 @@ class ARPDigitalGPS {
     apiKey,
     apiSecret,
     baseURL = "https://platform.arpdigital.io/services",
-    environment = "sandbox | production"
+    environment = "<environment>" // sandbox | production
   ) {
     this.apiKey = apiKey;
     this.apiSecret = apiSecret;
@@ -241,7 +241,7 @@ async function sendMoney() {
         {
           type: "INSTAPAY",
           metadata: {
-            bankName: "BPI",
+            channel: "BPI",
             name: "Juan Dela Cruz",
             accountNumber: "1234567890",
           },
@@ -288,7 +288,7 @@ sendMoney();
 
 | Method | Endpoint                                     | Description               |
 | ------ | -------------------------------------------- | ------------------------- |
-| `GET`  | `gps/api/v1/recipients`                      | List all recipients       |
+| `GET`  | `/gps/api/v1/recipients`                      | List all recipients       |
 | `POST` | `/gps/api/v1/recipients`                     | Create new recipient      |
 | `GET`  | `/gps/api/v1/recipients/{id}`                | Get recipient details     |
 | `GET`  | `/gps/api/v1/recipients/verificationFields`  | Get required KYC fields   |
