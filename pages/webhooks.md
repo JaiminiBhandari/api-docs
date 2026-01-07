@@ -8,10 +8,13 @@ The webhook system sends real-time notifications to user-configured endpoints wh
 
 ## Supported Events
 
-| Event                   | Description                        | Trigger                                   |
-| ----------------------- | ---------------------------------- | ----------------------------------------- |
-| `transaction.completed` | Transaction successfully completed | When transaction status becomes COMPLETED |
-| `transaction.failed`    | Transaction failed                 | When transaction status becomes FAILED    |
+## REMITTANCE
+
+| Event                       | Description                        | Trigger                                   |
+| --------------------------- | ---------------------------------- | ----------------------------------------- |
+| `gps.transaction.completed` | Transaction successfully completed | When transaction status becomes COMPLETED |
+| `gps.transaction.failed`    | Transaction failed                 | When transaction status becomes FAILED    |
+| `gps.transaction.created`   | Transaction initiated              | When transaction status becomes INITIATED |
 
 ## API Endpoints
 

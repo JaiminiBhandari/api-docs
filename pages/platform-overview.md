@@ -37,7 +37,7 @@ The `X-Environment` header determines which environment your API requests are ro
 - Switch to `production` only after thorough testing in sandbox and obtaining production credentials.
 - API credentials are environment-specific - sandbox keys won't work in production <!--and vice versa-->.
 
-### Quick Authentication Test
+<!-- ### Quick Authentication Test
 
 Before building your integration, test your authentication setup:
 
@@ -49,7 +49,7 @@ curl -X POST "https://platform.arpdigital.io/services/test-auth" \
   -H "X-Timestamp: $(date +%s)" \
   -H "X-Signature: generated_signature" \
   -H "X-Environment: sandbox | production" \
-  -d '{"message": "Hello World"}'
+  -d '{"message": "Hello World"}' -->
 ```
 
 **Need help generating signatures?** Check our [Authentication Guide](/authentication) with code examples and an interactive signature generator.
@@ -204,7 +204,7 @@ class ARPDigitalGPS:
 client = ARPDigitalGPS('your_api_key', 'your_api_secret')
 ```
 
-### Step 3: Test Your Connection
+<!-- ### Step 3: Test Your Connection
 
 ```javascript
 // Test authentication
@@ -219,7 +219,7 @@ async function testConnection() {
   }
 }
 
-testConnection();
+testConnection(); -->
 ```
 
 ### Step 4: Your First Transaction Flow

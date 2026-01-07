@@ -55,6 +55,11 @@ const config: ZudokuConfig = {
       to: "/Landingpage",
       icon: "home",
     },
+    {
+      type: "custom-page",
+      path: "/",
+      element: <Landingpage />,
+    },
 
     {
       type: "custom-page",
