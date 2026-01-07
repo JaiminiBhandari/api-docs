@@ -288,7 +288,7 @@ sendMoney();
 
 | Method | Endpoint                                     | Description               |
 | ------ | -------------------------------------------- | ------------------------- |
-| `GET`  | `/gps/api/v1/recipients`                      | List all recipients       |
+| `GET`  | `/gps/api/v1/recipients`                     | List all recipients       |
 | `POST` | `/gps/api/v1/recipients`                     | Create new recipient      |
 | `GET`  | `/gps/api/v1/recipients/{id}`                | Get recipient details     |
 | `GET`  | `/gps/api/v1/recipients/verificationFields`  | Get required KYC fields   |
@@ -306,7 +306,7 @@ sendMoney();
 | ------ | -------------------------- | ----------------------- |
 | `POST` | `/gps/api/v1/transaction`  | Execute transaction     |
 | `GET`  | `/gps/api/v1/transactions` | List transactions       |
-<!-- | `GET`  | `/transactions/{id}`       | Get transaction details | -->
+| `GET`  | `/transactions/{id}`       | Get transaction details |
 
 <!--### Senders
 
@@ -327,26 +327,117 @@ The API uses standard HTTP status codes with detailed error information:
 ```json
 {
   "success": false,
-  "message": "Invalid recipient information",
-  "code": "VALIDATION_ERROR",
-  "details": {
-    "field": "email",
-    "error": "Invalid email format"
+  "error": {
+    "type": "UNAUTHORIZED",
+    "code": "AUTH_001",
+    "message": "Invalid email or password."
   }
 }
 ```
 
 ### Common Error Codes
 
-| Status | Code                  | Description                              |
-| ------ | --------------------- | ---------------------------------------- |
-| `400`  | `VALIDATION_ERROR`    | Request validation failed                |
-| `401`  | `UNAUTHORIZED`        | Invalid or missing authentication        |
-| `403`  | `FORBIDDEN`           | Insufficient permissions or KYC required |
-| `404`  | `NOT_FOUND`           | Resource not found                       |
-| `429`  | `RATE_LIMIT_EXCEEDED` | Too many requests                        |
+<!-- #### 400 Bad Request -->
 
-### Handling Authentication Errors
+| Status | Type                   | Code     | Description                                          |
+| ------ | ---------------------- | -------- | ---------------------------------------------------- |
+| 400    | UNAUTHORIZED           | AUTH_001 | Invalid email or password                            |
+|        | INVALID_TOKEN          | AUTH_009 | Invalid token                                        |
+|        | INVALID_INVITATION     | ORG_001  | Invalid invitation                                   |
+|        | INVALID_CURRENCY       | CUR_001  | The provided currency is invalid or not supported    |
+|        | VALIDATION_ERROR       | VAL_001  | Request validation failed                            |
+|        | INVALID_FORMAT         | VAL_002  | Invalid data format                                  |
+|        | MISSING_REQUIRED_FIELD | VAL_003  | Required field missing                               |
+|        | BAD_REQUEST            | RES_002  | Bad request                                          |
+|        | INVALID_CURRENCY_PAIR  | TXN_001  | Invalid currency pair                                |
+|        | INVALID_AMOUNT         | TXN_002  | Invalid transaction amount                           |
+|        | QUOTE_EXPIRED          | TXN_005  | Quote has expired                                    |
+|        | INSUFFICIENT_BALANCE   | TXN_006  | Insufficient balance                                 |
+|        | SLA_BELOW_MINIMUM      | TXN_012  | Transfer amount is below the minimum SLA requirement |
+|        | SLA_ABOVE_MAXIMUM      | TXN_013  | Transfer amount exceeds the maximum SLA limit        |
+|        | INVALID_COIN_NETWORK   | ACC_003  | Invalid coin or network combination                  |
+|        | INVALID_AMOUNT         | ACC_008  | Invalid deposit amount                               |
+
+<!-- #### 401 Unauthorized -->
+
+| Status | Type               | Code     | Description                                   |
+| ------ | ------------------ | -------- | --------------------------------------------- |
+| 401    | UNAUTHORIZED       | AUTH_001 | Authentication credentials missing or invalid |
+|        | INCORRECT_PASSWORD | AUTH_006 | Current password is incorrect                 |
+
+<!-- #### 403 Forbidden -->
+
+| Status | Type                | Code     | Description                                                                           |
+| ------ | ------------------- | -------- | ------------------------------------------------------------------------------------- |
+| 403    | INVALID_API_KEY     | AUTH_002 | Invalid API key provided                                                              |
+|        | INVALID_SIGNATURE   | AUTH_003 | Invalid request signature                                                             |
+|        | TIMESTAMP_ERROR     | AUTH_004 | Request timestamp is invalid or too old                                               |
+|        | BLOCK_MFA_DISABLE   | AUTH_007 | Cannot disable this auth method; at least one other authenticator must remain enabled |
+|        | FORBIDDEN           | AUTH_010 | Forbidden                                                                             |
+|        | KYC_NOT_STARTED     | KYC_001  | KYC verification not started                                                          |
+|        | KYC_IN_PROGRESS     | KYC_002  | KYC verification is in progress                                                       |
+|        | KYC_UNDER_REVIEW    | KYC_003  | KYC verification is under review                                                      |
+|        | KYC_UPDATE_REQUIRED | KYC_004  | KYC verification requires updates                                                     |
+|        | KYC_REJECTED        | KYC_005  | KYC verification rejected                                                             |
+|        | KYC_FAILED          | KYC_006  | KYC verification failed                                                               |
+
+<!-- #### 404 Not Found -->
+
+| Status | Type                  | Code     | Description                  |
+| ------ | --------------------- | -------- | ---------------------------- |
+| 404    | NOT_FOUND             | AUTH_008 | Authenticator not found      |
+|        | RESOURCE_NOT_FOUND    | RES_001  | Requested resource not found |
+|        | QUOTE_NOT_FOUND       | TXN_007  | Quote not found              |
+|        | TRANSACTION_NOT_FOUND | TXN_009  | Transaction not found        |
+|        | VAULT_NOT_FOUND       | ACC_004  | Vault not found for user     |
+
+<!-- #### 409 Conflict -->
+
+| Status | Type                         | Code    | Description                  |
+| ------ | ---------------------------- | ------- | ---------------------------- |
+| 409    | DUPLICATE_REQUEST            | ACC_009 | Duplicate request            |
+|        | TRANSACTION_ALREADY_EXECUTED | TXN_008 | Transaction already executed |
+
+<!-- #### 422 Unprocessable Entity -->
+
+| Status | Type                 | Code    | Description             |
+| ------ | -------------------- | ------- | ----------------------- |
+| 422    | UNPROCESSABLE_ENTITY | VAL_004 | Request data is invalid |
+
+<!-- #### 429 Too Many Requests -->
+
+| Status | Type                | Code     | Description             |
+| ------ | ------------------- | -------- | ----------------------- |
+| 429    | RATE_LIMIT_EXCEEDED | AUTH_005 | API rate limit exceeded |
+
+<!-- #### 500 Internal Server Error -->
+
+| Status | Type                  | Code    | Description                    |
+| ------ | --------------------- | ------- | ------------------------------ |
+| 500    | INTERNAL_SERVER_ERROR | SRV_001 | Internal server error occurred |
+
+<!-- #### 502 Bad Gateway -->
+
+| Status | Type                | Code    | Description                         |
+| ------ | ------------------- | ------- | ----------------------------------- |
+| 502    | QUOTE_FAILED        | TXN_010 | Failed to fetch quote from provider |
+|        | EXECUTION_FAILED    | TXN_011 | Failed to execute transaction       |
+|        | BAD_GATEWAY         | SRV_004 | Bad gateway error                   |
+|        | VAULT_SERVICE_ERROR | ACC_005 | Vault service error                 |
+
+<!-- #### 503 Service Unavailable -->
+
+| Status | Type                | Code    | Description                     |
+| ------ | ------------------- | ------- | ------------------------------- |
+| 503    | SERVICE_UNAVAILABLE | SRV_002 | Service temporarily unavailable |
+
+<!-- #### 504 Gateway Timeout -->
+
+| Status | Type            | Code    | Description              |
+| ------ | --------------- | ------- | ------------------------ |
+| 504    | GATEWAY_TIMEOUT | SRV_003 | Gateway timeout occurred |
+
+<!-- ### Handling Authentication Errors
 
 ```javascript
 try {
@@ -357,20 +448,25 @@ try {
     console.log("Debug info:", error.response.data);
   }
 }
-```
+``` -->
 
 ## Rate Limits
 
-| Environment    | Limit         | Window         |
+<!-- | Environment    | Limit         | Window         |
 | -------------- | ------------- | -------------- |
 | **Sandbox**    | 500 requests  | Per 15 minutes |
-| **Production** | 5000 requests | Per 15 minutes |
+| **Production** | 5000 requests | Per 15 minutes | -->
+
+
+| Limit         | Window         |
+| ------------- | -------------- |
+| 450 requests  | Per 15 minutes |
 
 Rate limit headers are included in responses:
 
 ```
-X-RateLimit-Limit: 500
-X-RateLimit-Remaining: 495
+X-RateLimit-Limit: 450
+X-RateLimit-Remaining: 445
 X-RateLimit-Reset: 1641658800
 ```
 
@@ -382,39 +478,47 @@ The GPS API sends webhook notifications to configured endpoints for transaction 
 
 Your webhook endpoint will receive events for:
 
-- `transaction.created` - New transaction initiated
-- `transaction.completed` - Transaction successfully completed
-- `transaction.failed` - Transaction failed
+### OTC 
+
+- `otc.trade.created`  - New trade created 
+- `otc.trade.rejected` -  Trade rejected
+- `otc.trade.completed` - Trade successfully completed
+- `otc.trade.updated` -   Trade status changes 
+
+### PAY 
+
+- `pay.checkout.created` - New payment created
+- `"pay.checkout.updated"` - Payment status changes 
+
+### REMITTANCE 
+
+- `gps.transaction.completed` - Transaction successfully completed
+- `gps.transaction.created` - New transaction initiated
+- `gps.transaction.failed` - Transaction failed
+
+### WALLET 
+
+- `wallet.deposit.completed` - Deposite successfully completed 
+- `wallet.deposit.created` - New deposite initiated
+- `wallet.deposit.failed` - Deposite failed
+- `wallet.created` - New wallet created
+- `wallet.withdraw.completed` - Withdraw successfully completed
+- `wallet.withdraw.created` - New withdrawal initiated 
+- `wallet.withdraw.failed` - Withdrawal failed
 
 ### Webhook Payload Structure
 
-```json
+```
 {
-  "event": "transaction.completed",
-  "data": {
-    "id": "txn_abc123",
-    "status": "COMPLETED",
-    "fromCurrency": "USD",
-    "toCurrency": "PHP",
-    "fromAmount": "100.00",
-    "toAmount": "5500.00",
-    "sender": {
-      "id": "sender_123",
-      "email": "sender@example.com",
-      "type": "INDIVIDUAL"
-    },
-    "recipient": {
-      "id": "recipient_456",
-      "name": "John Doe",
-      "email": "john@example.com",
-      "type": "INDIVIDUAL"
-    },
-    "completedAt": "2024-01-15T10:30:00Z",
-    "createdAt": "2024-01-15T10:25:00Z",
-    "updatedAt": "2024-01-15T10:30:00Z"
-  },
-  "timestamp": "2024-01-15T10:30:01Z",
-  "webhook_id": "webhook_xyz789"
+url:"https://platform.stage.arpdigital.io"
+description: "Webhook URL for receiving v2 OTC, payment, GPS, and wallet events."
+events:["otc.trade.created", "otc.trade.rejected", "otc.trade.completed", 
+otc.trade.updated","pay.checkout.created","pay.checkout.updated",
+"gps.transaction.completed","gps.transaction.created","gps.transaction.failed",
+"wallet.deposit.completed","wallet.deposit.created",
+"wallet.deposit.failed","wallet.created","wallet.withdraw.completed",
+"wallet.withdraw.created","wallet.withdraw.failed"]
+version:2
 }
 ```
 
@@ -422,7 +526,7 @@ Your webhook endpoint will receive events for:
 
 Webhook signatures are verified by the receiving partner services. Contact our support team to configure webhook endpoints for your integration.
 
-## Testing & Sandbox
+<!-- ## Testing & Sandbox
 
 ### Sandbox Features
 
@@ -457,7 +561,7 @@ Use these test recipient details in sandbox:
     "bankName": "Test Bank"
   }
 }
-```
+``` -->
 
 ## Security Best Practices
 
@@ -475,7 +579,7 @@ Use these test recipient details in sandbox:
 - Implement proper error handling
 - Add request/response logging
 - Handle rate limits gracefully
-- Test authentication with `/test-auth` endpoint
+<!-- - Test authentication with `/test-auth` endpoint -->
 
 ## Next Steps
 
@@ -484,19 +588,17 @@ Now that you're set up, explore these resources:
 ### Essential Guides
 
 - **[Authentication Guide](/authentication)** - Detailed auth setup with code examples
-- **[API Reference](/introduction)** - Complete endpoint documentation
+- **[API Reference](/api-reference)** - Complete endpoint documentation
 
 ### Integration Examples
 
-- **Recipient Management** - KYC verification workflows
-- **Transaction Processing** - End-to-end transfer flows
-- **Webhook Integration** - Real-time status updates
-- **Error Handling** - Robust error management
+- **[Recipient Management](/remittance-api/recipients)** - KYC verification workflows & Recipient management
+- **[Transaction Processing](/remittance-api/transactions)** - End-to-end transfer flows
+- **[Webhook Integration](/webhooks)** - Real-time status updates
+<!-- - **Error Handling** - Robust error management -->
 
 ### Advanced Features
 
-- **Batch Transfers** - Process multiple transactions
-- **Compliance Tools** - AML/KYC automation
 - **Reporting** - Transaction analytics and reports
 
 ## Support & Resources
@@ -504,16 +606,6 @@ Now that you're set up, explore these resources:
 ### Get Help
 
 - **Email**: support@arpdigital.io
-- **Documentation**: Complete API reference
-- **Status Page**: status.arpdigital.io
-- **Response Time**: < 24 hours for technical inquiries
-
-### Useful Links
-
-- [Dashboard](https://dashboard.arpdigital.io) - Manage your account
-- [API Status](https://status.arpdigital.io) - Service uptime
-- [Changelog](https://docs.arpdigital.io/changelog) - Latest updates
-
----
+- **Documentation**: Complete **[API Reference](/api-reference)**
 
 <!--**Ready to go live?** Contact our team to upgrade to production credentials and start processing real transactions.-->

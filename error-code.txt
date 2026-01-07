@@ -1,0 +1,321 @@
+// Central mapping for v2 error codes and default messages
+import { asyncLocalStorage } from "@arp/events";
+import { is } from "zod/v4/locales";
+
+export const Errors = {
+  // Auth
+  AUTH_UNAUTHORIZED: {
+    http: 401,
+    type: "UNAUTHORIZED",
+    code: "AUTH_001",
+    message: "Authentication credentials missing or invalid",
+  },
+  AUTH_INVALID_API_KEY: {
+    http: 403,
+    type: "INVALID_API_KEY",
+    code: "AUTH_002",
+    message: "Invalid API key provided",
+  },
+  AUTH_INVALID_SIGNATURE: {
+    http: 403,
+    type: "INVALID_SIGNATURE",
+    code: "AUTH_003",
+    message: "Invalid request signature",
+  },
+  AUTH_TIMESTAMP_ERROR: {
+    http: 403,
+    type: "TIMESTAMP_ERROR",
+    code: "AUTH_004",
+    message: "Request timestamp is invalid or too old",
+  },
+  AUTH_RATE_LIMIT: {
+    http: 429,
+    type: "RATE_LIMIT_EXCEEDED",
+    code: "AUTH_005",
+    message: "API rate limit exceeded",
+  },
+  AUTH_INCORRECT_PASSWORD: {
+    http: 401,
+    type: "INCORRECT_PASSWORD",
+    code: "AUTH_006",
+    message: "Current password is incorrect",
+  },
+  AUTH_BLOCK_MFA_DISABLE: {
+    http: 403,
+    type: "BLOCK_MFA_DISABLE",
+    code: "AUTH_007",
+    message:
+      "Cannot disable this auth method; at least one other authenticator must remain enabled",
+  },
+  AUTH_NOT_FOUND: {
+    http: 404,
+    type: "NOT_FOUND",
+    code: "AUTH_008",
+    message: "Authenticator not found",
+  },
+  AUTH_INVALID_TOKEN: {
+    http: 400,
+    type: "INVALID_TOKEN",
+    code: "AUTH_009",
+    message: "Invalid token",
+  },
+  AUTH_FORBIDDEN: {
+    http: 403,
+    type: "FORBIDDEN",
+    code: "AUTH_010",
+    message: "Forbidden",
+  },
+
+  // Organization
+  ORG_INVALID_INVITATION: {
+    http: 400,
+    type: "INVALID_INVITATION",
+    code: "ORG_001",
+    message: "Invalid invitation",
+  },
+
+  // Currency
+  CUR_INVALID: {
+    http: 400,
+    type: "INVALID_CURRENCY",
+    code: "CUR_001",
+    message: "The provided currency is invalid or not supported",
+  },
+
+  // KYC
+  KYC_NOT_STARTED: {
+    http: 403,
+    type: "KYC_NOT_STARTED",
+    code: "KYC_001",
+    message: "KYC verification not started",
+  },
+  KYC_IN_PROGRESS: {
+    http: 403,
+    type: "KYC_IN_PROGRESS",
+    code: "KYC_002",
+    message: "KYC verification is in progress",
+  },
+  KYC_UNDER_REVIEW: {
+    http: 403,
+    type: "KYC_UNDER_REVIEW",
+    code: "KYC_003",
+    message: "KYC verification is under review",
+  },
+  KYC_UPDATE_REQUIRED: {
+    http: 403,
+    type: "KYC_UPDATE_REQUIRED",
+    code: "KYC_004",
+    message: "KYC verification requires updates",
+  },
+  KYC_REJECTED: {
+    http: 403,
+    type: "KYC_REJECTED",
+    code: "KYC_005",
+    message: "KYC verification rejected",
+  },
+  KYC_FAILED: {
+    http: 403,
+    type: "KYC_FAILED",
+    code: "KYC_006",
+    message: "KYC verification failed",
+  },
+
+  // Validation
+  VAL_VALIDATION_ERROR: {
+    http: 400,
+    type: "VALIDATION_ERROR",
+    code: "VAL_001",
+    message: "Request validation failed",
+  },
+  VAL_INVALID_FORMAT: {
+    http: 400,
+    type: "INVALID_FORMAT",
+    code: "VAL_002",
+    message: "Invalid data format",
+  },
+  VAL_MISSING_FIELD: {
+    http: 400,
+    type: "MISSING_REQUIRED_FIELD",
+    code: "VAL_003",
+    message: "Required field missing",
+  },
+  VAL_UNPROCESSABLE: {
+    http: 422,
+    type: "UNPROCESSABLE_ENTITY",
+    code: "VAL_004",
+    message: "Request data is invalid",
+  },
+
+  // Resource & business
+  RES_NOT_FOUND: {
+    http: 404,
+    type: "RESOURCE_NOT_FOUND",
+    code: "RES_001",
+    message: "Requested resource not found",
+  },
+  RES_BAD_REQUEST: {
+    http: 400,
+    type: "BAD_REQUEST",
+    code: "RES_002",
+    message: "Bad request",
+  },
+  ACC_DUPLICATE: {
+    http: 409,
+    type: "DUPLICATE_REQUEST",
+    code: "ACC_009",
+    message: "Duplicate request",
+  },
+  TXN_INVALID_PAIR: {
+    http: 400,
+    type: "INVALID_CURRENCY_PAIR",
+    code: "TXN_001",
+    message: "Invalid currency pair",
+  },
+  TXN_INVALID_AMOUNT: {
+    http: 400,
+    type: "INVALID_AMOUNT",
+    code: "TXN_002",
+    message: "Invalid transaction amount",
+  },
+  TXN_QUOTE_EXPIRED: {
+    http: 400,
+    type: "QUOTE_EXPIRED",
+    code: "TXN_005",
+    message: "Quote has expired",
+  },
+  TXN_INSUFFICIENT_BALANCE: {
+    http: 400,
+    type: "INSUFFICIENT_BALANCE",
+    code: "TXN_006",
+    message: "Insufficient balance",
+  },
+  TXN_QUOTE_NOT_FOUND: {
+    http: 404,
+    type: "QUOTE_NOT_FOUND",
+    code: "TXN_007",
+    message: "Quote not found",
+  },
+  TXN_ALREADY_EXECUTED: {
+    http: 409,
+    type: "TRANSACTION_ALREADY_EXECUTED",
+    code: "TXN_008",
+    message: "Transaction already executed",
+  },
+  TXN_NOT_FOUND: {
+    http: 404,
+    type: "TRANSACTION_NOT_FOUND",
+    code: "TXN_009",
+    message: "Transaction not found",
+  },
+  TXN_QUOTE_FAILED: {
+    http: 502,
+    type: "QUOTE_FAILED",
+    code: "TXN_010",
+    message: "Failed to fetch quote from provider",
+  },
+  TXN_EXECUTION_FAILED: {
+    http: 502,
+    type: "EXECUTION_FAILED",
+    code: "TXN_011",
+    message: "Failed to execute transaction",
+  },
+  TXN_SLA_BELOW_MIN: {
+    http: 400,
+    type: "SLA_BELOW_MINIMUM",
+    code: "TXN_012",
+    message: "Transfer amount is below the minimum SLA requirement",
+  },
+  TXN_SLA_ABOVE_MAX: {
+    http: 400,
+    type: "SLA_ABOVE_MAXIMUM",
+    code: "TXN_013",
+    message: "Transfer amount exceeds the maximum SLA limit",
+  },
+
+  // Account module specials
+  ACC_INVALID_COIN_NETWORK: {
+    http: 400,
+    type: "INVALID_COIN_NETWORK",
+    code: "ACC_003",
+    message: "Invalid coin or network combination",
+  },
+  ACC_VAULT_NOT_FOUND: {
+    http: 404,
+    type: "VAULT_NOT_FOUND",
+    code: "ACC_004",
+    message: "Vault not found for user",
+  },
+  ACC_VAULT_SERVICE_ERROR: {
+    http: 502,
+    type: "VAULT_SERVICE_ERROR",
+    code: "ACC_005",
+    message: "Vault service error",
+  },
+  ACC_INVALID_AMOUNT: {
+    http: 400,
+    type: "INVALID_AMOUNT",
+    code: "ACC_008",
+    message: "Invalid deposit amount",
+  },
+
+  // Server
+  SRV_INTERNAL: {
+    http: 500,
+    type: "INTERNAL_SERVER_ERROR",
+    code: "SRV_001",
+    message: "Internal server error occurred",
+  },
+  SRV_UNAVAILABLE: {
+    http: 503,
+    type: "SERVICE_UNAVAILABLE",
+    code: "SRV_002",
+    message: "Service temporarily unavailable",
+  },
+  SRV_TIMEOUT: {
+    http: 504,
+    type: "GATEWAY_TIMEOUT",
+    code: "SRV_003",
+    message: "Gateway timeout occurred",
+  },
+  SRV_BAD_GATEWAY: {
+    http: 502,
+    type: "BAD_GATEWAY",
+    code: "SRV_004",
+    message: "Bad gateway error",
+  },
+};
+
+export function err(res, key, override = {}) {
+  const store = asyncLocalStorage?.getStore();
+  const isApiRequest = store?.source === "API" || false;
+  const e = Errors[key] || Errors.SRV_INTERNAL;
+  const message = override.message || e.message;
+  const details = override.details;
+  const errors = override.errors;
+  const code = override.code || e.code;
+  const type = override.type || e.type;
+  const response = {
+    success: false,
+    ...(isApiRequest
+      ? {
+          error: message,
+          errorDetails: {
+            type,
+            code,
+            message,
+            ...(details ? { details } : {}),
+          },
+        }
+      : {
+          error: { type, code, message, ...(details ? { details } : {}) },
+        }),
+  };
+  if (errors) {
+    if (isApiRequest) {
+      response.errorDetails.errors = errors;
+    } else {
+      response.error.errors = errors;
+    }
+  }
+  return res.status(e.http).json(response);
+}

@@ -31,6 +31,7 @@ const config: ZudokuConfig = {
   },
 
   site: {
+    showPoweredBy: false,
     logo: {
       src: {
         light: "/logo_dark.png",

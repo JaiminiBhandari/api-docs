@@ -20,9 +20,7 @@ All API requests require authentication using API key and signature. You must in
 
 ### Account Management
 
-<!--  - `GET /deposit-address` - Get deposit address for cryptocurrency
-- `GET /deposit-requests` - Get deposit requests
-- `POST /deposit-requests` - Create deposit request -->
+
 - `PUT /profile` - Update user profile
 - `POST /change-password` - Change password
 
@@ -49,9 +47,9 @@ All API requests require authentication using API key and signature. You must in
 - `GET /gps/api/v1/transactions/{id}` - Get transaction by ID
 - `GET /gps/api/v1/transactions/report/excel` - Generate transactions report
 
-<!--### Configuration
+ ### Configuration
 
-- `GET /gps/api/v1/countries/{id}` - Get countries by ID -->
+- `GET /gps/api/v1/countries` - Get countries
 
 ## Trade API
 
@@ -107,6 +105,9 @@ All API requests require authentication using API key and signature. You must in
 - `POST /api/v1/deposits` - Create deposit
 - `GET /api/v1/deposits/{id}` - Get deposit by ID
 - `GET /api/v1/beneficiary` - Get beneficiary details for fiat deposits
+{/*-  `GET /api/v1/deposit-address` - Get deposit address for cryptocurrency */}
+{/*- `GET /api/v1/deposit-requests` - Get deposit requests */}
+{/*- `POST /api/v1/deposit-requests` - Create deposit request */}
 
 ## Withdrawals
 

@@ -127,7 +127,8 @@ def make_api_request(endpoint, request_body=''):
     }
 
     response = requests.post(
-        f'https://gps.arpdigital.io/api/v1{endpoint}',
+        <!-- f'https://gps.arpdigital.io/api/v1{endpoint}', -->
+        f'https://platform.arpdigital.io/api/v1{endpoint}',
         headers=headers,
         data=request_body
     )

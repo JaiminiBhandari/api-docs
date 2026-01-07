@@ -1693,7 +1693,7 @@
         }
       }
     },
-    "/countries/{id}": {
+    "/countries": {
       "get": {
         "tags": ["Configuration"],
         "summary": "Get Country Configuration",
