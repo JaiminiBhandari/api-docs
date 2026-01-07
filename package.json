@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "postinstall": "node ../../scripts/link-react-deps.js",
+    "postinstall": "",
     "dev": "zudoku dev",
     "build": "zudoku build",
     "preview": "zudoku preview --no open",
