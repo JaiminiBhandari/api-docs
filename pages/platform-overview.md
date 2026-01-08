@@ -50,17 +50,10 @@ curl -X POST "https://platform.arpdigital.io/services/test-auth" \
   -H "X-Signature: generated_signature" \
   -H "X-Environment: sandbox | production" \
   -d '{"message": "Hello World"}' -->
-```
+
 
 **Need help generating signatures?** Check our [Authentication Guide](/authentication) with code examples and an interactive signature generator.
 
-<!-- ## Environment Setup
-
-### 1. API Endpoints
-
-| Environment | Base URL                          | Purpose                 |
-| ----------- | --------------------------------- | ----------------------- |
-| **Sandbox** | `platform.arpdigital.io/services` | Development and testing | -->
 
 ### 2. Get Your API Credentials
 

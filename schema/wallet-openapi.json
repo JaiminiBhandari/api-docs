@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "https://platform.arpdigital.io/services/api/v1/",
+      "url": "https://platform.arpdigital.io/services/wallet/api/v1/",
       "description": "Wallet API endpoint"
     }
   ],
@@ -268,7 +268,7 @@
     }
   ],
   "paths": {
-    "/balance": {
+    "/wallet/balance": {
       "get": {
         "summary": "Get Balances",
         "description": "Retrieve all balance information for the authenticated organization",
