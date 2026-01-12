@@ -135,7 +135,7 @@ const generateSignature = async () => {
 X-Timestamp: ${timestamp}
 X-Signature: ${signature}`;
 
-  const curlText = `curl -X POST "https://gps.arpdigital.io/api/v1/your-endpoint" \\
+  const curlText = `curl -X POST "https://platform.arpdigital.io/api/v1/your-endpoint" \\
   -H "Content-Type: application/json" \\
   -H "X-API-Key: ${apiKey}" \\
   -H "X-Timestamp: ${timestamp}" \\
