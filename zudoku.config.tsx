@@ -27,7 +27,8 @@ const config: ZudokuConfig = {
       llmsTxtFull: false,
     },
     defaultOptions: {
-      copyPage: false,},
+      copyPage: false,
+    },
   },
 
   site: {
@@ -43,7 +44,6 @@ const config: ZudokuConfig = {
     footer: {
       copyright: "",
     },
-
   },
 
   plugins: [commonPlugin],
@@ -99,39 +99,39 @@ const config: ZudokuConfig = {
                   // icon: "compass",
                 },
                 {
-                  type:"doc",
-                  file:"setup-guide",
-                  label:"Setup Guide",
+                  type: "doc",
+                  file: "setup-guide",
+                  label: "Setup Guide",
                 },
                 {
-                  type:"doc",
-                  file:"balance",
-                  label:"Account Balance",
+                  type: "doc",
+                  file: "balance",
+                  label: "Account Balance",
                 },
                 {
-                  type:"doc",
-                  file:"deposit",
-                  label:"Deposit Funds",
+                  type: "doc",
+                  file: "deposit",
+                  label: "Deposit Funds",
                 },
                 {
-                  type:"doc",
-                  file:"withdraw",
-                  label:"Withdraw Funds",
+                  type: "doc",
+                  file: "withdraw",
+                  label: "Withdraw Funds",
                 },
                 {
-                  type:"doc",
-                  file:"bank-accounts",
-                  label:"Bank Accounts",
+                  type: "doc",
+                  file: "bank-accounts",
+                  label: "Bank Accounts",
                 },
                 {
-                  type:"doc",
-                  file:"crypto-wallets",
-                  label:"Crypto Wallets",
+                  type: "doc",
+                  file: "crypto-wallets",
+                  label: "Crypto Wallets",
                 },
                 {
-                  type:"doc",
-                  file:"pro-trading",
-                  label:"Pro Trading",
+                  type: "doc",
+                  file: "pro-trading",
+                  label: "Pro Trading",
                 },
               ],
             },
@@ -171,36 +171,42 @@ const config: ZudokuConfig = {
             },
 
             // BANK ACCOUNT VERIFICATION (3rd LEVEL)
+            // {
+            //   type: "category",
+            //   label: "Bank Account",
+            //   icon: "building-2",
+            //   items: [
+            //     {
+            //       type: "doc",
+            //       file: "bank-verification-bhd",
+            //       label: "BHD - Bahrain Dinar",
+            //       // icon: "dollar-sign",
+            //     },
+            //     {
+            //       type: "doc",
+            //       file: "bank-verification-sar",
+            //       label: "SAR - Saudi Riyal",
+            //       //icon: "saudi-riyal",
+            //     },
+            //     {
+            //       type: "doc",
+            //       file: "bank-verification-aed",
+            //       label: "AED - UAE Dirham",
+            //       //icon: "dollar-sign",
+            //     },
+            //     {
+            //       type: "doc",
+            //       file: "bank-verification-usd",
+            //       label: "USD - US Dollar",
+            //       //icon: "dollar-sign",
+            //     },
+            //   ],
+            // },
             {
-              type: "category",
+              type: "doc",
+              file: "bank-verification",
               label: "Bank Account",
               icon: "building-2",
-              items: [
-                {
-                  type: "doc",
-                  file: "bank-verification-bhd",
-                  label: "BHD - Bahrain Dinar",
-                  // icon: "dollar-sign",
-                },
-                {
-                  type: "doc",
-                  file: "bank-verification-sar",
-                  label: "SAR - Saudi Riyal",
-                  //icon: "saudi-riyal",
-                },
-                {
-                  type: "doc",
-                  file: "bank-verification-aed",
-                  label: "AED - UAE Dirham",
-                  //icon: "dollar-sign",
-                },
-                {
-                  type: "doc",
-                  file: "bank-verification-usd",
-                  label: "USD - US Dollar",
-                  //icon: "dollar-sign",
-                },
-              ],
             },
           ],
         },
