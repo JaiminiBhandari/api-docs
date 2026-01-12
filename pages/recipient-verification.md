@@ -6,15 +6,13 @@ The **Recipient Verification** process ensures that all recipients added to the 
 
 This process is tightly integrated with the **Create Recipient** flow and varies based on the selected **destination country**.
 
-## How to Create Recipient
+## How to Create a Recipient
 
-1. Switch environment to **Sandbox**.
-2. Go to Manage Recipients Section from Sidebar.
-3. Navigate to **Manage Recipients → Add Recipient**.
-4. Select **Recipient Type: Individual or Bussiness**.
-5. Select **Country**.
-6. Enter personal details.
-7. Enter Payment Method Information.
+Creating a recipient is the first step in sending money internationally. Recipients must be verified before they can receive funds, and the verification process varies by destination country.
+
+### Using the API
+
+To create a recipient, use the **[Create Recipient](/remittance-api/recipients#create-recipient)** API endpoint. This endpoint allows you to add recipients to your sandbox environment.
 
 ---
 
@@ -26,17 +24,17 @@ Recipient creation is completed in **three sequential steps**:
 2. **Personal Details**
 3. **Payment Method**
 
-Each step must be completed successfully before proceeding to the next.
+> Each step must be completed successfully before proceeding to the next.
 
 ---
-
+<!-- 
 ## Step 1: Basic Info
 
 ### Fields
 
 | Field Name     | Required | Description                                |
 | -------------- | -------- | ------------------------------------------ |
-| Recipient Type | Yes      | Type of recipient (Individual or Business) |
+| Recipient Type | Yes      | Type of recipient (INDIVIDUAL or BUSINESS) |
 | Country        | Yes      | Destination country of the recipient       |
 
 ### Rules
@@ -59,7 +57,7 @@ Examples include:
 
 - Bank Account/ Wallet-based payouts
 
-> Payment method details are validated against the selected country and currency.
+> Payment method details are validated against the selected country and currency. -->
 
 ## Add a new recipient for **India**
 
@@ -69,10 +67,10 @@ The following Sample data is used for testing purposes only and does not represe
 
 #### Basic Info
 
-| Field          | Value                 |
-| -------------- | --------------------- |
-| Recipient Type | Individual & Business |
-| Country        | India                 |
+| Field          | Value                  |
+| -------------- | ---------------------- |
+| Recipient Type | INDIVIDUAL or BUSINESS |
+| Country        | India                  |
 
 #### Personal Details (Individual)
 
@@ -107,7 +105,7 @@ The following Sample data is used for testing purposes only and does not represe
 | IFSC Code           | SBIN0001234         |
 | Bank Name           | State Bank of India |
 | Account Holder Name | Rohan Sharma        |
-| Branch              | Adajan              |
+| Branch              | Andheri             |
 | Account Type        | Savings / Current   |
 
 ---
