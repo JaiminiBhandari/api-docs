@@ -15,17 +15,17 @@ All API requests require authentication using API key and signature. You must in
 - `X-API-Key`: Your API key
 - `X-Timestamp`: Current Unix timestamp in seconds
 - `X-Signature`: HMAC SHA256 signature of `apiKey + requestBody + timestamp` using your API secret as the key
+- `X-Environment`: `sandbox` or `production`
 
 ## Endpoints by Category
 
 ### Account Management
 
-
 - `PUT /profile` - Update user profile
 - `POST /change-password` - Change password
 
-<!-- ### Sender -->
-<!-- - `GET /senders` - Get senders -->
+### Sender 
+- `GET /senders` - Get senders 
 
 ## Remittances API
 
@@ -38,6 +38,7 @@ All API requests require authentication using API key and signature. You must in
 - `GET /gps/api/v1/recipients/paymentMethodFields` - Get recipient payment method fields
 
 ### Quotes
+
 - `POST /gps/api/v1/quote` - Get exchange rate quote
 
 ### Transactions
@@ -47,7 +48,7 @@ All API requests require authentication using API key and signature. You must in
 - `GET /gps/api/v1/transactions/{id}` - Get transaction by ID
 - `GET /gps/api/v1/transactions/report/excel` - Generate transactions report
 
- ### Configuration
+### Configuration
 
 - `GET /gps/api/v1/countries` - Get countries
 
@@ -60,7 +61,7 @@ All API requests require authentication using API key and signature. You must in
 
 ### Quotes
 
-- `POST otc/api/v1/quotes`  - Create exchange rate quote
+- `POST otc/api/v1/quotes` - Create exchange rate quote
 
 ## Checkout API
 
@@ -84,38 +85,34 @@ All API requests require authentication using API key and signature. You must in
 
 ### Balances
 
-- `GET /api/v1/balance` - Get user balances
+- `GET wallet/api/v1/balance` - Get user balances
 
 ### Wallets
 
-- `GET /api/v1/wallets`  - Get user wallet
-- `POST /api/v1/wallets` - Create wallet
-- `GET /api/v1/wallets/{id}` - Get wallet by ID
-<!-- - `GET /api/v1/wallet-transactions` - Get wallet transactions history -->
+- `GET wallet/api/v1/wallets` - Get user wallet
+- `POST wallet/api/v1/wallets` - Create wallet
+- `GET wallet/api/v1/wallets/{id}` - Get wallet by ID
 
 ### Bank Accounts
 
-- `GET /api/v1/bank-accounts` - Get all bank accounts
-- `POST /api/v1/bank-accounts` - Create bank account
-- `GET /api/v1/bank-accounts/{id}` - Get bank account by ID
+- `GET wallet/api/v1/bank-accounts` - Get all bank accounts
+- `POST wallet/api/v1/bank-accounts` - Create bank account
+- `GET wallet/api/v1/bank-accounts/{id}` - Get bank account by ID
 
 ## Deposits
 
-- `GET /api/v1/deposits` - Get deposit
-- `POST /api/v1/deposits` - Create deposit
-- `GET /api/v1/deposits/{id}` - Get deposit by ID
+- `GET wallet/api/v1/deposits` - Get deposit
+- `POST wallet/api/v1/deposits` - Create deposit
+- `GET wallet/api/v1/deposits/{id}` - Get deposit by ID
 - `GET /api/v1/beneficiary` - Get beneficiary details for fiat deposits
-{/*-  `GET /api/v1/deposit-address` - Get deposit address for cryptocurrency */}
-{/*- `GET /api/v1/deposit-requests` - Get deposit requests */}
-{/*- `POST /api/v1/deposit-requests` - Create deposit request */}
 
 ## Withdrawals
 
-- `GET /api/v1/withdrawals` - Get withdrawal
-- `POST /api/v1/withdrawals` - Create withdrawal
-- `GET /api/v1/withdrawals/{id}` - Get withdrawal by ID
- 
-<!-- ### Webhooks
+- `GET wallet/api/v1/withdrawals` - Get withdrawal
+- `POST wallet/api/v1/withdrawals` - Create withdrawal
+- `GET wallet/api/v1/withdrawals/{id}` - Get withdrawal by ID
+
+{/* ### Webhooks
 
 - `GET /webhooks` - Get webhooks
 - `POST /webhooks` - Create webhook
@@ -128,8 +125,8 @@ All API requests require authentication using API key and signature. You must in
 ### Other
 
 - `GET /fiat-channels` - Get available fiat channels
-- `POST /test-auth` - Test authentication -->
+- `POST /test-auth` - Test authentication */}
 
 ## Servers
 
-- **Sandbox Environment:** `https://platform.arpdigital.io/services`
+- **Production Environment:** `https://platform.arpdigital.io/services`
