@@ -501,3 +501,23 @@ Now that you're set up, explore these resources:
 ---
 
 <!--**Ready to go live?** Contact our team to upgrade to production credentials and start processing real transactions.-->
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+<!-- 1. Use **Sandbox** environment.
+2. Go to Bank Accounts section from Sidebar.
+3. Click on button **Add Bank Account**.
+4. Choose the currency for the bank account.
+5. Select the country code that matches the chosen currency.
+6. Enter the beneficiary name  provided in the testing account table.
+7. Enter the bank name provided in the testing account table.
+8. Enter account number provided in the testing account table.
+9. Enter the SWIFT / BIC code provided in the testing account table.
+10. Enter the IBAN provided in the testing account details.
+11. Save the bank account details.
+5. Initiate a deposit, withdrawal, payout, or validation request.
+6. Verify API responses and webhook events against the expected scenario. -->

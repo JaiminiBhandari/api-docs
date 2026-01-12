@@ -26,14 +26,47 @@
     {
       "name": "Configuration",
       "description": "Country configuration and setup"
+    },
+    {
+      "name": "Senders",
+      "description": "Manage sender information"
     }
   ],
   "components": {
     "parameters": {
+      "ApiKey": {
+        "name": "X-API-Key",
+        "in": "header",
+        "description": "Your unique API key.",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "Timestamp": {
+        "name": "X-Timestamp",
+        "in": "header",
+        "description": "Current Unix timestamp (in seconds).",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1700000000
+        }
+      },
+      "Signature": {
+        "name": "X-Signature",
+        "in": "header",
+        "description": "HMAC SHA256 signature generated using the request payload and secret key.",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
       "Environment": {
         "name": "X-Environment",
         "in": "header",
-        "description": "Specifies the environment to use (sandbox or production). This determines which database the API interacts with.",
+        "description": "Specifies the environment to use. Determines which database the API interacts with.",
         "required": true,
         "schema": {
           "type": "string",
@@ -54,15 +87,22 @@
       "Error": {
         "type": "object",
         "properties": {
-          "success": {
-            "type": "boolean",
-            "default": false
-          },
-          "message": {
+          "error": {
             "type": "string"
           },
-          "code": {
-            "type": "string"
+          "errorDetails": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            }
           }
         }
       },
@@ -710,6 +750,11 @@
         "type": "object",
         "required": ["recipientId", "fromCurrency", "toCurrency"],
         "properties": {
+          "senderId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the recipient"
+          },
           "recipientId": {
             "type": "string",
             "format": "uuid",
@@ -729,11 +774,6 @@
             "type": "number",
             "example": 1000,
             "description": "Amount to send (required if toAmount is not provided)"
-          },
-          "toAmount": {
-            "type": "number",
-            "example": 55000,
-            "description": "Amount to receive (required if fromAmount is not provided)"
           }
         },
         "additionalProperties": false,
@@ -819,6 +859,15 @@
             "type": "string",
             "format": "uuid",
             "description": "ID of the recipient"
+          },
+          "recipient": {
+            "type": "string",
+            "description": "Recipient"
+          },
+          "paymentMethodId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the payment method"
           },
           "notes": {
             "type": "string",
@@ -1272,6 +1321,154 @@
             ]
           }
         }
+      },
+      "PaymentMethodField": {
+        "type": "object",
+        "required": ["fieldName"],
+        "properties": {
+          "fieldName": {
+            "type": "string",
+            "example": "accountNumber"
+          },
+          "displayName": {
+            "type": "string",
+            "example": "Account Number"
+          },
+          "required": {
+            "type": "boolean",
+            "example": true
+          },
+          "type": {
+            "type": "string",
+            "example": "STRING"
+          },
+          "value": {
+            "type": "string",
+            "example": "Instant, 24/7 including weekends and holidays."
+          },
+          "min": {
+            "type": "number",
+            "example": 500
+          },
+          "max": {
+            "type": "number",
+            "example": 10000000
+          },
+          "regex": {
+            "type": "string",
+            "example": "^\\d{9,18}$"
+          },
+          "errorMessage": {
+            "type": "string",
+            "example": "Please enter a valid value."
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentMethodFieldOption"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "PaymentMethodFieldOption": {
+        "type": "object",
+        "required": ["value", "displayName"],
+        "properties": {
+          "value": {
+            "type": "string",
+            "example": "savings"
+          },
+          "displayName": {
+            "type": "string",
+            "example": "Savings"
+          }
+        }
+      },
+      "SendersResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "country",
+          "destinationCountry",
+          "verificationInfo",
+          "verificationStatus",
+          "userId",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "1cc3066d-d9b2-436c-b545-d9942120f080"
+          },
+          "email": {
+            "type": ["string", "null"],
+            "format": "email",
+            "example": null
+          },
+          "phoneNumber": {
+            "type": ["string", "null"],
+            "example": null
+          },
+          "type": {
+            "type": "string",
+            "example": "BUSINESS"
+          },
+          "country": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "example": "ARE"
+          },
+          "destinationCountry": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "example": "IND"
+          },
+          "verificationInfo": {
+            "$ref": "#/components/schemas/RecipientVerificationInfo"
+          },
+          "verificationStatus": {
+            "type": "string",
+            "example": "NOT_STARTED"
+          },
+          "externalVerificationStatus": {
+            "type": ["string", "null"],
+            "example": null
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "ff5529eb-f3da-4678-914d-b05447a58978"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-07-11T05:34:22.861Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-07-11T05:34:22.861Z"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecipientVerificationInfo": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "example": "ICD Brookfield Place, Dubai, UAE"
+          },
+          "businessName": {
+            "type": "string",
+            "example": "ARP DIGITAL"
+          }
+        },
+        "additionalProperties": true
       }
     }
   },
@@ -1306,6 +1503,9 @@
               "default": 10
             }
           },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
           { "$ref": "#/components/parameters/Environment" }
         ],
         "responses": {
@@ -1331,7 +1531,14 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -1340,17 +1547,23 @@
         "summary": "Create Recipient",
         "description": "Create a new recipient with verification information and payment methods",
         "operationId": "createRecipient",
-        "parameters": [{ "$ref": "#/components/parameters/Environment" }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateRecipient"
+                "$ref": "#/components/schemas/Recipient"
               }
             }
           }
         },
+
         "responses": {
           "201": {
             "description": "Successfully created recipient",
@@ -1371,14 +1584,15 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request"
-          },
           "401": {
-            "description": "Unauthorized"
-          },
-          "429": {
-            "description": "Rate limit exceeded"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -1400,6 +1614,9 @@
               "format": "uuid"
             }
           },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
           { "$ref": "#/components/parameters/Environment" }
         ],
         "responses": {
@@ -1422,10 +1639,14 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Recipient not found"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -1444,7 +1665,7 @@
             "description": "3-letter ISO country code",
             "schema": {
               "type": "string",
-              "pattern": "^[A-Z]{3}$"
+              "example": "IND"
             }
           },
           {
@@ -1457,6 +1678,9 @@
               "enum": ["INDIVIDUAL", "BUSINESS"]
             }
           },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
           { "$ref": "#/components/parameters/Environment" }
         ],
         "responses": {
@@ -1481,11 +1705,15 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request"
-          },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -1507,6 +1735,9 @@
               "pattern": "^[A-Z]{3}$"
             }
           },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
           { "$ref": "#/components/parameters/Environment" }
         ],
         "responses": {
@@ -1525,7 +1756,7 @@
                       "additionalProperties": {
                         "type": "array",
                         "items": {
-                          "$ref": "#/components/schemas/VerificationField"
+                          "$ref": "#/components/schemas/PaymentMethodField"
                         }
                       }
                     }
@@ -1534,11 +1765,15 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request"
-          },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -1549,7 +1784,12 @@
         "summary": "Get Exchange Rate Quote",
         "description": "Get a quote for currency exchange between sender and recipient",
         "operationId": "createQuote",
-        "parameters": [{ "$ref": "#/components/parameters/Environment" }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1571,14 +1811,15 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request"
-          },
           "401": {
-            "description": "Unauthorized"
-          },
-          "429": {
-            "description": "Rate limit exceeded"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -1589,7 +1830,12 @@
         "summary": "Execute Transaction",
         "description": "Execute a remittance transaction based on a previously generated quote",
         "operationId": "createTransaction",
-        "parameters": [{ "$ref": "#/components/parameters/Environment" }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1611,14 +1857,15 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request"
-          },
           "401": {
-            "description": "Unauthorized"
-          },
-          "429": {
-            "description": "Rate limit exceeded"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -1663,6 +1910,9 @@
               ]
             }
           },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
           { "$ref": "#/components/parameters/Environment" }
         ],
         "responses": {
@@ -1688,12 +1938,19 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/countries": {
+    "/countries/{id}": {
       "get": {
         "tags": ["Configuration"],
         "summary": "Get Country Configuration",
@@ -1709,6 +1966,9 @@
               "type": "string"
             }
           },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
           { "$ref": "#/components/parameters/Environment" }
         ],
         "responses": {
@@ -1731,10 +1991,53 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/senders": {
+      "get": {
+        "tags": ["Senders"],
+        "summary": "List Senders",
+        "description": "Retrieve all senders for the authenticated organization",
+        "operationId": "getSenders",
+        "parameters": [
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved senders",
+
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendersResponse"
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Country not found"
+
+          "401": {
+            "description": "Unauthorized",
+
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }

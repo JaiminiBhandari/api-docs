@@ -4,7 +4,7 @@ Welcome to the ARP Digital API documentation. This comprehensive guide will help
 
 ## Introduction
 
-ARP Digital provides a programmable layer for sending funds across borders with security, compliance, and transparency built directly into the API. <!--You can use the platform to:-->
+ARP Digital provides a programmable layer for sending funds across borders with security, compliance, and transparency built directly into the API.
 
 ### What Can You Build with ARP Digital ?
 

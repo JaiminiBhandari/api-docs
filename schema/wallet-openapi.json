@@ -10,16 +10,45 @@
   },
   "servers": [
     {
-      "url": "https://platform.arpdigital.io/services/wallet/api/v1/",
+      "url": "https://platform.arpdigital.io/services/wallet/",
       "description": "Wallet API endpoint"
     }
   ],
   "components": {
     "parameters": {
+      "ApiKey": {
+        "name": "X-API-Key",
+        "in": "header",
+        "description": "Your unique API key.",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "Timestamp": {
+        "name": "X-Timestamp",
+        "in": "header",
+        "description": "Current Unix timestamp (in seconds).",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1700000000
+        }
+      },
+      "Signature": {
+        "name": "X-Signature",
+        "in": "header",
+        "description": "HMAC SHA256 signature generated using the request payload and secret key.",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
       "Environment": {
         "name": "X-Environment",
         "in": "header",
-        "description": "Specifies the environment to use (sandbox or production). This determines which database the API interacts with.",
+        "description": "Specifies the environment to use. Determines which database the API interacts with.",
         "required": true,
         "schema": {
           "type": "string",
@@ -37,6 +66,28 @@
       }
     },
     "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "errorDetails": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
       "Wallet": {
         "type": "object",
         "properties": {
@@ -249,14 +300,135 @@
           }
         }
       },
-      "Error": {
+      "Currency": {
         "type": "object",
         "properties": {
-          "error": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["FIAT", "CRYPTO"]
+          },
+          "name": {
             "type": "string"
           },
-          "message": {
+          "symbol": {
             "type": "string"
+          },
+          "decimals": {
+            "type": "integer"
+          },
+          "minTradeAmount": {
+            "type": "number",
+            "format": "decimal",
+            "nullable": true
+          },
+          "maxTradeAmount": {
+            "type": "number",
+            "format": "decimal",
+            "nullable": true
+          },
+          "hiddenOnUI": {
+            "type": "boolean"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Cryptocurrency": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fireblocksId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "chainId": {
+            "type": "string"
+          },
+          "assetId": {
+            "type": "string"
+          },
+          "contractAddress": {
+            "type": "string"
+          },
+          "decimals": {
+            "type": "integer"
+          },
+          "minWithdrawAmount": {
+            "type": "number",
+            "format": "decimal",
+            "nullable": true
+          },
+          "maxWithdrawAmount": {
+            "type": "number",
+            "format": "decimal",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Blockchain": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "fireblocksId": {
+            "type": "string"
+          },
+          "nativeTokenSymbol": {
+            "type": "string"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       }
@@ -268,7 +440,7 @@
     }
   ],
   "paths": {
-    "/wallet/balance": {
+    "api/v1/balance": {
       "get": {
         "summary": "Get Balances",
         "description": "Retrieve all balance information for the authenticated organization",
@@ -283,7 +455,10 @@
               "type": "string"
             }
           },
-          { "$ref": "#/components/parameters/Environment" }
+          { "$ref": "#/components/parameters/Environment" },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" }
         ],
         "responses": {
           "200": {
@@ -300,12 +475,19 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/wallets": {
+    "api/v1/wallets": {
       "get": {
         "summary": "List Wallets",
         "description": "Retrieve all wallets for the authenticated organization",
@@ -320,7 +502,10 @@
               "type": "string"
             }
           },
-          { "$ref": "#/components/parameters/Environment" }
+          { "$ref": "#/components/parameters/Environment" },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" }
         ],
         "responses": {
           "200": {
@@ -337,7 +522,14 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -346,7 +538,12 @@
         "description": "Create a new wallet for the authenticated organization",
         "operationId": "createWallet",
         "tags": ["Wallets"],
-        "parameters": [{ "$ref": "#/components/parameters/Environment" }],
+        "parameters": [
+          { "$ref": "#/components/parameters/Environment" },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -387,19 +584,20 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request"
-          },
           "401": {
-            "description": "Unauthorized"
-          },
-          "429": {
-            "description": "Rate limit exceeded"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/wallets/{id}": {
+    "api/v1/wallets/{id}": {
       "get": {
         "summary": "Get Wallet",
         "description": "Retrieve a specific wallet by ID",
@@ -416,7 +614,10 @@
               "format": "uuid"
             }
           },
-          { "$ref": "#/components/parameters/Environment" }
+          { "$ref": "#/components/parameters/Environment" },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" }
         ],
         "responses": {
           "200": {
@@ -430,15 +631,19 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Wallet not found"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/bank-accounts": {
+    "api/v1/bank-accounts": {
       "get": {
         "summary": "List Bank Accounts",
         "description": "Retrieve all bank accounts for the authenticated organization",
@@ -453,7 +658,10 @@
               "type": "string"
             }
           },
-          { "$ref": "#/components/parameters/Environment" }
+          { "$ref": "#/components/parameters/Environment" },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" }
         ],
         "responses": {
           "200": {
@@ -470,7 +678,14 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -479,7 +694,12 @@
         "description": "Create a new bank account for the authenticated organization",
         "operationId": "createBankAccount",
         "tags": ["Bank Accounts"],
-        "parameters": [{ "$ref": "#/components/parameters/Environment" }],
+        "parameters": [
+          { "$ref": "#/components/parameters/Environment" },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -544,19 +764,20 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request"
-          },
           "401": {
-            "description": "Unauthorized"
-          },
-          "429": {
-            "description": "Rate limit exceeded"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/bank-accounts/{id}": {
+    "api/v1/bank-accounts/{id}": {
       "get": {
         "summary": "Get Bank Account",
         "description": "Retrieve a specific bank account by ID",
@@ -573,7 +794,10 @@
               "format": "uuid"
             }
           },
-          { "$ref": "#/components/parameters/Environment" }
+          { "$ref": "#/components/parameters/Environment" },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" }
         ],
         "responses": {
           "200": {
@@ -587,15 +811,19 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Bank account not found"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/deposits": {
+    "api/v1/deposits": {
       "get": {
         "summary": "List Deposits",
         "description": "Retrieve deposits for the authenticated organization",
@@ -639,7 +867,10 @@
               "minimum": 0
             }
           },
-          { "$ref": "#/components/parameters/Environment" }
+          { "$ref": "#/components/parameters/Environment" },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" }
         ],
         "responses": {
           "200": {
@@ -656,7 +887,14 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -665,7 +903,12 @@
         "description": "Create a new deposit for the authenticated organization",
         "operationId": "createDeposit",
         "tags": ["Deposits"],
-        "parameters": [{ "$ref": "#/components/parameters/Environment" }],
+        "parameters": [
+          { "$ref": "#/components/parameters/Environment" },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -720,19 +963,20 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request"
-          },
           "401": {
-            "description": "Unauthorized"
-          },
-          "429": {
-            "description": "Rate limit exceeded"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/deposits/{id}": {
+    "api/v1/deposits/{id}": {
       "get": {
         "summary": "Get Deposit",
         "description": "Retrieve a specific deposit by ID",
@@ -749,7 +993,10 @@
               "format": "uuid"
             }
           },
-          { "$ref": "#/components/parameters/Environment" }
+          { "$ref": "#/components/parameters/Environment" },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" }
         ],
         "responses": {
           "200": {
@@ -763,15 +1010,19 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Deposit not found"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/withdrawals": {
+    "api/v1/withdrawals": {
       "get": {
         "summary": "List Withdrawals",
         "description": "Retrieve withdrawals for the authenticated organization",
@@ -808,7 +1059,10 @@
               "default": 0
             }
           },
-          { "$ref": "#/components/parameters/Environment" }
+          { "$ref": "#/components/parameters/Environment" },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" }
         ],
         "responses": {
           "200": {
@@ -825,7 +1079,14 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -834,7 +1095,12 @@
         "description": "Create a new withdrawal for the authenticated organization",
         "operationId": "createWithdrawal",
         "tags": ["Withdrawals"],
-        "parameters": [{ "$ref": "#/components/parameters/Environment" }],
+        "parameters": [
+          { "$ref": "#/components/parameters/Environment" },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -902,19 +1168,20 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request - Must specify either destinationWalletId or destinationBankAccountId (but not both), and cryptocurrencyId is required when using destinationWalletId"
-          },
           "401": {
-            "description": "Unauthorized"
-          },
-          "429": {
-            "description": "Rate limit exceeded"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/withdrawals/{id}": {
+    "api/v1/withdrawals/{id}": {
       "get": {
         "summary": "Get Withdrawal",
         "description": "Retrieve a specific withdrawal by ID",
@@ -931,7 +1198,10 @@
               "format": "uuid"
             }
           },
-          { "$ref": "#/components/parameters/Environment" }
+          { "$ref": "#/components/parameters/Environment" },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" }
         ],
         "responses": {
           "200": {
@@ -945,10 +1215,259 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/currencies": {
+      "get": {
+        "summary": "List Currencies",
+        "description": "Retrieve all currencies",
+        "operationId": "listCurrencies",
+        "tags": ["Currencies"],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved currencies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Currency"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Withdrawal not found"
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/currencies/{id}": {
+      "get": {
+        "summary": "Get Currency",
+        "description": "Retrieve a specific currency by ID",
+        "operationId": "getCurrency",
+        "tags": ["Currencies"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Currency ID",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved currency",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Currency"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/cryptocurrencies": {
+      "get": {
+        "summary": "List Cryptocurrencies",
+        "description": "Retrieve all cryptocurrencies",
+        "operationId": "listCryptocurrencies",
+        "tags": ["Cryptocurrencies"],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved cryptocurrencies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Cryptocurrency"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/cryptocurrencies/{id}": {
+      "get": {
+        "summary": "Get Cryptocurrency",
+        "description": "Retrieve a specific cryptocurrency by ID",
+        "operationId": "getCryptocurrency",
+        "tags": ["Cryptocurrencies"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Cryptocurrency ID",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved cryptocurrency",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cryptocurrency"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/blockchains": {
+      "get": {
+        "summary": "List Blockchains",
+        "description": "Retrieve all blockchains",
+        "operationId": "listBlockchains",
+        "tags": ["Blockchains"],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved blockchains",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Blockchain"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/blockchains/{id}": {
+      "get": {
+        "summary": "Get Blockchain",
+        "description": "Retrieve a specific blockchain by ID",
+        "operationId": "getBlockchain",
+        "tags": ["Blockchains"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Blockchain ID",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved blockchain",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Blockchain"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/webhooks/fireblocks": {
+      "post": {
+        "summary": "Fireblocks Webhook",
+        "description": "Receive webhooks from Fireblocks",
+        "operationId": "fireblocksWebhook",
+        "tags": ["Webhooks"],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Webhook received successfully"
           }
         }
       }
@@ -974,6 +1493,22 @@
     {
       "name": "Withdrawals",
       "description": "Operations related to withdrawal management"
+    },
+    {
+      "name": "Currencies",
+      "description": "Operations related to currency information"
+    },
+    {
+      "name": "Cryptocurrencies",
+      "description": "Operations related to cryptocurrency information"
+    },
+    {
+      "name": "Blockchains",
+      "description": "Operations related to blockchain information"
+    },
+    {
+      "name": "Webhooks",
+      "description": "Operations related to webhook handling"
     }
   ]
 }

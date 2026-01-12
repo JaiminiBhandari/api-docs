@@ -12,7 +12,6 @@ Before you begin, ensure you have:
 - API credentials (API Key and Secret) from your dashboard
 - Basic understanding of REST APIs and HMAC authentication
 - A development environment capable of making HTTPS requests
-<!-- - Valid business documents for account verification -->
 
 ARP Digital uses **HMAC SHA256 signature authentication** for maximum security. Every API request must include:
 
@@ -35,27 +34,15 @@ The `X-Environment` header determines which environment your API requests are ro
 - Sandbox and production environments are completely isolated - data, transactions, and balances do not sync between them.
 - Use `sandbox` for all development and testing to avoid accidental real money transfers.
 - Switch to `production` only after thorough testing in sandbox and obtaining production credentials.
-- API credentials are environment-specific - sandbox keys won't work in production <!--and vice versa-->.
+- API credentials are environment-specific - sandbox keys won't work in production.
 
-<!-- ### Quick Authentication Test
 
-Before building your integration, test your authentication setup:
-
-```bash
-# Test your credentials with our authentication endpoint
-curl -X POST "https://platform.arpdigital.io/services/test-auth" \
-  -H "Content-Type: application/json" \
-  -H "X-API-Key: your_api_key" \
-  -H "X-Timestamp: $(date +%s)" \
-  -H "X-Signature: generated_signature" \
-  -H "X-Environment: sandbox | production" \
-  -d '{"message": "Hello World"}' -->
 
 
 **Need help generating signatures?** Check our [Authentication Guide](/authentication) with code examples and an interactive signature generator.
 
 
-### 2. Get Your API Credentials
+###  Get Your API Credentials
 
 1. Log into your ARP Digital dashboard
 2. Navigate to the API Keys section from the sidebar.
@@ -197,25 +184,7 @@ class ARPDigitalGPS:
 client = ARPDigitalGPS('your_api_key', 'your_api_secret')
 ```
 
-<!-- ### Step 3: Test Your Connection
-
-```javascript
-// Test authentication
-async function testConnection() {
-  try {
-    const response = await client.request("POST", "/test-auth", {
-      message: "Hello ARP Digital GPS!",
-    });
-    console.log("Authentication successful:", response.data);
-  } catch (error) {
-    console.error("Authentication failed:", error.response.data);
-  }
-}
-
-testConnection(); -->
-```
-
-### Step 4: Your First Transaction Flow
+### Step 3: Your First Transaction Flow
 
 Here's a complete example of sending money internationally:
 
@@ -274,44 +243,6 @@ async function sendMoney() {
 
 sendMoney();
 ```
-
-## Core API Endpoints
-
-### Recipients
-
-| Method | Endpoint                                     | Description               |
-| ------ | -------------------------------------------- | ------------------------- |
-| `GET`  | `/gps/api/v1/recipients`                     | List all recipients       |
-| `POST` | `/gps/api/v1/recipients`                     | Create new recipient      |
-| `GET`  | `/gps/api/v1/recipients/{id}`                | Get recipient details     |
-| `GET`  | `/gps/api/v1/recipients/verificationFields`  | Get required KYC fields   |
-| `GET`  | `/gps/api/v1/recipients/paymentMethodFields` | Get payment method fields |
-
-### Quote
-
-| Method | Endpoint            | Description             |
-| ------ | ------------------- | ----------------------- |
-| `POST` | `/gps/api/v1/quote` | Get exchange rate quote |
-
-### Transactions
-
-| Method | Endpoint                   | Description             |
-| ------ | -------------------------- | ----------------------- |
-| `POST` | `/gps/api/v1/transaction`  | Execute transaction     |
-| `GET`  | `/gps/api/v1/transactions` | List transactions       |
-| `GET`  | `/transactions/{id}`       | Get transaction details |
-
-<!--### Senders
-
-| Method | Endpoint   | Description      |
-| ------ | ---------- | ---------------- |
-| `GET`  | `/senders` | List all senders |
-
-### Testing
-
-| Method | Endpoint     | Description               |
-| ------ | ------------ | ------------------------- |
-| `POST` | `/test-auth` | Test authentication setup | -->
 
 ## Error Handling
 
@@ -430,26 +361,8 @@ The API uses standard HTTP status codes with detailed error information:
 | ------ | --------------- | ------- | ------------------------ |
 | 504    | GATEWAY_TIMEOUT | SRV_003 | Gateway timeout occurred |
 
-<!-- ### Handling Authentication Errors
-
-```javascript
-try {
-  const response = await client.request("GET", "/gps/api/v1/transactions");
-} catch (error) {
-  if (error.response?.status === 401) {
-    console.log("Authentication failed. Check your signature generation.");
-    console.log("Debug info:", error.response.data);
-  }
-}
-``` -->
 
 ## Rate Limits
-
-<!-- | Environment    | Limit         | Window         |
-| -------------- | ------------- | -------------- |
-| **Sandbox**    | 500 requests  | Per 15 minutes |
-| **Production** | 5000 requests | Per 15 minutes | -->
-
 
 | Limit         | Window         |
 | ------------- | -------------- |
@@ -481,7 +394,7 @@ Your webhook endpoint will receive events for:
 ### PAY 
 
 - `pay.checkout.created` - New payment created
-- `"pay.checkout.updated"` - Payment status changes 
+- `pay.checkout.updated` - Payment status changes 
 
 ### REMITTANCE 
 
@@ -501,60 +414,16 @@ Your webhook endpoint will receive events for:
 
 ### Webhook Payload Structure
 
-```
-{
-url:"https://platform.stage.arpdigital.io"
-description: "Webhook URL for receiving v2 OTC, payment, GPS, and wallet events."
-events:["otc.trade.created", "otc.trade.rejected", "otc.trade.completed", 
-otc.trade.updated","pay.checkout.created","pay.checkout.updated",
-"gps.transaction.completed","gps.transaction.created","gps.transaction.failed",
-"wallet.deposit.completed","wallet.deposit.created",
-"wallet.deposit.failed","wallet.created","wallet.withdraw.completed",
-"wallet.withdraw.created","wallet.withdraw.failed"]
+```json
+description:"Webhook for transaction completed"
+events:["gps.transaction.completed"]
+url:"https://platform.arpdigital.io"
 version:2
-}
 ```
 
 ### Webhook Security
 
 Webhook signatures are verified by the receiving partner services. Contact our support team to configure webhook endpoints for your integration.
-
-<!-- ## Testing & Sandbox
-
-### Sandbox Features
-
-- All API endpoints available
-- Simulated transaction processing
-- Test KYC verification
-- Webhook testing
-- No real money movement
-
-### Test Scenarios
-
-| Amount    | Result  | Processing Time |
-| --------- | ------- | --------------- |
-| `$100.00` | Success | Instant         |
-| `$500.00` | Pending | 5 minutes       |
-| `$999.99` | Failed  | Instant         |
-
-### Test Data
-
-Use these test recipient details in sandbox:
-
-```json
-{
-  "firstName": "Test",
-  "lastName": "Recipient",
-  "email": "test@example.com",
-  "phone": "+1234567890",
-  "country": "PHL",
-  "paymentMethod": {
-    "type": "BANK_TRANSFER",
-    "accountNumber": "1234567890",
-    "bankName": "Test Bank"
-  }
-}
-``` -->
 
 ## Security Best Practices
 
@@ -572,7 +441,6 @@ Use these test recipient details in sandbox:
 - Implement proper error handling
 - Add request/response logging
 - Handle rate limits gracefully
-<!-- - Test authentication with `/test-auth` endpoint -->
 
 ## Next Steps
 
@@ -588,7 +456,6 @@ Now that you're set up, explore these resources:
 - **[Recipient Management](/remittance-api/recipients)** - KYC verification workflows & Recipient management
 - **[Transaction Processing](/remittance-api/transactions)** - End-to-end transfer flows
 - **[Webhook Integration](/webhooks)** - Real-time status updates
-<!-- - **Error Handling** - Robust error management -->
 
 ### Advanced Features
 
@@ -601,4 +468,3 @@ Now that you're set up, explore these resources:
 - **Email**: support@arpdigital.io
 - **Documentation**: Complete **[API Reference](/api-reference)**
 
-<!--**Ready to go live?** Contact our team to upgrade to production credentials and start processing real transactions.-->

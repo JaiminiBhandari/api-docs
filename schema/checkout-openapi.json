@@ -72,6 +72,12 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "externalClientId",
+                  "externalCheckoutId",
+                  "fromAmount",
+                  "fromCurrencyId"
+                ],
                 "properties": {
                   "successUrl": {
                     "type": "string",
@@ -94,42 +100,14 @@
 
                   "fromAmount": {
                     "type": "number",
-                    "description": "Amount to convert or process."
+                    "description": "Amount to process."
                   },
 
                   "fromCurrencyId": {
                     "type": "string",
-                    "nullable": true,
-                    "description": "FIAT currency ID. Required if 'fromCryptocurrencyId' is not provided."
-                  },
-
-                  "fromCryptocurrencyId": {
-                    "type": "string",
-                    "nullable": true,
-                    "description": "Cryptocurrency ID. Required if 'fromCurrencyId' is not provided."
+                    "description": "Currency ID (FIAT or CRYPTO)."
                   }
-                },
-
-                "oneOf": [
-                  {
-                    "required": [
-                      "fromCurrencyId",
-                      "externalClientId",
-                      "externalCheckoutId",
-                      "fromAmount"
-                    ],
-                    "not": { "required": ["fromCryptocurrencyId"] }
-                  },
-                  {
-                    "required": [
-                      "fromCryptocurrencyId",
-                      "externalClientId",
-                      "externalCheckoutId",
-                      "fromAmount"
-                    ],
-                    "not": { "required": ["fromCurrencyId"] }
-                  }
-                ]
+                }
               }
             }
           }
@@ -197,7 +175,16 @@
             },
             "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
           },
-          { "$ref": "#/components/parameters/Environment" }
+          {
+            "name": "X-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["sandbox", "production"]
+            },
+            "description": "Environment where the request is executed"
+          }
         ]
       },
       "get": {
@@ -308,9 +295,6 @@
 
                               "fromAmount": { "type": "string" },
                               "fromCurrencyId": { "type": "string" },
-                              "fromCryptocurrencyId": {
-                                "type": ["string", "null"]
-                              },
 
                               "toAmount": { "type": "string" },
                               "toCurrencyId": { "type": ["string", "null"] },
@@ -376,9 +360,6 @@
 
                                     "fromAmount": { "type": "string" },
                                     "fromCurrencyId": { "type": "string" },
-                                    "fromCryptocurrencyId": {
-                                      "type": ["string", "null"]
-                                    },
 
                                     "toAmount": { "type": "string" },
                                     "toCurrencyId": {
@@ -412,16 +393,6 @@
                               "fromCurrency": {
                                 "type": "object",
                                 "nullable": true,
-                                "properties": {
-                                  "id": { "type": "string" },
-                                  "name": { "type": "string" },
-                                  "type": { "type": "string" },
-                                  "symbol": { "type": "string" }
-                                }
-                              },
-
-                              "fromCryptocurrency": {
-                                "type": "object",
                                 "properties": {
                                   "id": { "type": "string" },
                                   "name": { "type": "string" },
@@ -494,6 +465,12 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "externalClientId",
+                  "externalCheckoutId",
+                  "fromAmount",
+                  "fromCurrencyId"
+                ],
                 "properties": {
                   "externalClientId": {
                     "type": "string",
@@ -509,13 +486,7 @@
                   },
                   "fromCurrencyId": {
                     "type": "string",
-                    "nullable": true,
-                    "description": "FIAT currency ID. Required if 'fromCryptocurrencyId' is not provided."
-                  },
-                  "fromCryptocurrencyId": {
-                    "type": "string",
-                    "nullable": true,
-                    "description": "Cryptocurrency ID. Required if 'fromCurrencyId' is not provided."
+                    "description": "Currency ID (FIAT or CRYPTO)."
                   },
                   "buyerKyc": {
                     "type": "boolean",
@@ -527,28 +498,7 @@
                     "nullable": true,
                     "description": "Require the seller to complete KYC verification."
                   }
-                },
-
-                "oneOf": [
-                  {
-                    "required": [
-                      "fromCurrencyId",
-                      "externalClientId",
-                      "externalCheckoutId",
-                      "fromAmount"
-                    ],
-                    "not": { "required": ["fromCryptocurrencyId"] }
-                  },
-                  {
-                    "required": [
-                      "fromCryptocurrencyId",
-                      "externalClientId",
-                      "externalCheckoutId",
-                      "fromAmount"
-                    ],
-                    "not": { "required": ["fromCurrencyId"] }
-                  }
-                ]
+                }
               }
             }
           }
@@ -715,9 +665,6 @@
 
                             "fromAmount": { "type": "string" },
                             "fromCurrencyId": { "type": "string" },
-                            "fromCryptocurrencyId": {
-                              "type": ["string", "null"]
-                            },
 
                             "toAmount": { "type": "string" },
                             "toCurrencyId": { "type": ["string", "null"] },
@@ -783,9 +730,6 @@
 
                                   "fromAmount": { "type": "string" },
                                   "fromCurrencyId": { "type": "string" },
-                                  "fromCryptocurrencyId": {
-                                    "type": ["string", "null"]
-                                  },
 
                                   "toAmount": { "type": "string" },
                                   "toCurrencyId": {
@@ -819,16 +763,6 @@
                             "fromCurrency": {
                               "type": "object",
                               "nullable": true,
-                              "properties": {
-                                "id": { "type": "string" },
-                                "name": { "type": "string" },
-                                "type": { "type": "string" },
-                                "symbol": { "type": "string" }
-                              }
-                            },
-
-                            "fromCryptocurrency": {
-                              "type": "object",
                               "properties": {
                                 "id": { "type": "string" },
                                 "name": { "type": "string" },
@@ -1079,9 +1013,6 @@
                                 "externalClientId": { "type": "string" },
                                 "fromAmount": { "type": "string" },
                                 "fromCurrencyId": { "type": "string" },
-                                "fromCryptocurrencyId": {
-                                  "type": ["string", "null"]
-                                },
                                 "toAmount": { "type": ["string", "null"] },
                                 "toCurrencyId": { "type": ["string", "null"] },
                                 "toCryptocurrencyId": {
@@ -1122,9 +1053,7 @@
                                   "items": { "type": "object" }
                                 },
                                 "fromCurrency": { "type": "object" },
-                                "fromCryptocurrency": {
-                                  "type": ["object", "null"]
-                                },
+
                                 "toCurrency": { "type": ["object", "null"] },
                                 "toCryptocurrency": {
                                   "type": ["object", "null"]
@@ -1240,9 +1169,6 @@
                                 "externalClientId": { "type": "string" },
                                 "fromAmount": { "type": "string" },
                                 "fromCurrencyId": { "type": "string" },
-                                "fromCryptocurrencyId": {
-                                  "type": ["string", "null"]
-                                },
                                 "toAmount": { "type": ["string", "null"] },
                                 "toCurrencyId": { "type": ["string", "null"] },
                                 "toCryptocurrencyId": {
@@ -1282,9 +1208,6 @@
                                   "items": { "type": "object" }
                                 },
                                 "fromCurrency": { "type": "object" },
-                                "fromCryptocurrency": {
-                                  "type": ["object", "null"]
-                                },
                                 "toCurrency": { "type": ["object", "null"] },
                                 "toCryptocurrency": {
                                   "type": ["object", "null"]
@@ -1539,9 +1462,6 @@
                             "externalClientId": { "type": "string" },
                             "fromAmount": { "type": "string" },
                             "fromCurrencyId": { "type": "string" },
-                            "fromCryptocurrencyId": {
-                              "type": ["string", "null"]
-                            },
                             "toAmount": { "type": ["string", "null"] },
                             "toCurrencyId": { "type": ["string", "null"] },
                             "toCryptocurrencyId": {

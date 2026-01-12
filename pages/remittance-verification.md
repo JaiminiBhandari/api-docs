@@ -101,7 +101,8 @@ The following minimum receiving amount limits are currently configured:
 * **India**: Minimum transfer amount is **500.0000 INR**
 * **Philippines**: Minimum transfer amount is **100.0000 PHP**
 
-### Example Limit Messages
+
+<!-- ### Example Limit Messages
 
 * **Minimum limit violation (India)**
   `Minimum transfer amount for India is 500.0000 INR.`
@@ -111,7 +112,7 @@ The following minimum receiving amount limits are currently configured:
 
 Limits are updated automatically when the destination country or receiving currency changes.
 
----
+--- -->
 
 ## Validation Rules
 
@@ -121,7 +122,7 @@ Limits are updated automatically when the destination country or receiving curre
 * Currency and country combinations must be supported.
 * Transfer amount must be within configured limits for the selected country and currency.
 
----
+<!-- ---
 
 ## Error Scenarios
 
@@ -132,16 +133,15 @@ Limits are updated automatically when the destination country or receiving curre
 | RECIPIENT_INVALID       | Selected recipient is invalid or inactive                |
 | TRANSFER_LIMIT_EXCEEDED | Transaction exceeds configured minimum or maximum limits |
 
----
+--- -->
 
-## Environment Notes
+<!-- ## Environment Notes
 
 * This feature is available in both **Sandbox** and **Production**, depending on configuration.
 * Sandbox transactions return predictable responses for testing purposes.
-* No real funds are moved in Sandbox.
+* No real funds are moved in Sandbox. -->
 
----
 
-## Summary
+<!-- ## Summary
 
-The **Send Money** page provides a single, consistent flow for creating GPS remittance transactions across multiple countries. By selecting a destination country, recipient, and amount, users can quickly send funds while the system automatically handles currency conversion, limit enforcement, and validation.
+The **Send Money** page provides a single, consistent flow for creating GPS remittance transactions across multiple countries. By selecting a destination country, recipient, and amount, users can quickly send funds while the system automatically handles currency conversion, limit enforcement, and validation. -->

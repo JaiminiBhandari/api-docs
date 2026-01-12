@@ -19,7 +19,7 @@
   },
   "servers": [
     {
-      "url": "https://platform.arpdigital.io/services/otc"
+      "url": "https://platform.arpdigital.io/services/otc/api/v1"
     }
   ],
   "security": [
@@ -29,10 +29,39 @@
   ],
   "components": {
     "parameters": {
+      "ApiKey": {
+        "name": "X-API-Key",
+        "in": "header",
+        "description": "Your unique API key.",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "Timestamp": {
+        "name": "X-Timestamp",
+        "in": "header",
+        "description": "Current Unix timestamp (in seconds).",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1700000000
+        }
+      },
+      "Signature": {
+        "name": "X-Signature",
+        "in": "header",
+        "description": "HMAC SHA256 signature generated using the request payload and secret key.",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
       "Environment": {
         "name": "X-Environment",
         "in": "header",
-        "description": "Specifies the environment to use (sandbox or production). This determines which database the API interacts with.",
+        "description": "Specifies the environment to use. Determines which database the API interacts with.",
         "required": true,
         "schema": {
           "type": "string",
@@ -50,165 +79,290 @@
       }
     },
     "schemas": {
-      "Trade": {
+      "Currency": {
         "type": "object",
-        "required": ["id", "pair", "amount", "status", "createdAt"],
+        "required": ["id", "symbol", "name"],
         "properties": {
           "id": {
             "type": "string",
-            "description": "Unique trade identifier",
-            "example": "trade_123abc"
+            "description": "Unique currency identifier",
+            "example": "cur_123abc"
           },
-          "pair": {
+          "symbol": {
             "type": "string",
-            "description": "Trading pair (e.g., BTC/USD)",
-            "example": "BTC/USD"
+            "description": "Currency symbol",
+            "example": "USD"
           },
-          "amount": {
-            "type": "number",
-            "format": "double",
-            "description": "Trade amount",
-            "example": 0.5
-          },
-          "price": {
-            "type": "number",
-            "format": "double",
-            "description": "Price at which trade was executed",
-            "example": 43500.5
+          "name": {
+            "type": "string",
+            "description": "Currency name",
+            "example": "US Dollar"
           },
           "type": {
             "type": "string",
-            "enum": ["buy", "sell"],
-            "description": "Trade type",
-            "example": "buy"
+            "enum": ["FIAT", "CRYPTO"],
+            "description": "Currency type",
+            "example": "FIAT"
           },
-          "status": {
-            "type": "string",
-            "enum": ["pending", "completed", "failed", "cancelled"],
-            "description": "Trade status",
-            "example": "completed"
-          },
-          "executedAt": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Execution timestamp",
-            "example": "2025-12-19T10:30:00Z"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Trade creation timestamp",
-            "example": "2025-12-19T10:25:00Z"
-          }
-        }
-      },
-      "CreateTradeRequest": {
-        "type": "object",
-        "required": ["pair", "amount", "type"],
-        "properties": {
-          "pair": {
-            "type": "string",
-            "description": "Trading pair (e.g., BTC/USD)",
-            "example": "BTC/USD"
-          },
-          "amount": {
-            "type": "number",
-            "format": "double",
-            "description": "Amount to trade",
-            "example": 0.5
-          },
-          "type": {
-            "type": "string",
-            "enum": ["buy", "sell"],
-            "description": "Buy or sell order",
-            "example": "buy"
-          },
-          "price": {
-            "type": "number",
-            "format": "double",
-            "description": "Optional limit price",
-            "example": 43500.0
-          },
-          "notes": {
-            "type": "string",
-            "description": "Optional trade notes",
-            "example": "Market order"
-          }
-        }
-      },
-      "TradeResponse": {
-        "type": "object",
-        "required": ["id", "status"],
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Trade ID",
-            "example": "trade_123abc"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["pending", "completed", "failed"],
-            "description": "Trade status",
-            "example": "pending"
+          "decimals": {
+            "type": "integer",
+            "description": "Number of decimal places",
+            "example": 2
           }
         }
       },
       "Quote": {
         "type": "object",
-        "required": ["id", "pair", "amount", "rate", "expiresAt"],
+        "required": [
+          "id",
+          "fromCurrencyId",
+          "toCurrencyId",
+          "rate",
+          "expiresAt"
+        ],
         "properties": {
           "id": {
             "type": "string",
             "description": "Unique quote identifier",
             "example": "quote_456def"
           },
-          "pair": {
+          "fromCurrencyId": {
             "type": "string",
-            "description": "Trading pair",
-            "example": "BTC/USD"
+            "description": "Source currency ID",
+            "example": "cur_123abc"
           },
-          "amount": {
-            "type": "number",
-            "format": "double",
-            "description": "Quote amount",
-            "example": 0.5
+          "toCurrencyId": {
+            "type": "string",
+            "description": "Destination currency ID",
+            "example": "cur_456def"
+          },
+          "fromAmount": {
+            "type": "string",
+            "description": "Amount from source currency",
+            "example": "100.00"
+          },
+          "toAmount": {
+            "type": "string",
+            "description": "Amount in destination currency",
+            "example": "98.50"
           },
           "rate": {
-            "type": "number",
-            "format": "double",
+            "type": "string",
             "description": "Exchange rate",
-            "example": 43500.5
+            "example": "0.985000"
           },
           "expiresAt": {
             "type": "string",
             "format": "date-time",
             "description": "Quote expiration timestamp",
-            "example": "2025-12-19T10:35:00Z"
+            "example": "2025-12-23T10:20:00Z"
           },
           "createdAt": {
             "type": "string",
             "format": "date-time",
-            "description": "Quote creation timestamp"
+            "description": "Quote creation timestamp",
+            "example": "2025-12-23T10:10:00Z"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Quote labels (e.g., Pro Trading, Standard Trading)",
+            "example": ["Standard Trading"]
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "External reference identifier",
+            "example": "ext_ref_123"
           }
+        }
+      },
+      "Trade": {
+        "type": "object",
+        "required": [
+          "id",
+          "fromCurrencyId",
+          "toCurrencyId",
+          "status",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique trade identifier",
+            "example": "trade_123abc"
+          },
+          "fromCurrencyId": {
+            "type": "string",
+            "description": "Source currency ID",
+            "example": "cur_123abc"
+          },
+          "toCurrencyId": {
+            "type": "string",
+            "description": "Destination currency ID",
+            "example": "cur_456def"
+          },
+          "fromCurrency": {
+            "$ref": "#/components/schemas/Currency",
+            "description": "Source currency details"
+          },
+          "toCurrency": {
+            "$ref": "#/components/schemas/Currency",
+            "description": "Destination currency details"
+          },
+          "fromAmount": {
+            "type": "string",
+            "description": "Amount from source currency",
+            "example": "100.00"
+          },
+          "toAmount": {
+            "type": "string",
+            "description": "Amount in destination currency",
+            "example": "98.50"
+          },
+          "rate": {
+            "type": "string",
+            "description": "Exchange rate used for trade",
+            "example": "0.985000"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["ONRAMP", "OFFRAMP", "CRYPTO"],
+            "description": "Trade type based on currency types",
+            "example": "ONRAMP"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "PROCESSING",
+              "COMPLETED",
+              "FAILED",
+              "CANCELLED"
+            ],
+            "description": "Trade status",
+            "example": "COMPLETED"
+          },
+          "quote": {
+            "$ref": "#/components/schemas/Quote",
+            "description": "Associated quote details"
+          },
+          "organization": {
+            "type": "object",
+            "description": "Organization details",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "org_123"
+              },
+              "name": {
+                "type": "string",
+                "example": "Acme Corp"
+              }
+            }
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "External reference identifier",
+            "example": "ext_ref_123"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Trade creation timestamp",
+            "example": "2025-12-23T10:10:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp",
+            "example": "2025-12-23T10:15:00Z"
+          }
+        }
+      },
+      "CreateTradeRequest": {
+        "type": "object",
+        "required": ["quoteId"],
+        "properties": {
+          "quoteId": {
+            "type": "string",
+            "description": "ID of the quote to execute trade on",
+            "example": "quote_456def"
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "Optional external reference identifier",
+            "example": "ext_ref_123"
+          }
+        }
+      },
+      "GetQuoteRequest": {
+        "type": "object",
+        "properties": {
+          "fromCurrency": {
+            "type": "string",
+            "description": "Source currency symbol (e.g., USD, EUR)",
+            "example": "USD"
+          },
+          "toCurrency": {
+            "type": "string",
+            "description": "Destination currency symbol (e.g., BTC, ETH)",
+            "example": "BTC"
+          },
+          "fromCurrencyId": {
+            "type": "string",
+            "description": "Source currency ID",
+            "example": "cur_123abc"
+          },
+          "toCurrencyId": {
+            "type": "string",
+            "description": "Destination currency ID",
+            "example": "cur_456def"
+          },
+          "fromAmount": {
+            "type": "number",
+            "description": "Amount to convert from source currency",
+            "example": 100.0
+          },
+          "toAmount": {
+            "type": "number",
+            "description": "Amount in destination currency (alternative to fromAmount)",
+            "example": 0.0025
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "Optional external reference identifier",
+            "example": "ext_ref_123"
+          }
+        }
+      },
+      "TradeListResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Trade"
         }
       },
       "Error": {
         "type": "object",
-        "required": ["code", "message"],
+        "required": ["error"],
         "properties": {
-          "code": {
-            "type": "string",
-            "description": "Error code",
-            "example": "INVALID_PAIR"
+          "error": {
+            "type": "string"
           },
-          "message": {
-            "type": "string",
-            "description": "Error message",
-            "example": "Trading pair is not supported"
-          },
-          "details": {
+          "errorDetails": {
             "type": "object",
-            "description": "Additional error details"
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            }
           }
         }
       }
@@ -257,12 +411,12 @@
     }
   },
   "paths": {
-    "/api/v1/trades": {
+    "/trades": {
       "get": {
         "tags": ["Trades"],
         "operationId": "getTrades",
-        "summary": "Get trades",
-        "description": "Retrieve user's trading history with optional filtering and pagination",
+        "summary": "Get user trades",
+        "description": "Retrieve authenticated user's trading history with optional filtering and pagination",
         "parameters": [
           {
             "name": "status",
@@ -271,12 +425,21 @@
             "schema": {
               "type": "string",
               "enum": [
-                "pending",
-                "completed",
-                "failed",
-                "cancelled",
-                "PROCESSING"
+                "PENDING",
+                "PROCESSING",
+                "COMPLETED",
+                "FAILED",
+                "CANCELLED"
               ]
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter by trade type",
+            "schema": {
+              "type": "string",
+              "enum": ["ONRAMP", "OFFRAMP", "CRYPTO"]
             }
           },
           {
@@ -291,6 +454,22 @@
             "name": "toCurrencyId",
             "in": "query",
             "description": "Filter by destination currency ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "inventoryTrade",
+            "in": "query",
+            "description": "Filter by inventory trade status (true or false)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search by trade ID or organization name",
             "schema": {
               "type": "string"
             }
@@ -314,32 +493,27 @@
             }
           },
           {
-            "name": "X-API-Key",
-            "in": "header",
-            "required": true,
+            "name": "page",
+            "in": "query",
+            "description": "Page number (default: 1)",
             "schema": {
-              "type": "string"
-            },
-            "description": "Your API key"
+              "type": "integer",
+              "default": 1
+            }
           },
           {
-            "name": "X-Timestamp",
-            "in": "header",
-            "required": true,
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page (default: 10)",
             "schema": {
-              "type": "integer"
-            },
-            "description": "Current Unix timestamp in seconds"
+              "type": "integer",
+              "default": 10
+            }
           },
-          {
-            "name": "X-Signature",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
-          }
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
         ],
         "responses": {
           "200": {
@@ -347,10 +521,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Trade"
-                  }
+                  "$ref": "#/components/schemas/TradeListResponse"
                 }
               }
             }
@@ -372,8 +543,14 @@
       "post": {
         "tags": ["Trades"],
         "operationId": "createTrade",
-        "summary": "Create trade",
-        "description": "Create a new buy or sell trade. Submit the trade request and receive a trade ID with status.",
+        "summary": "Create a new trade",
+        "description": "Create a new trade by providing a valid quote ID. The trade will be executed with the quote's exchange rate.",
+        "parameters": [
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -384,42 +561,13 @@
             }
           }
         },
-        "parameters": [
-          {
-            "name": "X-API-Key",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Your API key"
-          },
-          {
-            "name": "X-Timestamp",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Current Unix timestamp in seconds"
-          },
-          {
-            "name": "X-Signature",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
-          }
-        ],
         "responses": {
           "201": {
             "description": "Trade created successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TradeResponse"
+                  "$ref": "#/components/schemas/Trade"
                 }
               }
             }
@@ -439,68 +587,85 @@
         }
       }
     },
-    "/api/v1/quotes": {
+    "/trades/{id}": {
+      "get": {
+        "tags": ["Trades"],
+        "operationId": "getTrade",
+        "summary": "Get trade by ID",
+        "description": "Retrieve details of a specific trade by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Trade ID"
+          },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trade retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Trade"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "Trade not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/quotes": {
       "post": {
         "tags": ["Quotes"],
-        "operationId": "createQuote",
-        "summary": "Create quote",
-        "description": "Create a new trading quote with current exchange rate. Quotes are typically valid for a limited time.",
+        "operationId": "getQuote",
+        "summary": "Get a price quote",
+        "description": "Get a real-time price quote for a currency pair. You can provide either currency symbols or currency IDs, and either fromAmount or toAmount.",
+        "parameters": [
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": ["pair", "amount"],
-                "properties": {
-                  "pair": {
-                    "type": "string",
-                    "description": "Trading pair (e.g., BTC/USD)",
-                    "example": "BTC/USD"
-                  },
-                  "amount": {
-                    "type": "number",
-                    "format": "double",
-                    "description": "Amount to quote",
-                    "example": 0.5
-                  }
-                }
+                "$ref": "#/components/schemas/GetQuoteRequest"
               }
             }
           }
         },
-        "parameters": [
-          {
-            "name": "X-API-Key",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Your API key"
-          },
-          {
-            "name": "X-Timestamp",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Current Unix timestamp in seconds"
-          },
-          {
-            "name": "X-Signature",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "HMAC SHA256 signature of apiKey + requestBody + timestamp using your API secret"
-          }
-        ],
         "responses": {
-          "201": {
-            "description": "Quote created successfully",
+          "200": {
+            "description": "Quote retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {

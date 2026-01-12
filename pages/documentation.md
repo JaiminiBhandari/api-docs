@@ -56,4 +56,5 @@ The signature is generated using HMAC SHA256 with the following steps:
 
 ## Servers
 
-- **Sandbox Environment:** `https://platform.arpdigital.io/api/v1`
+- **Sandbox Environment:** `https://platform.stage.arpdigital.io/api/v1`
+- **Production Environment:** `https://platform.arpdigital.io/api/v1`
