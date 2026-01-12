@@ -11,6 +11,7 @@ Every API request must include the following headers:
 - `X-API-Key`: Your unique API key
 - `X-Timestamp`: Current Unix timestamp in seconds
 - `X-Signature`: HMAC SHA256 signature
+- `X-Environment` : `sandbox` or `production`
 
 ## Signature Generation
 
@@ -25,7 +26,7 @@ signature = HMAC-SHA256(apiSecret, apiKey + requestBody + timestamp)
 1. **Get current timestamp**: Unix timestamp in seconds
 2. **Prepare the message**: Concatenate `apiKey + requestBody + timestamp`
 3. **Generate signature**: Create HMAC SHA256 hash using your API secret as the key
-4. **Include headers**: Add all required headers to your request
+4. **Include headers**: Add `X-API-Key`, `X-Timestamp`, `X-Signature`, `X-Environment` required headers to your request
 
 ## Code Examples
 
@@ -69,6 +70,7 @@ async function makeApiRequest(endpoint, requestBody = "") {
       "X-API-Key": apiKey,
       "X-Timestamp": timestamp.toString(),
       "X-Signature": signature,
+      "X-Environment": "sandbox", // or "production"
     },
     body: requestBody,
   });
@@ -83,9 +85,8 @@ const quoteRequest = JSON.stringify({
   fromAmount: 100,
 });
 
-makeApiRequest("/quote", quoteRequest)
-  .then(data => console.log("Quote:", data))
-  .catch(error => console.error("Error:", error));
+const data = await makeApiRequest("/quote", quoteRequest)
+console.log("Quote:", data);
 ```
 
 ### Python
@@ -123,11 +124,11 @@ def make_api_request(endpoint, request_body=''):
         'Content-Type': 'application/json',
         'X-API-Key': api_key,
         'X-Timestamp': str(timestamp),
-        'X-Signature': signature
+        'X-Signature': signature,
+        'X-Environment': 'sandbox'  # or 'production'
     }
 
     response = requests.post(
-        <!-- f'https://gps.arpdigital.io/api/v1{endpoint}', -->
         f'https://platform.arpdigital.io/api/v1{endpoint}',
         headers=headers,
         data=request_body
@@ -173,12 +174,13 @@ function makeApiRequest($endpoint, $requestBody = '') {
         'Content-Type: application/json',
         'X-API-Key: ' . $apiKey,
         'X-Timestamp: ' . $timestamp,
-        'X-Signature: ' . $signature
+        'X-Signature: ' . $signature,
+        'X-Environment: sandbox' // or "production"
     ];
 
     $curl = curl_init();
     curl_setopt_array($curl, [
-        CURLOPT_URL => 'https://gps.arpdigital.io/api/v1' . $endpoint,
+        CURLOPT_URL => 'https://platform.arpdigital.io/api/v1' . $endpoint,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST => true,
         CURLOPT_POSTFIELDS => $requestBody,
@@ -206,23 +208,13 @@ echo 'Quote: ' . print_r($result, true);
 ### cURL
 
 ```bash
-#!/bin/bash
-
-API_KEY="your_api_key_here"
-API_SECRET="your_api_secret_here"
-TIMESTAMP=$(date +%s)
-REQUEST_BODY='{"fromCurrency":"USD","toCurrency":"PHP","fromAmount":100}'
-
-# Generate signature (requires openssl)
-MESSAGE="${API_KEY}${REQUEST_BODY}${TIMESTAMP}"
-SIGNATURE=$(echo -n "$MESSAGE" | openssl dgst -sha256 -hmac "$API_SECRET" -hex | sed 's/^.* //')
-
-curl -X POST "https://gps.arpdigital.io/api/v1/quote" \
+curl -X POST "https://platform.arpdigital.io/api/v1/quote" \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: $API_KEY" \
-  -H "X-Timestamp: $TIMESTAMP" \
-  -H "X-Signature: $SIGNATURE" \
-  -d "$REQUEST_BODY"
+  -H "X-API-Key: <your_api_key_here>" \
+  -H "X-Timestamp: <current_timestamp_in_millis>" \
+  -H "X-Signature: <your_signature_key_here>" \
+  -H "X-Environment: sandbox or production" \
+  -d "$REQUEST_BODY: "{fromCurrency":"USD","toCurrency":"PHP","fromAmount":100}"
 ```
 
 ## Interactive Signature Generator
@@ -238,7 +230,7 @@ curl -X POST "https://gps.arpdigital.io/api/v1/quote" \
 
 ### Request Body Handling
 
-- For GET requests with no body, use an empty string `""`
+- For GET requests don't include a request body
 - For POST/PUT requests, use the exact JSON string that will be sent
 - Ensure consistent encoding (UTF-8)
 
@@ -252,8 +244,8 @@ curl -X POST "https://gps.arpdigital.io/api/v1/quote" \
 
 #### Timestamp Too Old (403 Forbidden)
 
-- Generate a fresh timestamp for each request
-- Check your system clock synchronization
+- Generate a fresh signature for each request
+
 
 #### Missing Headers (403 Forbidden)
 
@@ -261,18 +253,7 @@ curl -X POST "https://gps.arpdigital.io/api/v1/quote" \
   - `X-API-Key`
   - `X-Timestamp`
   - `X-Signature`
-
-## Testing Your Implementation
-
-Use our signature validation endpoint to test your implementation:
-
-```javascript
-// Test endpoint for signature validation
-const testSignature = async () => {
-  const response = await makeApiRequest("/test-auth", "");
-  console.log("Auth test result:", response);
-};
-```
+  - `X-Environment`
 
 If your signature generation is correct, you should receive a success response. If not, check the error message for guidance on what might be wrong.
 
