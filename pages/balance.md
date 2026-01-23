@@ -8,11 +8,9 @@ Your account balance represents the total balance available in your ARP Digital 
 
 ## Viewing Your Balance
 
-### Dashboard Balance Overview
+### Using the API
 
-1. Log in to your [ARP Digital Dashboard](https://platform.arpdigital.io)
-2. Your total balance is displayed prominently on the main dashboard
-3. Click on "Balance" in the sidebar for detailed breakdown
+To retrieve your balance information, use the **[Get Balances](/wallet-api/balances#get-balances)** API endpoint. This endpoint returns all balance information for your organization, including fiat and cryptocurrency holdings.
 
 ## Balance Details
 
