@@ -440,7 +440,7 @@
     }
   ],
   "paths": {
-    "api/v1/balance": {
+    "/api/v1/balance": {
       "get": {
         "summary": "Get Balances",
         "description": "Retrieve all balance information for the authenticated organization",
@@ -487,7 +487,7 @@
         }
       }
     },
-    "api/v1/wallets": {
+    "/api/v1/wallets": {
       "get": {
         "summary": "List Wallets",
         "description": "Retrieve all wallets for the authenticated organization",
@@ -597,7 +597,7 @@
         }
       }
     },
-    "api/v1/wallets/{id}": {
+    "/api/v1/wallets/{id}": {
       "get": {
         "summary": "Get Wallet",
         "description": "Retrieve a specific wallet by ID",
@@ -643,7 +643,7 @@
         }
       }
     },
-    "api/v1/bank-accounts": {
+    "/api/v1/bank-accounts": {
       "get": {
         "summary": "List Bank Accounts",
         "description": "Retrieve all bank accounts for the authenticated organization",
@@ -777,7 +777,7 @@
         }
       }
     },
-    "api/v1/bank-accounts/{id}": {
+    "/api/v1/bank-accounts/{id}": {
       "get": {
         "summary": "Get Bank Account",
         "description": "Retrieve a specific bank account by ID",
@@ -823,7 +823,7 @@
         }
       }
     },
-    "api/v1/deposits": {
+    "/api/v1/deposits": {
       "get": {
         "summary": "List Deposits",
         "description": "Retrieve deposits for the authenticated organization",
@@ -976,7 +976,7 @@
         }
       }
     },
-    "api/v1/deposits/{id}": {
+    "/api/v1/deposits/{id}": {
       "get": {
         "summary": "Get Deposit",
         "description": "Retrieve a specific deposit by ID",
@@ -1022,7 +1022,7 @@
         }
       }
     },
-    "api/v1/withdrawals": {
+    "/api/v1/withdrawals": {
       "get": {
         "summary": "List Withdrawals",
         "description": "Retrieve withdrawals for the authenticated organization",
@@ -1181,7 +1181,7 @@
         }
       }
     },
-    "api/v1/withdrawals/{id}": {
+    "/api/v1/withdrawals/{id}": {
       "get": {
         "summary": "Get Withdrawal",
         "description": "Retrieve a specific withdrawal by ID",
