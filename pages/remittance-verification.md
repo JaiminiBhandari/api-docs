@@ -8,37 +8,39 @@ This flow supports **multiple countries and currencies** in a single unified int
 
 ---
 
+## How to Send Money (Remittance Process)
+
+The remittance process involves three main steps:
+
+### 1. Create a Recipient
+
+Creating a recipient is the first step in sending money internationally. Recipients must be verified before they can receive funds, and the verification process varies by destination country.
+
+To create a recipient, use the **[Create Recipient](/remittance-api/recipients#create-recipient)** API endpoint.
+
+### 2. Get a Quote
+
+Before executing a transaction, obtain a real-time exchange rate quote for the desired currency pair.
+
+Use the **[Get Exchange Rate Quote](/remittance-api/quotes#get-exchange-rate-quote)** API endpoint to get a quote.
+
+### 3. Execute Transaction
+
+Once you have a quote and a verified recipient, execute the remittance transaction.
+
+Use the **[Execute Transaction](/remittance-api/transactions#execute-transaction)** API endpoint to complete the transfer.
+
 ## Supported Countries
 
 The Send Money feature currently supports the following destination countries:
 
-* India
-* Philippines
-* Hong Kong
-* United Arab Emirates
-* Saudi Arabia
+- India
+- Philippines
+- Hong Kong
+- United Arab Emirates
+- Saudi Arabia
 
 > Available countries may vary by environment and configuration.
-
----
-
-## How to Send Money
-
-Follow the steps below to create a remittance transaction. The same flow applies to **all supported countries**.
-
-### Step-by-Step Instructions
-
-1. Go to **Balance** from the sidebar.
-2. Click to the **Send** button in the pop-over.
-3. Select the **destination country** from the Country dropdown.
-4. In the **Send Money** page, locate the **Recipient** section.
-5. Select an existing **recipient** or create a new one if required.
-6. In the **Transfer Details** section, enter the amount you want to send.
-7. Select the **send currency** (wallet currency).
-8. Review the **receiving amount and currency**, calculates automatically.
-9. Verify all details and confirm the transaction.
-
----
 
 ## Field Descriptions
 
@@ -62,9 +64,9 @@ Follow the steps below to create a remittance transaction. The same flow applies
 
 ## Currency Behavior
 
-* Exchange rates are applied automatically based on the selected country and currencies.
-* The **Receive** amount updates in real time when the send amount changes.
-* Currency pairs are restricted to supported corridors only.
+- Exchange rates are applied automatically based on the selected country and currencies.
+- The **Receive** amount updates in real time when the send amount changes.
+- Currency pairs are restricted to supported corridors only.
 
 ---
 
@@ -74,74 +76,60 @@ Transfer limits are enforced **per destination country and receiving currency**.
 
 ### Supported Receiving Currencies
 
-* USD
-* AED
-* BHD
-* SAR
-* USDT
-* USDC
+- USD
+- AED
+- BHD
+- SAR
+- USDT
+- USDC
 
 > Available currencies depend on the selected destination country and corridor configuration.
 
 #### Country-Specific Currency Support
 
-* **United Arab Emirates (UAE)**: Supports only **USDT** and **USDC**.
-* **Saudi Arabia (SAR)**: Supports only **USDT** and **USDC**.
+- **United Arab Emirates (UAE)**: Supports only **USDT** and **USDC**.
+- **Saudi Arabia (SAR)**: Supports only **USDT** and **USDC**.
 
 ### Limit Rules
 
-* Each country–currency pair has its own **minimum** and **maximum** transfer amount.
-* Limits are applied to the **receiving amount** (They Receive).
-* Transactions outside configured limits are blocked.
+- Each country–currency pair has its own **minimum** and **maximum** transfer amount.
+- Limits are applied to the **receiving amount** (They Receive).
+- Transactions outside configured limits are blocked.
 
 ### Country-Specific Minimum Limits
 
 The following minimum receiving amount limits are currently configured:
 
-* **India**: Minimum transfer amount is **500.0000 INR**
-* **Philippines**: Minimum transfer amount is **100.0000 PHP**
+#### Business
 
+| Country              | Minimum Transfer Amount | Maximum Transfer Amount |
+| -------------------- | ----------------------- | ----------------------- |
+| India                | 500.0000                | 2,000,000.0000          |
+| Philippines          | 500.0000                | 1,000,000.0000          |
+| Hong Kong            | 100.0000                | 5,000,000.0000          |
+| Saudi Arabia         | N/A                     | N/A                     |
+| United Arab Emirates | N/A                     | N/A                     |
 
-<!-- ### Example Limit Messages
+#### Individual
 
-* **Minimum limit violation (India)**
-  `Minimum transfer amount for India is 500.0000 INR.`
-
-* **Minimum limit violation (Philippines)**
-  `Minimum transfer amount for Philippines is 100.0000 PHP.`
+| Country              | Minimum Transfer Amount | Maximum Transfer Amount |
+| -------------------- | ----------------------- | ----------------------- |
+| India                | 500.0000                | 1,000,000.0000          |
+| Philippines          | 100.0000                | 500,000.0000            |
+| Hong Kong            | 100.0000                | 1,000,000.0000          |
+| Saudi Arabia         | N/A                     | N/A                     |
+| United Arab Emirates | N/A                     | N/A                     |
 
 Limits are updated automatically when the destination country or receiving currency changes.
 
---- -->
+---
 
 ## Validation Rules
 
-* You must have sufficient wallet balance to initiate a transfer.
-* The selected country must be supported.
-* A valid recipient must be selected.
-* Currency and country combinations must be supported.
-* Transfer amount must be within configured limits for the selected country and currency.
+- You must have sufficient wallet balance to initiate a transfer.
+- The selected country must be supported.
+- A valid recipient must be selected.
+- Currency and country combinations must be supported.
+- Transfer amount must be within configured limits for the selected country and currency.
 
-<!-- ---
-
-## Error Scenarios
-
-| Error Code              | Description                                              |
-| ----------------------- | -------------------------------------------------------- |
-| INSUFFICIENT_FUNDS      | Wallet balance is not enough to complete the transfer    |
-| CORRIDOR_NOT_SUPPORTED  | Selected country or currency pair is not supported       |
-| RECIPIENT_INVALID       | Selected recipient is invalid or inactive                |
-| TRANSFER_LIMIT_EXCEEDED | Transaction exceeds configured minimum or maximum limits |
-
---- -->
-
-<!-- ## Environment Notes
-
-* This feature is available in both **Sandbox** and **Production**, depending on configuration.
-* Sandbox transactions return predictable responses for testing purposes.
-* No real funds are moved in Sandbox. -->
-
-
-<!-- ## Summary
-
-The **Send Money** page provides a single, consistent flow for creating GPS remittance transactions across multiple countries. By selecting a destination country, recipient, and amount, users can quickly send funds while the system automatically handles currency conversion, limit enforcement, and validation. -->
+---
