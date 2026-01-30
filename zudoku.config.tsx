@@ -8,6 +8,7 @@ const commonPlugin: ZudokuPlugin = {
       <link rel="stylesheet" href="/custom-styles.css" />
       <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
       <script src="/pagefind/pagefind-ui.js" defer></script>
+      <link rel="icon" href="/favicon.ico" />
     </>
   ),
   getMdxComponents: () => ({
@@ -29,6 +30,7 @@ const config: ZudokuConfig = {
     defaultOptions: {
       copyPage: false,
     },
+
   },
 
   site: {
@@ -44,6 +46,7 @@ const config: ZudokuConfig = {
     footer: {
       copyright: "",
     },
+ 
   },
 
   plugins: [commonPlugin],
@@ -251,23 +254,21 @@ const config: ZudokuConfig = {
           to: "/wallet-api",
           icon: "wallet",
         },
+        {
+          type: "link",
+          label: "OTC API",
+          to: "/otc-api",
+          icon: "trending-up",
+        },
       ],
     },
 
-    {
-      type: "link",
-      label: "Remittance API",
-      to: "/remittance-api",
-      icon: "dollar-sign",
-    },
+    { type: "link",label: "Remittance API",to: "/remittance-api",icon: "dollar-sign",},
     { type: "link", label: "Trade API", to: "/trade-api", icon: "chart-line" },
-    {
-      type: "link",
-      label: "Checkout API",
-      to: "/checkout-api",
-      icon: "credit-card",
-    },
+    {type: "link",label: "Checkout API",to: "/checkout-api",icon: "credit-card"},
     { type: "link", label: "Wallet API", to: "/wallet-api", icon: "wallet" },
+    {type:"link",label: "OTC API",to: "/otc-api",icon: "trending-up"},
+  
 
     // =========================
     // API CATALOG
@@ -305,6 +306,11 @@ const config: ZudokuConfig = {
       type: "file",
       input: "./schema/wallet-openapi.json",
       path: "wallet-api",
+    },
+    {
+      type: "file",
+      input: "./schema/otc-openapi.json",
+      path: "otc-api",
     },
   ],
 
