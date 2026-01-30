@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 
 export const API_CATALOG = [
@@ -21,6 +22,11 @@ export const API_CATALOG = [
     description: "Balances, wallets, deposits, and withdrawals.",
     path: "/wallet-api",
   },
+  {
+    title: "OTC API",
+    description: "Over-the-counter trading APIs for large transactions.",
+    path: "/otc-api",
+  }
 ];
 
 export default function ApiCatalog() {
