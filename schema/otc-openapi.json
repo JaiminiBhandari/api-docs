@@ -1,0 +1,751 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ARP OTC Trading API",
+    "version": "1.0.0",
+    "description": "Bank-facing API for ARP OTC Trading platform allowing banks to execute buy/sell trades for cryptocurrencies.\n\n## Authentication\nAll API requests require Bearer token authentication via the Authorization header.\n"
+  },
+  "servers": [
+    {
+      "url": "https://platform.arpdigital.io/services/otc/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "OTC Trading",
+      "description": "Execute and manage OTC cryptocurrency trades"
+    },
+    {
+      "name": "Balances",
+      "description": "Retrieve customer and bank balance information"
+    }
+  ],
+  "components": {
+    "parameters": {
+      "Authorization": {
+        "name": "Authorization",
+        "in": "header",
+        "description": "Bearer token for authentication",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "Bearer <BANK_ACCESS_TOKEN>"
+        }
+      },
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "description": "UUID v4 for request idempotency (required for trade endpoint)",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "550e8400-e29b-41d4-a716-446655440000"
+        }
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "TradeRequest": {
+        "type": "object",
+        "required": ["organizationId", "bankCustomerRef", "asset", "quantity", "quoteId", "side"],
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "description": "Partner bank identifier",
+            "example": "org_001"
+          },
+          "bankCustomerRef": {
+            "type": "string",
+            "description": "Bank's internal customer ID",
+            "example": "CUST_10293"
+          },
+          "asset": {
+            "type": "string",
+            "description": "Asset symbol (BTC, ETH, etc.)",
+            "example": "BTC"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Trade quantity",
+            "example": 0.5
+          },
+          "quoteId": {
+            "type": "string",
+            "description": "Quote received via WebSocket",
+            "example": "qt_91bc72"
+          },
+          "side": {
+            "type": "string",
+            "enum": ["buy", "sell"],
+            "description": "Trade side",
+            "example": "buy"
+          }
+        }
+      },
+      "TradeResponse": {
+        "type": "object",
+        "properties": {
+          "tradeId": {
+            "type": "string",
+            "example": "tr_82ac19"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["COMPLETED", "PENDING"],
+            "example": "COMPLETED"
+          },
+          "side": {
+            "type": "string",
+            "enum": ["buy", "sell"],
+            "example": "buy"
+          },
+          "asset": {
+            "type": "string",
+            "example": "BTC"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 0.5
+          },
+          "price": {
+            "type": "string",
+            "example": "42350.25"
+          },
+          "notional": {
+            "type": "string",
+            "example": "21175.12"
+          },
+          "executedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-01-23T10:44:58Z"
+          }
+        }
+      },
+      "TradeStatusResponse": {
+        "type": "object",
+        "properties": {
+          "tradeId": {
+            "type": "string",
+            "example": "tr_82ac19"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["COMPLETED", "PENDING"],
+            "example": "COMPLETED"
+          },
+          "side": {
+            "type": "string",
+            "enum": ["buy", "sell"],
+            "example": "buy"
+          },
+          "asset": {
+            "type": "string",
+            "example": "BTC"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 0.5
+          },
+          "price": {
+            "type": "string",
+            "example": "42350.25"
+          },
+          "executedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-01-23T10:44:58Z"
+          }
+        }
+      },
+      "CustomerBalancesResponse": {
+        "type": "object",
+        "properties": {
+          "bankCustomerRef": {
+            "type": "string",
+            "example": "CUST_10293"
+          },
+          "balances": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "asset": {
+                  "type": "string",
+                  "example": "BTC"
+                },
+                "available": {
+                  "type": "string",
+                  "example": "1.25"
+                },
+                "locked": {
+                  "type": "string",
+                  "example": "0.0"
+                }
+              }
+            }
+          }
+        }
+      },
+      "BankBalanceResponse": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "availableBalance": {
+            "type": "string",
+            "example": "980000.00"
+          },
+          "lockedBalance": {
+            "type": "string",
+            "example": "20000.00"
+          }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "externalRef": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CustomerListResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Customer"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "totalPages": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "CustomerCreateRequest": {
+        "type": "object",
+        "required": ["externalRef"],
+        "properties": {
+          "externalRef": {
+            "type": "string",
+            "example": "Test"
+          }
+        }
+      },
+      "CustomerResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Customer"
+          }
+        }
+      },
+      "CustomerEnableRequest": {
+        "type": "object",
+        "required": ["enabled"],
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Bearer token authentication"
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/trade": {
+      "post": {
+        "tags": ["OTC Trading"],
+        "summary": "Execute OTC Trade",
+        "description": "Execute a buy or sell trade for cryptocurrencies using a valid quote",
+        "operationId": "executeTrade",
+        "parameters": [
+          { "$ref": "#/components/parameters/Authorization" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TradeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Trade completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TradeResponse"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Trade accepted for processing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "tradeId": {
+                      "type": "string",
+                      "example": "tr_82ac19"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "PENDING"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid quote or insufficient funds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trades/{tradeId}": {
+      "get": {
+        "tags": ["OTC Trading"],
+        "summary": "Get Trade Status",
+        "description": "Retrieve the status and details of a specific trade",
+        "operationId": "getTradeStatus",
+        "parameters": [
+          {
+            "name": "tradeId",
+            "in": "path",
+            "required": true,
+            "description": "Trade ID",
+            "schema": {
+              "type": "string",
+              "example": "tr_82ac19"
+            }
+          },
+          { "$ref": "#/components/parameters/Authorization" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved trade status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TradeStatusResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Trade not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{bankCustomerRef}/balances": {
+      "get": {
+        "tags": ["Balances"],
+        "summary": "Get Customer Balances",
+        "description": "Retrieve balance information for a specific customer",
+        "operationId": "getCustomerBalances",
+        "parameters": [
+          {
+            "name": "bankCustomerRef",
+            "in": "path",
+            "required": true,
+            "description": "Bank's internal customer reference",
+            "schema": {
+              "type": "string",
+              "example": "CUST_10293"
+            }
+          },
+          { "$ref": "#/components/parameters/Authorization" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved customer balances",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerBalancesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bank/balance": {
+      "get": {
+        "tags": ["Balances"],
+        "summary": "Get Bank Balance",
+        "description": "Retrieve the bank's available and locked balance",
+        "operationId": "getBankBalance",
+        "parameters": [
+          { "$ref": "#/components/parameters/Authorization" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved bank balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BankBalanceResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/client/customers/list": {
+      "get": {
+        "tags": ["Customers"],
+        "summary": "List Customers",
+        "description": "Retrieve a paginated list of customers",
+        "operationId": "listCustomers",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number to fetch",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "includeHidden",
+            "in": "query",
+            "description": "Whether to include hidden/disabled customers",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved customer list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/client/customers/create": {
+      "post": {
+        "tags": ["Customers"],
+        "summary": "Create Customer",
+        "description": "Create a new customer",
+        "operationId": "createCustomer",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/client/customers/{id}": {
+      "get": {
+        "tags": ["Customers"],
+        "summary": "Get Customer by ID",
+        "description": "Fetch details for a single customer by ID",
+        "operationId": "getCustomer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique customer identifier",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved customer details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Customer not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/client/customers/{id}/enable": {
+      "patch": {
+        "tags": ["Customers"],
+        "summary": "Enable/Disable Customer",
+        "description": "Enable or disable a customer",
+        "operationId": "enableCustomer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique customer identifier",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerEnableRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer enabled/disabled successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Customer not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
