@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "https://platform.arpdigital.io/services/wallet/",
+      "url": "https://platform.arpdigital.io/services/wallet",
       "description": "Wallet API endpoint"
     }
   ],
