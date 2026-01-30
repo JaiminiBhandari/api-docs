@@ -127,6 +127,25 @@ All API requests require authentication using API key and signature. You must in
 - `GET /fiat-channels` - Get available fiat channels
 - `POST /test-auth` - Test authentication */}
 
+## OTC API
+
+### OTC Trading
+
+- `POST otc/api/v1/trade` - Execute OTC trade (buy/sell cryptocurrency)
+- `GET otc/api/v1/trades/{tradeId}` - Get trade status by ID
+
+### Balances
+
+- `GET otc/api/v1/customers/{bankCustomerRef}/balances` - Get customer balances
+- `GET otc/api/v1/bank/balance` - Get bank balance
+
+### Customers
+
+- `GET otc/api/v1/client/customers/list` - List customers
+- `POST otc/api/v1/client/customers/create` - Create customer
+- `GET otc/api/v1/client/customers/{id}` - Get customer by ID
+- `PATCH otc/api/v1/client/customers/{id}/enable` - Enable/Disable customer
+
 ## Servers
 
 - **Production Environment:** `https://platform.arpdigital.io/services`
