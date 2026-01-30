@@ -10,12 +10,8 @@ ARP Digital provides a programmable layer for sending funds across borders with 
 
 - **Send Money Globally**: Transfer funds to 10+ countries
 - **Manage Recipients**: Create and verify recipient profiles with KYC compliance
-- **Real-time Quotes**: Get live exchange rates quote
+- **Real-time Quotes**: Get live exchange rate quotes
 - **Transaction Tracking**: Monitor transfer status in real-time
 - **Compliance Built-in**: Automated AML/KYC verification
 - **Developer-Friendly**: RESTful API with comprehensive documentation
 - **Cryptocurrency Checkouts**: Process crypto transactions with our Gate services
-
-
-
-
