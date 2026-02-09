@@ -653,19 +653,16 @@
           "type": "INDIVIDUAL",
           "country": "PHL",
           "verificationInfo": {
-            "firstName": "John",
-            "lastName": "Doe",
-            "middleName": "Smith",
-            "birthdate": "1990-01-01",
-            "address": "123 Main St, Manila"
+            "firstName": "Juan",
+            "lastName": "Cruz"
           },
           "paymentMethods": [
             {
-              "type": "BANK_ACCOUNT",
+              "type": "PESONET",
               "metadata": {
-                "bankName": "Philippines National Bank",
-                "accountNumber": "1234567890",
-                "accountHolderName": "John S. Doe"
+                "channel": "bdouni",
+                "name": "Juan Dela Cruz",
+                "accountNumber": "123456789012"
               }
             }
           ]
@@ -716,68 +713,84 @@
           }
         }
       },
+
       "Quote": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "example": "9f110d19-73f3-4082-b0a6-9b06e6b3b358"
           },
           "fromCurrency": {
-            "type": "string"
+            "type": "string",
+            "example": "BHD"
           },
           "toCurrency": {
-            "type": "string"
+            "type": "string",
+            "example": "INR"
           },
           "fromAmount": {
-            "type": "number"
+            "type": "string",
+            "example": "1000"
           },
           "toAmount": {
-            "type": "number"
+            "type": "string",
+            "example": "248275.9"
           },
           "rate": {
-            "type": "number"
-          },
-          "fee": {
-            "type": "number"
+            "type": "string",
+            "example": "248.2759"
           },
           "expiresAt": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2026-02-02T14:12:13.847Z"
+          },
+          "midMarketRate": {
+            "type": "string",
+            "example": "242.7772"
+          },
+          "difference": {
+            "type": "string",
+            "example": "5498.702"
           }
         }
       },
       "QuoteRequest": {
         "type": "object",
-        "required": ["recipientId", "fromCurrency", "toCurrency"],
+        "required": ["recipientId", "fromCurrency", "toCurrency", "fromAmount"],
         "properties": {
-          "senderId": {
-            "type": "string",
-            "format": "uuid",
-            "description": "ID of the recipient"
-          },
           "recipientId": {
             "type": "string",
             "format": "uuid",
+            "example": "fb2b2924-7a66-42ac-8427-1287e2d3fdb1",
             "description": "ID of the recipient"
           },
           "fromCurrency": {
             "type": "string",
-            "example": "USD",
-            "description": "Source currency code"
+            "enum": ["INR", "PHP", "HKD", "AED", "SAR"],
+            "example": "INR",
+            "description": ""
           },
           "toCurrency": {
             "type": "string",
-            "example": "PHP",
-            "description": "Target currency code"
+            "enum": ["USD", "AED", "BHD", "SAR", "USDT", "USDC"],
+            "example": "USD",
+            "description": ""
           },
           "fromAmount": {
             "type": "number",
             "example": 1000,
-            "description": "Amount to send (required if toAmount is not provided)"
+            "description": "Amount to send"
+          },
+          "toAmount": {
+            "type": "number",
+            "example": 500,
+            "description": "Target amount to receive (optional, alternative to fromAmount)"
           }
         },
         "additionalProperties": false,
-        "description": "Request for a currency exchange quote. Either fromAmount or toAmount must be provided."
+        "description": "Request for a currency exchange quote"
       },
       "QuoteResponse": {
         "type": "object",
@@ -795,55 +808,97 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "example": "d7a8990f-ca70-4370-9569-5f9d91c00b37"
           },
-          "quoteId": {
-            "type": "string"
+          "fromCurrencyId": {
+            "type": "string",
+            "example": "cmj10enm50011x34d8fq1w4j6"
           },
-          "recipientId": {
-            "type": "string"
+          "toCurrencyId": {
+            "type": "string",
+            "example": "cmj10enm60014x34dm0fp6ndy"
+          },
+          "fromAmount": {
+            "type": "string",
+            "example": "20"
+          },
+          "toAmount": {
+            "type": "string",
+            "example": "509.474"
+          },
+          "destination_country": {
+            "type": "string",
+            "example": "IND"
+          },
+          "purpose_of_payment": {
+            "type": ["string", "null"],
+            "example": null
+          },
+          "notes": {
+            "type": ["string", "null"],
+            "example": null
+          },
+          "error": {
+            "type": ["string", "null"],
+            "example": null
           },
           "status": {
             "type": "string",
-            "enum": [
-              "CONFIRMING",
-              "PROCESSING",
-              "COMPLETED",
-              "FAILED",
-              "CANCELLED"
-            ]
+            "enum": ["COMPLETED"],
+            "example": "COMPLETED"
           },
-          "fromCurrency": {
-            "type": "string"
-          },
-          "toCurrency": {
-            "type": "string"
-          },
-          "fromAmount": {
-            "type": "number"
-          },
-          "toAmount": {
-            "type": "number"
-          },
-          "rate": {
-            "type": "number"
-          },
-          "fee": {
-            "type": "number"
-          },
-          "notes": {
-            "type": "string"
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-02-03T06:23:38.042Z"
           },
           "createdAt": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2026-02-03T06:23:02.843Z"
           },
           "updatedAt": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2026-02-03T06:23:38.043Z"
           },
-          "recipient": {
-            "$ref": "#/components/schemas/Recipient"
+          "externalReference": {
+            "type": ["string", "null"],
+            "example": null
+          },
+          "senderDetails": {
+            "type": ["string", "null"],
+            "example": null
+          },
+          "orgId": {
+            "type": "string",
+            "example": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0"
+          },
+          "createdByUserId": {
+            "type": "string",
+            "example": "d66fbf12-aa1a-45e4-86f7-df39cd6af66c"
+          },
+          "initiatorType": {
+            "type": "string",
+            "enum": ["USER"],
+            "example": "USER"
+          },
+          "paymentMethodId": {
+            "type": "string",
+            "example": "6467e5a9-ccc2-49a6-88bb-3cafb6b9e50a"
+          },
+          "recipientId": {
+            "type": "string",
+            "example": "fb2b2924-7a66-42ac-8427-1287e2d3fdb1"
+          },
+          "fromCurrency": {
+            "type": "string",
+            "example": "BHD"
+          },
+          "toCurrency": {
+            "type": "string",
+            "example": "INR"
           }
         }
       },
@@ -853,29 +908,14 @@
         "properties": {
           "quoteId": {
             "type": "string",
+            "example": "a89e6722-44ba-4b4b-968d-bf99e6de6c9d",
             "description": "ID of the quote to execute"
           },
           "recipientId": {
             "type": "string",
             "format": "uuid",
+            "example": "fb2b2924-7a66-42ac-8427-1287e2d3fdb1",
             "description": "ID of the recipient"
-          },
-          "recipient": {
-            "type": "string",
-            "description": "Recipient"
-          },
-          "paymentMethodId": {
-            "type": "string",
-            "format": "uuid",
-            "description": "ID of the payment method"
-          },
-          "notes": {
-            "type": "string",
-            "description": "Optional notes for the transaction"
-          },
-          "purposeOfPayment": {
-            "type": "string",
-            "description": "Purpose of the payment (optional)"
           }
         }
       },
@@ -887,101 +927,65 @@
             "example": true
           },
           "data": {
-            "$ref": "#/components/schemas/Transaction"
+            "type": "object",
+            "properties": {
+              "transactionId": {
+                "type": "string",
+                "format": "uuid",
+                "example": "4071f336-1066-4540-a5d5-5f397488f1d4"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["COMPLETED"],
+                "example": "COMPLETED"
+              },
+              "message": {
+                "type": "string",
+                "example": "Transaction initiated successfully"
+              }
+            }
           }
         }
       },
       "TransactionsResponse": {
         "type": "object",
         "properties": {
-          "transactions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Transaction"
-            },
-            "description": "List of transaction records"
+          "success": {
+            "type": "boolean",
+            "example": true
           },
-          "stats": {
-            "type": "object",
-            "description": "Transaction statistics based on the applied filters",
-            "properties": {
-              "total": {
-                "type": "integer",
-                "description": "Total number of transactions with applied filters"
-              },
-              "completed": {
-                "type": "integer",
-                "description": "Number of completed transactions"
-              },
-              "pending": {
-                "type": "integer",
-                "description": "Number of pending transactions"
-              },
-              "failed": {
-                "type": "integer",
-                "description": "Number of failed transactions"
-              },
-              "totalVolume": {
-                "type": "number",
-                "format": "float",
-                "description": "Total volume of all completed transactions"
-              },
-              "successRate": {
-                "type": "string",
-                "description": "Percentage of successful transactions"
-              }
-            }
-          },
-          "pagination": {
+          "data": {
             "type": "object",
             "properties": {
-              "total": {
-                "type": "integer",
-                "description": "Total number of transactions with applied filters"
-              },
-              "page": {
-                "type": "integer",
-                "description": "Current page number"
-              },
-              "limit": {
-                "type": "integer",
-                "description": "Number of transactions per page"
-              },
-              "totalPages": {
-                "type": "integer",
-                "description": "Total number of pages"
-              }
-            }
-          },
-          "filters": {
-            "type": "object",
-            "description": "Applied filters for the query",
-            "properties": {
-              "status": {
-                "type": "string",
-                "description": "Status filter"
-              },
-              "search": {
-                "type": "string",
-                "description": "Search term"
-              },
-              "startDate": {
-                "type": "string",
-                "format": "date",
-                "description": "Start date for filtering"
-              },
-              "endDate": {
-                "type": "string",
-                "format": "date",
-                "description": "End date for filtering"
-              },
-              "fromCurrency": {
-                "type": "string",
-                "description": "Source currency filter"
-              },
-              "toCurrency": {
-                "type": "string",
-                "description": "Destination currency filter"
+              "transactions": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Transaction"
+                },
+                "example": [
+                  {
+                    "id": "d7a8990f-ca70-4370-9569-5f9d91c00b37",
+                    "fromCurrencyId": "cmj10enm50011x34d8fq1w4j6",
+                    "toCurrencyId": "cmj10enm60014x34dm0fp6ndy",
+                    "fromAmount": "20",
+                    "toAmount": "509.474",
+                    "destination_country": "IND",
+                    "purpose_of_payment": null,
+                    "notes": null,
+                    "error": null,
+                    "status": "COMPLETED",
+                    "completedAt": "2026-02-03T06:23:38.042Z",
+                    "createdAt": "2026-02-03T06:23:02.843Z",
+                    "updatedAt": "2026-02-03T06:23:38.043Z",
+                    "externalReference": null,
+                    "senderDetails": null,
+                    "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                    "createdByUserId": "d66fbf12-aa1a-45e4-86f7-df39cd6af66c",
+                    "initiatorType": "USER",
+                    "paymentMethodId": "6467e5a9-ccc2-49a6-88bb-3cafb6b9e50a",
+                    "recipientId": "fb2b2924-7a66-42ac-8427-1287e2d3fdb1"
+                  }
+                ]
               }
             }
           }
@@ -1517,13 +1521,116 @@
                   "type": "object",
                   "properties": {
                     "success": {
-                      "type": "boolean"
+                      "type": "boolean",
+                      "example": true
                     },
                     "data": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/Recipient"
-                      }
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "63e60e8b-1546-4a11-811d-12928958557b"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Juan Cruz"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": ["INDIVIDUAL", "BUSINESS"],
+                            "example": "INDIVIDUAL"
+                          },
+                          "country": {
+                            "type": "string",
+                            "example": "PHL"
+                          },
+                          "verificationInfo": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "example": {
+                              "lastName": "Cruz",
+                              "firstName": "Juan"
+                            }
+                          },
+                          "metadata": {
+                            "type": ["object", "null"],
+                            "example": null
+                          },
+                          "verificationStatus": {
+                            "type": "string",
+                            "enum": [
+                              "NOT_STARTED",
+                              "IN_PROGRESS",
+                              "COMPLETED",
+                              "FAILED",
+                              "IN_REVIEW",
+                              "UPDATE_REQUIRED",
+                              "CREATED",
+                              "EXTERNAL_VERIFICATION"
+                            ],
+                            "example": "NOT_STARTED"
+                          },
+                          "externalReference": {
+                            "type": ["string", "null"],
+                            "example": null
+                          },
+                          "paymentMethods": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "example": "7f55da44-c568-4ccb-9c82-fa1ef71b1d3e"
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "example": "INSTAPAY"
+                                },
+                                "metadata": {
+                                  "type": "object",
+                                  "additionalProperties": true,
+                                  "example": {
+                                    "name": "Juan Dela Cruz",
+                                    "channel": "bdouni",
+                                    "accountNumber": "123456789012"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "id": "63e60e8b-1546-4a11-811d-12928958557b",
+                          "name": "Juan Cruz",
+                          "type": "INDIVIDUAL",
+                          "country": "PHL",
+                          "verificationInfo": {
+                            "lastName": "Cruz",
+                            "firstName": "Juan"
+                          },
+                          "metadata": null,
+                          "verificationStatus": "NOT_STARTED",
+                          "externalReference": null,
+                          "paymentMethods": [
+                            {
+                              "id": "7f55da44-c568-4ccb-9c82-fa1ef71b1d3e",
+                              "type": "INSTAPAY",
+                              "metadata": {
+                                "name": "Juan Dela Cruz",
+                                "channel": "bdouni",
+                                "accountNumber": "123456789012"
+                              }
+                            }
+                          ]
+                        }
+                      ]
                     }
                   }
                 }
@@ -1531,11 +1638,26 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1558,12 +1680,34 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Recipient"
+                "$ref": "#/components/schemas/CreateRecipient"
+              },
+              "examples": {
+                "individualRecipient": {
+                  "summary": "default",
+                  "value": {
+                    "type": "INDIVIDUAL",
+                    "country": "PHL",
+                    "verificationInfo": {
+                      "firstName": "Juan",
+                      "lastName": "Cruz"
+                    },
+                    "paymentMethods": [
+                      {
+                        "type": "PESONET",
+                        "metadata": {
+                          "channel": "bdouni",
+                          "name": "Juan Dela Cruz",
+                          "accountNumber": "123456789012"
+                        }
+                      }
+                    ]
+                  }
+                }
               }
             }
           }
         },
-
         "responses": {
           "201": {
             "description": "Successfully created recipient",
@@ -1577,7 +1721,171 @@
                       "example": true
                     },
                     "data": {
-                      "$ref": "#/components/schemas/Recipient"
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "63e60e8b-1546-4a11-811d-12928958557b",
+                          "description": "Unique recipient identifier"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Juan Cruz",
+                          "description": "Recipient name"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": ["INDIVIDUAL", "BUSINESS"],
+                          "example": "INDIVIDUAL",
+                          "description": "Type of recipient - individual person or business entity"
+                        },
+                        "country": {
+                          "type": "string",
+                          "example": "PHL",
+                          "description": "3-letter ISO country code"
+                        },
+                        "verificationInfo": {
+                          "type": "object",
+                          "additionalProperties": true,
+                          "example": {
+                            "lastName": "Cruz",
+                            "firstName": "Juan"
+                          },
+                          "description": "Verification information, varies by country and type"
+                        },
+                        "metadata": {
+                          "type": ["object", "null"],
+                          "example": null,
+                          "description": "Additional metadata"
+                        },
+                        "verificationStatus": {
+                          "type": "string",
+                          "enum": [
+                            "NOT_STARTED",
+                            "IN_PROGRESS",
+                            "COMPLETED",
+                            "FAILED",
+                            "IN_REVIEW",
+                            "UPDATE_REQUIRED",
+                            "CREATED",
+                            "EXTERNAL_VERIFICATION"
+                          ],
+                          "example": "NOT_STARTED",
+                          "description": "Recipient verification status"
+                        },
+                        "orgId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                          "description": "Organization ID"
+                        },
+                        "createdByUserId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "d66fbf12-aa1a-45e4-86f7-df39cd6af66c",
+                          "description": "User ID who created the recipient"
+                        },
+                        "initiatorType": {
+                          "type": "string",
+                          "enum": ["USER", "SYSTEM"],
+                          "example": "USER",
+                          "description": "Type of initiator"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2026-02-02T12:58:50.598Z",
+                          "description": "Creation timestamp"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2026-02-02T12:58:50.622Z",
+                          "description": "Last update timestamp"
+                        },
+                        "deletedAt": {
+                          "type": ["string", "null"],
+                          "format": "date-time",
+                          "example": null,
+                          "description": "Deletion timestamp (null if not deleted)"
+                        },
+                        "externalReference": {
+                          "type": ["string", "null"],
+                          "example": null,
+                          "description": "External reference identifier"
+                        },
+                        "paymentMethods": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "7f55da44-c568-4ccb-9c82-fa1ef71b1d3e"
+                              },
+                              "type": {
+                                "type": "string",
+                                "example": "INSTAPAY"
+                              },
+                              "metadata": {
+                                "type": "object",
+                                "additionalProperties": true,
+                                "example": {
+                                  "name": "Juan Dela Cruz",
+                                  "channel": "bdouni",
+                                  "accountNumber": "123456789012"
+                                }
+                              },
+                              "recipientId": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "63e60e8b-1546-4a11-811d-12928958557b"
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2026-02-02T12:58:50.606Z"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2026-02-02T12:58:50.606Z"
+                              }
+                            }
+                          },
+                          "description": "Payment methods associated with the recipient"
+                        },
+                        "externalIds": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "externalId": {
+                                "type": "string"
+                              },
+                              "provider": {
+                                "type": "string"
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            }
+                          },
+                          "example": [],
+                          "description": "External ID mappings"
+                        }
+                      }
                     }
                   }
                 }
@@ -1585,11 +1893,26 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1628,10 +1951,80 @@
                   "type": "object",
                   "properties": {
                     "success": {
-                      "type": "boolean"
+                      "type": "boolean",
+                      "example": true
                     },
                     "data": {
-                      "$ref": "#/components/schemas/Recipient"
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "fb2b2924-7a66-42ac-8427-1287e2d3fdb1",
+                          "description": "Unique recipient identifier"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Alice Luis",
+                          "description": "Recipient name"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": ["INDIVIDUAL", "BUSINESS"],
+                          "example": "INDIVIDUAL",
+                          "description": "Type of recipient - individual person or business entity"
+                        },
+                        "country": {
+                          "type": "string",
+                          "example": "IND",
+                          "description": "3-letter ISO country code"
+                        },
+                        "verificationInfo": {
+                          "type": "object",
+                          "additionalProperties": true,
+                          "example": {
+                            "email": "haidiso294@gmail.com",
+                            "phone": "7894561230",
+                            "lastName": "Luis",
+                            "firstName": "Alice"
+                          },
+                          "description": "Verification information, varies by country and type"
+                        },
+                        "metadata": {
+                          "type": ["object", "null"],
+                          "example": null,
+                          "description": "Additional metadata"
+                        },
+                        "orgId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                          "description": "Organization ID"
+                        },
+                        "createdByUserId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "d66fbf12-aa1a-45e4-86f7-df39cd6af66c",
+                          "description": "User ID who created the recipient"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2026-01-19T07:07:55.771Z",
+                          "description": "Creation timestamp"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2026-01-19T07:07:55.818Z",
+                          "description": "Last update timestamp"
+                        },
+                        "externalReference": {
+                          "type": ["string", "null"],
+                          "example": null,
+                          "description": "External reference identifier"
+                        }
+                      }
                     }
                   }
                 }
@@ -1639,11 +2032,26 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1655,8 +2063,6 @@
       "get": {
         "tags": ["Recipients"],
         "summary": "Get Recipient Verification Fields",
-        "description": "Retrieve required verification fields for recipients based on country and type",
-        "operationId": "getRecipientVerificationFields",
         "parameters": [
           {
             "name": "country",
@@ -1665,14 +2071,14 @@
             "description": "3-letter ISO country code",
             "schema": {
               "type": "string",
-              "example": "IND"
+              "example": "PHL"
             }
           },
           {
             "name": "type",
             "in": "query",
             "required": true,
-            "description": "Recipient type (INDIVIDUAL or BUSINESS)",
+            "description": "Recipient type",
             "schema": {
               "type": "string",
               "enum": ["INDIVIDUAL", "BUSINESS"]
@@ -1700,17 +2106,53 @@
                         "$ref": "#/components/schemas/VerificationField"
                       }
                     }
+                  },
+                  "example": {
+                    "success": true,
+                    "data": [
+                      {
+                        "fieldName": "firstName",
+                        "displayName": "First Name",
+                        "required": true,
+                        "type": "STRING",
+                        "regex": "^[A-Za-z\\s]{1,35}$",
+                        "errorMessage": "Please enter a valid first name (1-35 letters)"
+                      },
+                      {
+                        "fieldName": "lastName",
+                        "displayName": "Last Name",
+                        "required": true,
+                        "type": "STRING",
+                        "regex": "^[A-Za-z\\s]{1,35}$",
+                        "errorMessage": "Please enter a valid last name (1-35 letters)"
+                      }
+                    ]
                   }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1735,6 +2177,7 @@
               "pattern": "^[A-Z]{3}$"
             }
           },
+
           { "$ref": "#/components/parameters/ApiKey" },
           { "$ref": "#/components/parameters/Timestamp" },
           { "$ref": "#/components/parameters/Signature" },
@@ -1752,12 +2195,9 @@
                       "type": "boolean"
                     },
                     "data": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "array",
-                        "items": {
-                          "$ref": "#/components/schemas/PaymentMethodField"
-                        }
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PaymentMethodField"
                       }
                     }
                   }
@@ -1766,11 +2206,26 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1796,12 +2251,24 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/QuoteRequest"
+              },
+              "examples": {
+                "quoteExample": {
+                  "summary": "default",
+                  "value": {
+                    "recipientId": "fb2b2924-7a66-42ac-8427-1287e2d3fdb1",
+                    "fromCurrency": "INR",
+                    "toCurrency": "USD",
+                    "fromAmount": 1000,
+                    "toAmount": 500
+                  }
+                }
               }
             }
           }
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "Successfully generated quote",
             "content": {
               "application/json": {
@@ -1812,11 +2279,26 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1842,6 +2324,15 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/TransactionRequest"
+              },
+              "examples": {
+                "transactionExample": {
+                  "summary": "default",
+                  "value": {
+                    "quoteId": "9f110d19-73f3-4082-b0a6-9b06e6b3b358",
+                    "recipientId": "fb2b2924-7a66-42ac-8427-1287e2d3fdb1"
+                  }
+                }
               }
             }
           }
@@ -1858,11 +2349,26 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1921,28 +2427,32 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Transaction"
-                      }
-                    }
-                  }
+                  "$ref": "#/components/schemas/TransactionsResponse"
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1950,20 +2460,21 @@
         }
       }
     },
-    "/countries/{id}": {
+    "/transaction/{id}": {
       "get": {
-        "tags": ["Configuration"],
-        "summary": "Get Country Configuration",
-        "description": "Retrieve configuration details for a specific country",
-        "operationId": "getCountryConfig",
+        "tags": ["Transactions"],
+        "summary": "Get Transaction",
+        "description": "Retrieve a specific transaction by ID",
+        "operationId": "getTransaction",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "Country ID or 3-letter ISO country code",
+            "description": "Transaction ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           { "$ref": "#/components/parameters/ApiKey" },
@@ -1973,68 +2484,72 @@
         ],
         "responses": {
           "200": {
-            "description": "Successfully retrieved country configuration",
+            "description": "Successfully retrieved transaction",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
                     "success": {
-                      "type": "boolean"
+                      "type": "boolean",
+                      "example": true
                     },
                     "data": {
-                      "type": "object"
+                      "$ref": "#/components/schemas/Transaction"
                     }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "id": "9f57b396-8bbb-4dfe-b84a-6ba6a34f5d05",
+                    "fromCurrencyId": "cmj10enm60013x34dqg86qxzo",
+                    "toCurrencyId": "cmj10enm60014x34dm0fp6ndy",
+                    "fromAmount": "3",
+                    "toAmount": "736.7637",
+                    "destination_country": "IND",
+                    "purpose_of_payment": null,
+                    "notes": "GPS Transfer",
+                    "error": null,
+                    "status": "COMPLETED",
+                    "completedAt": "2026-01-21T07:25:05.479Z",
+                    "createdAt": "2026-01-21T07:24:44.088Z",
+                    "updatedAt": "2026-01-21T07:25:05.480Z",
+                    "externalReference": null,
+                    "senderDetails": null,
+                    "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                    "createdByUserId": "d66fbf12-aa1a-45e4-86f7-df39cd6af66c",
+                    "initiatorType": "USER",
+                    "paymentMethodId": "6467e5a9-ccc2-49a6-88bb-3cafb6b9e50a",
+                    "recipientId": "fb2b2924-7a66-42ac-8427-1287e2d3fdb1",
+                    "fromCurrency": "BHD",
+                    "toCurrency": "INR"
                   }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/senders": {
-      "get": {
-        "tags": ["Senders"],
-        "summary": "List Senders",
-        "description": "Retrieve all senders for the authenticated organization",
-        "operationId": "getSenders",
-        "parameters": [
-          { "$ref": "#/components/parameters/ApiKey" },
-          { "$ref": "#/components/parameters/Timestamp" },
-          { "$ref": "#/components/parameters/Signature" },
-          { "$ref": "#/components/parameters/Environment" }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved senders",
-
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SendersResponse"
-                }
-              }
-            }
-          },
-
-          "401": {
-            "description": "Unauthorized",
-
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
