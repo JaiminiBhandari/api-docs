@@ -129,22 +129,20 @@ All API requests require authentication using API key and signature. You must in
 
 ## OTC API
 
-### OTC Trading
+#### Customer
 
-- `POST otc/api/v1/trade` - Execute OTC trade (buy/sell cryptocurrency)
-- `GET otc/api/v1/trades/{tradeId}` - Get trade status by ID
+- `POST /customers` - Create a new customer
+- `GET /customers` - List all customers
+- `GET /customers/{id}` - Get customer details by ID
+- `PATCH /customers/{id}/enable` - Enable or disable a customer
+- `GET /customers/{id}/balance` - Get customer balance
+- `GET /customers/{id}/transactions` - Get customer balance transactions
 
-### Balances
+#### Quote & Trade
 
-- `GET otc/api/v1/customers/{bankCustomerRef}/balances` - Get customer balances
-- `GET otc/api/v1/bank/balance` - Get bank balance
-
-### Customers
-
-- `GET otc/api/v1/client/customers/list` - List customers
-- `POST otc/api/v1/client/customers/create` - Create customer
-- `GET otc/api/v1/client/customers/{id}` - Get customer by ID
-- `PATCH otc/api/v1/client/customers/{id}/enable` - Enable/Disable customer
+- `POST /quotes` - Request a real-time exchange quote
+- `GET /quotes/{quoteId}` - Get details of a specific quote
+- `POST /trades` - Execute a trade based on a quote
 
 ## Servers
 
