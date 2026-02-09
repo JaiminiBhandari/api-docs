@@ -1,590 +1,546 @@
 {
-  "openapi": "3.1.0",
+  "openapi": "3.0.3",
   "info": {
-    "title": "ARP OTC Trading API",
+    "title": "ARP Digital OTC API",
+    "description": "Over-The-Counter (OTC) trading API for managing trades and obtaining real-time quotes. This API enables authenticated users to execute buy/sell trades, retrieve their trading history, and request price quotes for various trading pairs. All requests require API key authentication with HMAC SHA256 signature verification for security.",
     "version": "1.0.0",
-    "description": "Bank-facing API for ARP OTC Trading platform allowing banks to execute buy/sell trades for cryptocurrencies.\n\n## Authentication\nAll API requests require Bearer token authentication via the Authorization header.\n"
+    "contact": {
+      "name": "ARP Digital Support",
+      "email": "support@arpdigital.com"
+    },
+    "license": {
+      "name": "Proprietary",
+      "url": "https://arpdigital.com/license"
+    }
+  },
+  "externalDocs": {
+    "description": "Full API documentation and guides",
+    "url": "https://docs.arpdigital.com/otc-api"
   },
   "servers": [
     {
       "url": "https://platform.arpdigital.io/services/otc/api/v1"
     }
   ],
-  "tags": [
+  "security": [
     {
-      "name": "OTC Trading",
-      "description": "Execute and manage OTC cryptocurrency trades"
-    },
-    {
-      "name": "Balances",
-      "description": "Retrieve customer and bank balance information"
+      "ApiKeyAuth": []
     }
   ],
   "components": {
     "parameters": {
-      "Authorization": {
-        "name": "Authorization",
+      "ApiKey": {
+        "name": "X-API-Key",
         "in": "header",
-        "description": "Bearer token for authentication",
+        "description": "Your unique API key.",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "Timestamp": {
+        "name": "X-Timestamp",
+        "in": "header",
+        "description": "Current Unix timestamp (in seconds).",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1700000000
+        }
+      },
+      "Signature": {
+        "name": "X-Signature",
+        "in": "header",
+        "description": "HMAC SHA256 signature generated using the request payload and secret key.",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "Environment": {
+        "name": "X-Environment",
+        "in": "header",
+        "description": "Specifies the environment to use. Determines which database the API interacts with.",
         "required": true,
         "schema": {
           "type": "string",
-          "example": "Bearer <BANK_ACCESS_TOKEN>"
-        }
-      },
-      "IdempotencyKey": {
-        "name": "Idempotency-Key",
-        "in": "header",
-        "description": "UUID v4 for request idempotency (required for trade endpoint)",
-        "required": false,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "example": "550e8400-e29b-41d4-a716-446655440000"
+          "enum": ["sandbox", "production"],
+          "default": "sandbox"
         }
       }
     },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "API key for authentication"
+      }
+    },
     "schemas": {
+      "Currency": {
+        "type": "object",
+        "required": ["id", "symbol", "name"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique currency identifier",
+            "example": "cur_123abc"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Currency symbol",
+            "example": "USD"
+          },
+          "name": {
+            "type": "string",
+            "description": "Currency name",
+            "example": "US Dollar"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["FIAT", "CRYPTO"],
+            "description": "Currency type",
+            "example": "FIAT"
+          },
+          "decimals": {
+            "type": "integer",
+            "description": "Number of decimal places",
+            "example": 2
+          }
+        }
+      },
+      "Quote": {
+        "type": "object",
+        "required": [
+          "id",
+          "fromCurrencyId",
+          "toCurrencyId",
+          "rate",
+          "expiresAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique quote identifier",
+            "example": "quote_456def"
+          },
+          "fromCurrencyId": {
+            "type": "string",
+            "description": "Source currency ID",
+            "example": "cur_123abc"
+          },
+          "toCurrencyId": {
+            "type": "string",
+            "description": "Destination currency ID",
+            "example": "cur_456def"
+          },
+          "fromAmount": {
+            "type": "string",
+            "description": "Amount from source currency",
+            "example": "100.00"
+          },
+          "toAmount": {
+            "type": "string",
+            "description": "Amount in destination currency",
+            "example": "98.50"
+          },
+          "rate": {
+            "type": "string",
+            "description": "Exchange rate",
+            "example": "0.985000"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Quote expiration timestamp",
+            "example": "2025-12-23T10:20:00Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Quote creation timestamp",
+            "example": "2025-12-23T10:10:00Z"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Quote labels (e.g., Pro Trading, Standard Trading)",
+            "example": ["Standard Trading"]
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "External reference identifier",
+            "example": "ext_ref_123"
+          }
+        }
+      },
+      "Trade": {
+        "type": "object",
+        "required": [
+          "id",
+          "fromCurrencyId",
+          "toCurrencyId",
+          "status",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique trade identifier",
+            "example": "trade_123abc"
+          },
+          "fromCurrencyId": {
+            "type": "string",
+            "description": "Source currency ID",
+            "example": "cur_123abc"
+          },
+          "toCurrencyId": {
+            "type": "string",
+            "description": "Destination currency ID",
+            "example": "cur_456def"
+          },
+          "fromCurrency": {
+            "$ref": "#/components/schemas/Currency",
+            "description": "Source currency details"
+          },
+          "toCurrency": {
+            "$ref": "#/components/schemas/Currency",
+            "description": "Destination currency details"
+          },
+          "fromAmount": {
+            "type": "string",
+            "description": "Amount from source currency",
+            "example": "100.00"
+          },
+          "toAmount": {
+            "type": "string",
+            "description": "Amount in destination currency",
+            "example": "98.50"
+          },
+          "rate": {
+            "type": "string",
+            "description": "Exchange rate used for trade",
+            "example": "0.985000"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["ONRAMP", "OFFRAMP", "CRYPTO"],
+            "description": "Trade type based on currency types",
+            "example": "ONRAMP"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "PROCESSING",
+              "COMPLETED",
+              "FAILED",
+              "CANCELLED"
+            ],
+            "description": "Trade status",
+            "example": "COMPLETED"
+          },
+          "quote": {
+            "$ref": "#/components/schemas/Quote",
+            "description": "Associated quote details"
+          },
+          "organization": {
+            "type": "object",
+            "description": "Organization details",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "org_123"
+              },
+              "name": {
+                "type": "string",
+                "example": "Acme Corp"
+              }
+            }
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "External reference identifier",
+            "example": "ext_ref_123"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Trade creation timestamp",
+            "example": "2025-12-23T10:10:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp",
+            "example": "2025-12-23T10:15:00Z"
+          }
+        }
+      },
+      "CreateTradeRequest": {
+        "type": "object",
+        "required": ["quoteId"],
+        "properties": {
+          "quoteId": {
+            "type": "string",
+            "description": "ID of the quote to execute trade on",
+            "example": "quote_456def"
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "Optional external reference identifier",
+            "example": "ext_ref_123"
+          }
+        }
+      },
+      "GetQuoteRequest": {
+        "type": "object",
+        "properties": {
+          "fromCurrency": {
+            "type": "string",
+            "description": "Source currency symbol (e.g., USD, EUR)",
+            "example": "USD"
+          },
+          "toCurrency": {
+            "type": "string",
+            "description": "Destination currency symbol (e.g., BTC, ETH)",
+            "example": "BTC"
+          },
+          "fromCurrencyId": {
+            "type": "string",
+            "description": "Source currency ID",
+            "example": "cur_123abc"
+          },
+          "toCurrencyId": {
+            "type": "string",
+            "description": "Destination currency ID",
+            "example": "cur_456def"
+          },
+          "fromAmount": {
+            "type": "number",
+            "description": "Amount to convert from source currency",
+            "example": 100.0
+          },
+          "toAmount": {
+            "type": "number",
+            "description": "Amount in destination currency (alternative to fromAmount)",
+            "example": 0.0025
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "Optional external reference identifier",
+            "example": "ext_ref_123"
+          }
+        }
+      },
+      "TradeListResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Trade"
+        }
+      },
       "Error": {
         "type": "object",
+        "required": ["error"],
         "properties": {
           "error": {
             "type": "string"
           },
-          "message": {
-            "type": "string"
-          }
-        }
-      },
-      "TradeRequest": {
-        "type": "object",
-        "required": ["organizationId", "bankCustomerRef", "asset", "quantity", "quoteId", "side"],
-        "properties": {
-          "organizationId": {
-            "type": "string",
-            "description": "Partner bank identifier",
-            "example": "org_001"
-          },
-          "bankCustomerRef": {
-            "type": "string",
-            "description": "Bank's internal customer ID",
-            "example": "CUST_10293"
-          },
-          "asset": {
-            "type": "string",
-            "description": "Asset symbol (BTC, ETH, etc.)",
-            "example": "BTC"
-          },
-          "quantity": {
-            "type": "number",
-            "description": "Trade quantity",
-            "example": 0.5
-          },
-          "quoteId": {
-            "type": "string",
-            "description": "Quote received via WebSocket",
-            "example": "qt_91bc72"
-          },
-          "side": {
-            "type": "string",
-            "enum": ["buy", "sell"],
-            "description": "Trade side",
-            "example": "buy"
-          }
-        }
-      },
-      "TradeResponse": {
-        "type": "object",
-        "properties": {
-          "tradeId": {
-            "type": "string",
-            "example": "tr_82ac19"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["COMPLETED", "PENDING"],
-            "example": "COMPLETED"
-          },
-          "side": {
-            "type": "string",
-            "enum": ["buy", "sell"],
-            "example": "buy"
-          },
-          "asset": {
-            "type": "string",
-            "example": "BTC"
-          },
-          "quantity": {
-            "type": "number",
-            "example": 0.5
-          },
-          "price": {
-            "type": "string",
-            "example": "42350.25"
-          },
-          "notional": {
-            "type": "string",
-            "example": "21175.12"
-          },
-          "executedAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2026-01-23T10:44:58Z"
-          }
-        }
-      },
-      "TradeStatusResponse": {
-        "type": "object",
-        "properties": {
-          "tradeId": {
-            "type": "string",
-            "example": "tr_82ac19"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["COMPLETED", "PENDING"],
-            "example": "COMPLETED"
-          },
-          "side": {
-            "type": "string",
-            "enum": ["buy", "sell"],
-            "example": "buy"
-          },
-          "asset": {
-            "type": "string",
-            "example": "BTC"
-          },
-          "quantity": {
-            "type": "number",
-            "example": 0.5
-          },
-          "price": {
-            "type": "string",
-            "example": "42350.25"
-          },
-          "executedAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2026-01-23T10:44:58Z"
-          }
-        }
-      },
-      "CustomerBalancesResponse": {
-        "type": "object",
-        "properties": {
-          "bankCustomerRef": {
-            "type": "string",
-            "example": "CUST_10293"
-          },
-          "balances": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "asset": {
-                  "type": "string",
-                  "example": "BTC"
-                },
-                "available": {
-                  "type": "string",
-                  "example": "1.25"
-                },
-                "locked": {
-                  "type": "string",
-                  "example": "0.0"
-                }
+          "errorDetails": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
               }
             }
-          }
-        }
-      },
-      "BankBalanceResponse": {
-        "type": "object",
-        "properties": {
-          "currency": {
-            "type": "string",
-            "example": "USD"
-          },
-          "availableBalance": {
-            "type": "string",
-            "example": "980000.00"
-          },
-          "lockedBalance": {
-            "type": "string",
-            "example": "20000.00"
           }
         }
       },
       "Customer": {
         "type": "object",
+        "required": ["id", "externalRef", "enabled"],
         "properties": {
           "id": {
             "type": "string",
-            "format": "uuid"
-          },
-          "organizationId": {
-            "type": "string",
-            "format": "uuid"
+            "description": "Unique customer identifier",
+            "example": "uuid-v4-string"
           },
           "externalRef": {
-            "type": "string"
+            "type": "string",
+            "description": "Your internal reference ID for the customer",
+            "example": "user_99"
           },
           "enabled": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Whether the customer is active",
+            "example": true
           },
           "createdAt": {
             "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Customer creation timestamp",
+            "example": "2024-01-01T00:00:00.000Z"
           }
         }
       },
-      "CustomerListResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "data": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/components/schemas/Customer"
-            }
-          },
-          "pagination": {
-            "type": "object",
-            "properties": {
-              "total": {
-                "type": "integer"
-              },
-              "page": {
-                "type": "integer"
-              },
-              "limit": {
-                "type": "integer"
-              },
-              "totalPages": {
-                "type": "integer"
-              }
-            }
-          }
-        }
-      },
-      "CustomerCreateRequest": {
+      "CreateCustomerRequest": {
         "type": "object",
         "required": ["externalRef"],
         "properties": {
           "externalRef": {
             "type": "string",
-            "example": "Test"
+            "description": "Your internal reference ID for the customer",
+            "example": "user_99"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the customer is active. Defaults to true",
+            "example": true
+          }
+        }
+      },
+      "UpdateCustomerStatusRequest": {
+        "type": "object",
+        "required": ["enabled"],
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Set to true to enable or false to disable",
+            "example": false
+          }
+        }
+      },
+      "CustomerListResponse": {
+        "type": "object",
+        "required": ["success", "data", "pagination"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Customer"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
           }
         }
       },
       "CustomerResponse": {
         "type": "object",
+        "required": ["success", "data"],
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "example": true
           },
           "data": {
             "$ref": "#/components/schemas/Customer"
           }
         }
       },
-      "CustomerEnableRequest": {
+      "Pagination": {
         "type": "object",
-        "required": ["enabled"],
+        "required": ["total", "page", "limit", "totalPages"],
         "properties": {
-          "enabled": {
-            "type": "boolean"
+          "total": {
+            "type": "integer",
+            "description": "Total number of items",
+            "example": 150
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page number",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Items per page",
+            "example": 20
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Total number of pages",
+            "example": 8
           }
         }
       }
     },
-    "securitySchemes": {
-      "BearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "description": "Bearer token authentication"
+    "responses": {
+      "BadRequest": {
+        "description": "Invalid request parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Missing or invalid API key or signature",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Access denied",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
       }
     }
   },
-  "security": [
-    {
-      "BearerAuth": []
-    }
-  ],
   "paths": {
-    "/trade": {
-      "post": {
-        "tags": ["OTC Trading"],
-        "summary": "Execute OTC Trade",
-        "description": "Execute a buy or sell trade for cryptocurrencies using a valid quote",
-        "operationId": "executeTrade",
-        "parameters": [
-          { "$ref": "#/components/parameters/Authorization" },
-          { "$ref": "#/components/parameters/IdempotencyKey" }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TradeRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Trade completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TradeResponse"
-                }
-              }
-            }
-          },
-          "202": {
-            "description": "Trade accepted for processing",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "tradeId": {
-                      "type": "string",
-                      "example": "tr_82ac19"
-                    },
-                    "status": {
-                      "type": "string",
-                      "example": "PENDING"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request - invalid quote or insufficient funds",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/trades/{tradeId}": {
-      "get": {
-        "tags": ["OTC Trading"],
-        "summary": "Get Trade Status",
-        "description": "Retrieve the status and details of a specific trade",
-        "operationId": "getTradeStatus",
-        "parameters": [
-          {
-            "name": "tradeId",
-            "in": "path",
-            "required": true,
-            "description": "Trade ID",
-            "schema": {
-              "type": "string",
-              "example": "tr_82ac19"
-            }
-          },
-          { "$ref": "#/components/parameters/Authorization" }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved trade status",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TradeStatusResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Trade not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/customers/{bankCustomerRef}/balances": {
-      "get": {
-        "tags": ["Balances"],
-        "summary": "Get Customer Balances",
-        "description": "Retrieve balance information for a specific customer",
-        "operationId": "getCustomerBalances",
-        "parameters": [
-          {
-            "name": "bankCustomerRef",
-            "in": "path",
-            "required": true,
-            "description": "Bank's internal customer reference",
-            "schema": {
-              "type": "string",
-              "example": "CUST_10293"
-            }
-          },
-          { "$ref": "#/components/parameters/Authorization" }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved customer balances",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CustomerBalancesResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/bank/balance": {
-      "get": {
-        "tags": ["Balances"],
-        "summary": "Get Bank Balance",
-        "description": "Retrieve the bank's available and locked balance",
-        "operationId": "getBankBalance",
-        "parameters": [
-          { "$ref": "#/components/parameters/Authorization" }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved bank balance",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BankBalanceResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/client/customers/list": {
-      "get": {
-        "tags": ["Customers"],
-        "summary": "List Customers",
-        "description": "Retrieve a paginated list of customers",
-        "operationId": "listCustomers",
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number to fetch",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 1
-            }
-          },
-          {
-            "name": "includeHidden",
-            "in": "query",
-            "description": "Whether to include hidden/disabled customers",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": false
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved customer list",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CustomerListResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/client/customers/create": {
+    "/customers": {
       "post": {
         "tags": ["Customers"],
-        "summary": "Create Customer",
-        "description": "Create a new customer",
         "operationId": "createCustomer",
+        "summary": "Create a new customer",
+        "description": "Register a new customer for your organization",
+        "parameters": [
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CustomerCreateRequest"
+                "$ref": "#/components/schemas/CreateCustomerRequest"
               }
             }
           }
@@ -601,111 +557,107 @@
             }
           },
           "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
-      }
-    },
-    "/client/customers/{id}": {
+      },
       "get": {
         "tags": ["Customers"],
-        "summary": "Get Customer by ID",
-        "description": "Fetch details for a single customer by ID",
-        "operationId": "getCustomer",
+        "operationId": "listCustomers",
+        "summary": "List all customers",
+        "description": "Retrieve a paginated list of customers",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "The unique customer identifier",
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page (max 100)",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort order (asc or desc)",
             "schema": {
               "type": "string",
-              "format": "uuid"
+              "default": "asc"
             }
-          }
+          },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
         ],
         "responses": {
           "200": {
-            "description": "Successfully retrieved customer details",
+            "description": "List of customers retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CustomerResponse"
+                  "$ref": "#/components/schemas/CustomerListResponse"
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Unauthorized"
           },
-          "404": {
-            "description": "Customer not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
     },
-    "/client/customers/{id}/enable": {
-      "patch": {
+    "/customers/{id}": {
+      "get": {
         "tags": ["Customers"],
-        "summary": "Enable/Disable Customer",
-        "description": "Enable or disable a customer",
-        "operationId": "enableCustomer",
+        "operationId": "getCustomer",
+        "summary": "Get customer details by ID",
+        "description": "Retrieve details for a specific customer",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "The unique customer identifier",
             "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
+              "type": "string"
+            },
+            "description": "Customer ID"
+          },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CustomerEnableRequest"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
-            "description": "Customer enabled/disabled successfully",
+            "description": "Customer details retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -715,24 +667,10 @@
             }
           },
           "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Unauthorized"
           },
           "404": {
             "description": "Customer not found",
@@ -743,6 +681,409 @@
                 }
               }
             }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/customers/{id}/enable": {
+      "patch": {
+        "tags": ["Customers"],
+        "operationId": "updateCustomerStatus",
+        "summary": "Enable/Disable Customer",
+        "description": "Update a customer's active status",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Customer ID"
+          },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "Customer not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/customers/{id}/balance": {
+      "get": {
+        "tags": ["Customers"],
+        "operationId": "getCustomerBalance",
+        "summary": "Get customer balance",
+        "description": "Retrieve the current balances for a customer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Customer ID"
+          },
+          {
+            "name": "currencyId",
+            "in": "query",
+            "description": "Filter by specific currency (e.g., BTC, USD)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer balance retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "currencyId": {
+                            "type": "string",
+                            "example": "cur_123"
+                          },
+                          "balance": {
+                            "type": "string",
+                            "example": "100.00"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "Customer not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/customers/{id}/transactions": {
+      "get": {
+        "tags": ["Customers"],
+        "operationId": "getCustomerTransactions",
+        "summary": "Get customer balance transactions",
+        "description": "Retrieve the transaction history for a customer's balance",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Customer ID"
+          },
+          {
+            "name": "currencyId",
+            "in": "query",
+            "description": "Filter by specific currency",
+            "schema": {
+              "type": "string"
+            }
+          },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer transactions retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "txn_123"
+                          },
+                          "type": {
+                            "type": "string",
+                            "example": "DEBIT"
+                          },
+                          "amount": {
+                            "type": "string",
+                            "example": "50.00"
+                          },
+                          "currencyId": {
+                            "type": "string",
+                            "example": "cur_123"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2024-01-01T00:00:00.000Z"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "Customer not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/quotes": {
+      "post": {
+        "tags": ["Quotes"],
+        "operationId": "getQuote",
+        "summary": "Request a real-time exchange quote",
+        "description": "Get a real-time price quote for a currency pair. You can provide either currency symbols or currency IDs, and either fromAmount or toAmount.",
+        "parameters": [
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetQuoteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Quote retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quote"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/quotes/{quoteId}": {
+      "get": {
+        "tags": ["Quotes"],
+        "operationId": "getQuoteById",
+        "summary": "Get details of a specific quote",
+        "description": "Retrieve the details of a specific quote by its ID",
+        "parameters": [
+          {
+            "name": "quoteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quote ID"
+          },
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quote details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "quote": {
+                      "$ref": "#/components/schemas/Quote"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "Quote not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/trades": {
+      "post": {
+        "tags": ["Trades"],
+        "operationId": "createTrade",
+        "summary": "Execute a trade based on a quote",
+        "description": "Execute a trade based on a valid quoteId",
+        "parameters": [
+          { "$ref": "#/components/parameters/ApiKey" },
+          { "$ref": "#/components/parameters/Timestamp" },
+          { "$ref": "#/components/parameters/Signature" },
+          { "$ref": "#/components/parameters/Environment" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTradeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Trade executed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Trade"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
