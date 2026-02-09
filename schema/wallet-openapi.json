@@ -92,6 +92,9 @@
         "type": "object",
         "properties": {
           "id": {
+            "type": "string"
+          },
+          "orgId": {
             "type": "string",
             "format": "uuid"
           },
@@ -104,7 +107,14 @@
           "address": {
             "type": "string"
           },
-          "cryptocurrencyId": {
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "status": {
             "type": "string"
           },
           "enabled": {
@@ -117,6 +127,14 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "chain": {
+            "$ref": "#/components/schemas/Blockchain"
           }
         }
       },
@@ -173,16 +191,21 @@
       "Balance": {
         "type": "object",
         "properties": {
-          "currency": {
+          "id": {
             "type": "string"
           },
-          "amount": {
-            "type": "number",
-            "format": "double"
-          },
-          "organizationId": {
+          "orgId": {
             "type": "string",
             "format": "uuid"
+          },
+          "currencyId": {
+            "type": "string"
+          },
+          "total": {
+            "type": "string"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
           }
         }
       },
@@ -238,6 +261,41 @@
           }
         }
       },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "Approval": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "approvedByUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["APPROVED", "REJECTED"]
+          },
+          "approvedBy": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
       "Withdrawal": {
         "type": "object",
         "properties": {
@@ -245,12 +303,20 @@
             "type": "string",
             "format": "uuid"
           },
-          "currency": {
-            "type": "string"
+          "orgId": {
+            "type": "string",
+            "format": "uuid"
           },
           "amount": {
-            "type": "number",
-            "format": "double"
+            "type": "string"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "reference": {
+            "type": "string",
+            "nullable": true
           },
           "status": {
             "type": "string",
@@ -270,21 +336,20 @@
             "format": "uuid",
             "nullable": true
           },
-          "cryptocurrencyId": {
+          "sourceVaultId": {
             "type": "string",
+            "format": "uuid",
             "nullable": true
           },
-          "notes": {
+          "createdByUserId": {
             "type": "string",
-            "nullable": true
+            "format": "uuid"
           },
-          "reference": {
-            "type": "string",
-            "nullable": true
-          },
-          "source": {
-            "type": "string",
-            "nullable": true
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "externalReference": {
             "type": "string",
@@ -294,9 +359,46 @@
             "type": "string",
             "format": "date-time"
           },
-          "updatedAt": {
+          "currencyId": {
             "type": "string",
-            "format": "date-time"
+            "format": "uuid"
+          },
+          "cryptocurrencyId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "chainId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "createdByUser": {
+            "$ref": "#/components/schemas/User"
+          },
+          "approvals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Approval"
+            }
+          },
+          "destinationBankAccount": {
+            "$ref": "#/components/schemas/BankAccount"
+          },
+          "destinationWallet": {
+            "$ref": "#/components/schemas/Wallet",
+            "nullable": true
+          },
+          "cryptocurrency": {
+            "$ref": "#/components/schemas/Cryptocurrency",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "explorerUrl": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -346,6 +448,17 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "cryptocurrencies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Cryptocurrency"
+            }
           }
         }
       },
@@ -387,6 +500,12 @@
             "format": "decimal",
             "nullable": true
           },
+          "chain": {
+            "$ref": "#/components/schemas/Blockchain"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time"
@@ -394,6 +513,11 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         }
       },
@@ -429,11 +553,246 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "cryptocurrencies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Cryptocurrency"
+            }
+          }
+        }
+      },
+      "BalanceResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Balance"
+            }
+          }
+        }
+      },
+      "WalletResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Wallet"
+            }
+          }
+        }
+      },
+      "WalletCreateResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Wallet"
+          }
+        }
+      },
+      "BankAccountResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BankAccount"
+            }
+          }
+        }
+      },
+      "BankAccountCreateResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/BankAccount"
+          }
+        }
+      },
+      "DepositListResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "deposits": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Deposit"
+                }
+              },
+              "total": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "WithdrawalListResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "withdrawals": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Withdrawal"
+                }
+              },
+              "total": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "CurrenciesListResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Currency"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "totalPages": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "CurrencyResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Currency"
+          }
+        }
+      },
+      "CryptocurrenciesListResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Cryptocurrency"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "totalPages": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "CryptocurrencyResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Cryptocurrency"
+          }
+        }
+      },
+      "BlockchainsListResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Blockchain"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "totalPages": {
+                "type": "integer"
+              }
+            }
           }
         }
       }
     }
   },
+
   "security": [
     {
       "ApiKeyAuth": []
@@ -447,14 +806,6 @@
         "operationId": "getBalances",
         "tags": ["Balances"],
         "parameters": [
-          {
-            "name": "currency",
-            "in": "query",
-            "description": "Filter by specific currency",
-            "schema": {
-              "type": "string"
-            }
-          },
           { "$ref": "#/components/parameters/Environment" },
           { "$ref": "#/components/parameters/ApiKey" },
           { "$ref": "#/components/parameters/Timestamp" },
@@ -466,20 +817,139 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Balance"
-                  }
+                  "$ref": "#/components/schemas/BalanceResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": [
+                    {
+                      "id": "cmjgsnv5m000dx33xoa29bwu2",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60013x34dqg86qxzo",
+                      "total": "86",
+                      "currency": {
+                        "id": "cmj10enm60013x34dqg86qxzo",
+                        "type": "FIAT",
+                        "name": "Bahraini Dinar",
+                        "symbol": "BHD",
+                        "decimals": 3,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmjgtcl2t000lx33xyj3m5mzh",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60012x34dv2hsyaeo",
+                      "total": "4",
+                      "currency": {
+                        "id": "cmj10enm60012x34dv2hsyaeo",
+                        "type": "FIAT",
+                        "name": "US Dollar",
+                        "symbol": "USD",
+                        "decimals": 2,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmjh23qlx001dx33x0ruvxk7k",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60017x34dhqgb09bk",
+                      "total": "18.17037",
+                      "currency": {
+                        "id": "cmj10enm60017x34dhqgb09bk",
+                        "type": "CRYPTO",
+                        "name": "Tether",
+                        "symbol": "USDT",
+                        "decimals": 6,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmjihvcwp000dwz3w6niffyyi",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60015x34dq87dwub5",
+                      "total": "8",
+                      "currency": {
+                        "id": "cmj10enm60015x34dq87dwub5",
+                        "type": "FIAT",
+                        "name": "Saudi Riyal",
+                        "symbol": "SAR",
+                        "decimals": 2,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS"]
+                      }
+                    },
+                    {
+                      "id": "cmjihxnqy000lwz3wxaormp1b",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm50011x34d8fq1w4j6",
+                      "total": "7.0463",
+                      "currency": {
+                        "id": "cmj10enm50011x34d8fq1w4j6",
+                        "type": "FIAT",
+                        "name": "UAE Dirham",
+                        "symbol": "AED",
+                        "decimals": 2,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmjscq0cb001vwv475s6bfcje",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60018x34db2ltamx7",
+                      "total": "13.247946",
+                      "currency": {
+                        "id": "cmj10enm60018x34db2ltamx7",
+                        "type": "CRYPTO",
+                        "name": "USD Coin",
+                        "symbol": "USDC",
+                        "decimals": 6,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    }
+                  ]
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a bank account.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a bank account. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a bank account. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -502,6 +972,21 @@
               "type": "string"
             }
           },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by wallet status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REQUESTED",
+                "PENDING",
+                "APPROVED",
+                "CANCELLED",
+                "DISABLED"
+              ]
+            }
+          },
           { "$ref": "#/components/parameters/Environment" },
           { "$ref": "#/components/parameters/ApiKey" },
           { "$ref": "#/components/parameters/Timestamp" },
@@ -513,20 +998,63 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Wallet"
-                  }
+                  "$ref": "#/components/schemas/WalletResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": [
+                    {
+                      "id": "cmk5dkgd40005vt3w1koj5ddx",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "chainId": "cmj10enlx000zx34d1da1hqaz",
+                      "name": "new wallet",
+                      "address": "0x38C09Ab375eE91bCFe824fa7f01353Ee10463C95",
+                      "metadata": {
+                        "status": "APPROVED",
+                        "assetId": "USDT_B75VRLGX_WILI",
+                        "externalId": "33adcb9c-d9a1-4ced-8d6d-4c8ef2365fb3",
+                        "whitelisted": true,
+                        "whitelistError": null,
+                        "cryptocurrencyId": "cmj10enmm001ax34dvwbcntj1"
+                      },
+                      "externalId": "33adcb9c-d9a1-4ced-8d6d-4c8ef2365fb3",
+                      "status": "REQUESTED",
+                      "enabled": true,
+                      "chain": {
+                        "id": "cmj10enlx000zx34d1da1hqaz",
+                        "externalId": "sepolia",
+                        "name": "Ethereum Testnet Sepolia",
+                        "fireblocksId": "ETH",
+                        "nativeTokenSymbol": "ETH",
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    }
+                  ]
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -569,6 +1097,12 @@
                     "description": "Cryptocurrency ID"
                   }
                 }
+              },
+              "example": {
+                "chainId": "cmj10enlx000zx34d1da1hqaz",
+                "name": "New wallet",
+                "address": "0x3b220fbf721f72ed313E36D9ad4a84543e062b6D",
+                "cryptocurrencyId": "cmj10enmm001ax34dvwbcntj1"
               }
             }
           }
@@ -579,17 +1113,73 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wallet"
+                  "$ref": "#/components/schemas/WalletCreateResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "id": "cml6g8ea70003wx4lh5uxuyw2",
+                    "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                    "chainId": "cmj10enlx000zx34d1da1hqaz",
+                    "name": "New wallet",
+                    "address": "0x3b220fbf721f72ed313E36D9ad4a84543e062b6D",
+                    "metadata": {
+                      "status": "APPROVED",
+                      "assetId": "USDT_B75VRLGX_WILI",
+                      "externalId": "1724227f-7230-4e05-87b6-cdb5026e9fc9",
+                      "whitelisted": true,
+                      "whitelistError": null,
+                      "cryptocurrencyId": "cmj10enmm001ax34dvwbcntj1"
+                    },
+                    "createdAt": "2026-02-03T10:21:41.839Z",
+                    "updatedAt": "2026-02-03T10:21:41.839Z",
+                    "externalId": "1724227f-7230-4e05-87b6-cdb5026e9fc9",
+                    "deletedAt": null,
+                    "status": "REQUESTED",
+                    "enabled": false,
+                    "chain": {
+                      "id": "cmj10enlx000zx34d1da1hqaz",
+                      "externalId": "sepolia",
+                      "name": "Ethereum Testnet Sepolia",
+                      "fireblocksId": "ETH",
+                      "nativeTokenSymbol": "ETH",
+                      "createdAt": "2025-12-11T05:40:24.453Z",
+                      "updatedAt": "2026-02-02T15:46:22.187Z",
+                      "deletedAt": null,
+                      "products": ["OTC", "GPS", "PAY"]
+                    }
+                  }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for listing transactions.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to list transactions. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  },
+                  "required": ["success", "error", "message", "code"]
+                },
+                "examples": {
+                  "invalidApiKey": {
+                    "summary": "Invalid API Key",
+                    "value": {
+                      "success": false,
+                      "error": "Unauthorized",
+                      "message": "You are not authorized to list transactions. Please provide a valid API key.",
+                      "code": "INVALID_API_KEY"
+                    }
+                  }
                 }
               }
             }
@@ -625,17 +1215,82 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wallet"
+                  "$ref": "#/components/schemas/WalletCreateResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "id": "cml6g8ea70003wx4lh5uxuyw2",
+                    "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                    "chainId": "cmj10enlx000zx34d1da1hqaz",
+                    "name": "New wallet",
+                    "address": "0x3b220fbf721f72ed313E36D9ad4a84543e062b6D",
+                    "metadata": {
+                      "status": "APPROVAED",
+                      "assetId": "USDT_B75VRLGX_WILI",
+                      "externalId": "1724227f-7230-4e05-87b6-cdb5026e9fc9",
+                      "whitelisted": true,
+                      "whitelistError": null,
+                      "cryptocurrencyId": "cmj10enmm001ax34dvwbcntj1"
+                    },
+                    "createdAt": "2026-02-03T10:21:41.839Z",
+                    "updatedAt": "2026-02-03T10:21:41.839Z",
+                    "externalId": "1724227f-7230-4e05-87b6-cdb5026e9fc9",
+                    "deletedAt": null,
+                    "status": "REQUESTED",
+                    "enabled": true,
+                    "chain": {
+                      "id": "cmj10enlx000zx34d1da1hqaz",
+                      "externalId": "sepolia",
+                      "name": "Ethereum Testnet Sepolia",
+                      "fireblocksId": "ETH",
+                      "nativeTokenSymbol": "ETH",
+                      "createdAt": "2025-12-11T05:40:24.453Z",
+                      "updatedAt": "2026-02-02T15:46:22.187Z",
+                      "deletedAt": null,
+                      "products": ["OTC", "GPS", "PAY"]
+                    }
+                  }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for retrieving a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to retrieve this transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  },
+                  "required": ["success", "error", "message", "code"]
+                },
+                "examples": {
+                  "invalidApiKey": {
+                    "summary": "Invalid API Key",
+                    "value": {
+                      "success": false,
+                      "error": "Unauthorized",
+                      "message": "You are not authorized to retrieve this transaction. Please provide a valid API key.",
+                      "code": "INVALID_API_KEY"
+                    }
+                  },
+                  "missingApiKey": {
+                    "summary": "Missing API Key",
+                    "value": {
+                      "success": false,
+                      "error": "Unauthorized",
+                      "message": "API key is missing in the request header.",
+                      "code": "MISSING_API_KEY"
+                    }
+                  }
                 }
               }
             }
@@ -669,20 +1324,421 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BankAccount"
-                  }
+                  "$ref": "#/components/schemas/BankAccountResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": [
+                    {
+                      "id": "cmkpimw2t0012x73vtm9it6tq",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60013x34dqg86qxzo",
+                      "country": "BHR",
+                      "beneficiaryName": "Test Bahrain Individual",
+                      "bankName": "Bank of Bahrain Kuwait",
+                      "accountNumber": "3000000001",
+                      "routingCode": "TESTBHBM",
+                      "iban": "BH00TEST000000000001",
+                      "enabled": true,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm60013x34dqg86qxzo",
+                        "type": "FIAT",
+                        "name": "Bahraini Dinar",
+                        "symbol": "BHD",
+                        "decimals": 3,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmkpil1gq0011x73vofnqrr0u",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60013x34dqg86qxzo",
+                      "country": "BHR",
+                      "beneficiaryName": "Test Bahrain Individual",
+                      "bankName": "Bank of Bahrain Kuwait",
+                      "accountNumber": "3000000001",
+                      "routingCode": "TESTBHBM",
+                      "iban": "BH00TEST000000000001",
+                      "enabled": true,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm60013x34dqg86qxzo",
+                        "type": "FIAT",
+                        "name": "Bahraini Dinar",
+                        "symbol": "BHD",
+                        "decimals": 3,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmk6rwspp0018xa3wyx5cp5qx",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm50011x34d8fq1w4j6",
+                      "country": "ARE",
+                      "beneficiaryName": "John",
+                      "bankName": "Emirates NBD",
+                      "accountNumber": "1029384756",
+                      "routingCode": "ERTY",
+                      "iban": "AE456789345678904567",
+                      "enabled": false,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm50011x34d8fq1w4j6",
+                        "type": "FIAT",
+                        "name": "UAE Dirham",
+                        "symbol": "AED",
+                        "decimals": 2,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmk5ffgam0007vt3wbfcdxk78",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60013x34dqg86qxzo",
+                      "country": "BHR",
+                      "beneficiaryName": "Test Bahrain Individual",
+                      "bankName": "Bank of Bahrain  Kuwait",
+                      "accountNumber": "1234567890",
+                      "routingCode": "TESTBHBM",
+                      "iban": "BH12344567893456778",
+                      "enabled": true,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm60013x34dqg86qxzo",
+                        "type": "FIAT",
+                        "name": "Bahraini Dinar",
+                        "symbol": "BHD",
+                        "decimals": 3,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmjwruoix0013x642m4x103du",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60012x34dv2hsyaeo",
+                      "country": "USA",
+                      "beneficiaryName": "Test US Business",
+                      "bankName": "JPMorgan Chase",
+                      "accountNumber": "5000000002",
+                      "routingCode": "TESTUS99",
+                      "iban": "US00TEST00000002",
+                      "enabled": false,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm60012x34dv2hsyaeo",
+                        "type": "FIAT",
+                        "name": "US Dollar",
+                        "symbol": "USD",
+                        "decimals": 2,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmjwrt94q0011x642ai9w3ka4",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60012x34dv2hsyaeo",
+                      "country": "USA",
+                      "beneficiaryName": "Test US Individual",
+                      "bankName": "JPMorgan Chase",
+                      "accountNumber": "5000000001",
+                      "routingCode": "TESTUS33",
+                      "iban": "US00TEST00000001",
+                      "enabled": false,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm60012x34dv2hsyaeo",
+                        "type": "FIAT",
+                        "name": "US Dollar",
+                        "symbol": "USD",
+                        "decimals": 2,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmjwrrajl000zx642e2oz70fs",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm50011x34d8fq1w4j6",
+                      "country": "ARE",
+                      "beneficiaryName": "Test UAE Business",
+                      "bankName": "Emirates NBD",
+                      "accountNumber": "1000000003",
+                      "routingCode": "TESTAEAD",
+                      "iban": "AE00TEST000000000003",
+                      "enabled": false,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm50011x34d8fq1w4j6",
+                        "type": "FIAT",
+                        "name": "UAE Dirham",
+                        "symbol": "AED",
+                        "decimals": 2,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmjwrqae2000xx6424jaw8hua",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm50011x34d8fq1w4j6",
+                      "country": "ARE",
+                      "beneficiaryName": "Test UAE Individual",
+                      "bankName": "Emirates NBD",
+                      "accountNumber": "1000000001",
+                      "routingCode": "TESTAEAD",
+                      "iban": "AE00TEST000000000001",
+                      "enabled": false,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm50011x34d8fq1w4j6",
+                        "type": "FIAT",
+                        "name": "UAE Dirham",
+                        "symbol": "AED",
+                        "decimals": 2,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmjwrohy2000vx6423rq977iz",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60015x34dq87dwub5",
+                      "country": "SAU",
+                      "beneficiaryName": "Test KSA Business",
+                      "bankName": "Al Rajhi Bank",
+                      "accountNumber": "2000000002",
+                      "routingCode": "TESTSARI",
+                      "iban": "SA00TEST000000000002",
+                      "enabled": false,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm60015x34dq87dwub5",
+                        "type": "FIAT",
+                        "name": "Saudi Riyal",
+                        "symbol": "SAR",
+                        "decimals": 2,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS"]
+                      }
+                    },
+                    {
+                      "id": "cmjwrn6ti000tx642ko3c1pyb",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60013x34dqg86qxzo",
+                      "country": "BHR",
+                      "beneficiaryName": "Test Bahrain Business",
+                      "bankName": "Bank of Bahrain  Kuwait",
+                      "accountNumber": "3000000002",
+                      "routingCode": "TESTBHBM",
+                      "iban": "BH00TEST000000000002",
+                      "enabled": false,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm60013x34dqg86qxzo",
+                        "type": "FIAT",
+                        "name": "Bahraini Dinar",
+                        "symbol": "BHD",
+                        "decimals": 3,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmjwrh669000rx642kqc1zc0d",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60015x34dq87dwub5",
+                      "country": "SAU",
+                      "beneficiaryName": "Test KSA Individual",
+                      "bankName": "Al Rajhi Bank",
+                      "accountNumber": "2000000001",
+                      "routingCode": "TESTSARI",
+                      "iban": "SA00TEST000000000001",
+                      "enabled": false,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm60015x34dq87dwub5",
+                        "type": "FIAT",
+                        "name": "Saudi Riyal",
+                        "symbol": "SAR",
+                        "decimals": 2,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS"]
+                      }
+                    },
+                    {
+                      "id": "cmjwqk5eg000px642jjz62r2m",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60013x34dqg86qxzo",
+                      "country": "BHR",
+                      "beneficiaryName": "Test Bahrain Individual",
+                      "bankName": "Bank of Bahrain  Kuwait",
+                      "accountNumber": "3000000001",
+                      "routingCode": "TESTBHBM",
+                      "iban": "BH00TEST000000000001",
+                      "enabled": false,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm60013x34dqg86qxzo",
+                        "type": "FIAT",
+                        "name": "Bahraini Dinar",
+                        "symbol": "BHD",
+                        "decimals": 3,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmjr76sbs0009x140v23hgu23",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60012x34dv2hsyaeo",
+                      "country": "USA",
+                      "beneficiaryName": "John",
+                      "bankName": "National Bank of Bahrain",
+                      "accountNumber": "45678934567",
+                      "routingCode": "NBOBBHBM",
+                      "iban": "GB82WEST12345698765432",
+                      "enabled": true,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm60012x34dv2hsyaeo",
+                        "type": "FIAT",
+                        "name": "US Dollar",
+                        "symbol": "USD",
+                        "decimals": 2,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmjr6uchv0007x140abvnzpol",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60013x34dqg86qxzo",
+                      "country": "BHR",
+                      "beneficiaryName": "ARP DIGITAL",
+                      "bankName": "National Bank of Bahrain",
+                      "accountNumber": "12345678",
+                      "routingCode": "NBOBBHBM",
+                      "iban": "AD23456789098765432",
+                      "enabled": true,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm60013x34dqg86qxzo",
+                        "type": "FIAT",
+                        "name": "Bahraini Dinar",
+                        "symbol": "BHD",
+                        "decimals": 3,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmjik96pb0015wz3wazyrc9p9",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60015x34dq87dwub5",
+                      "country": "QAT",
+                      "beneficiaryName": "John",
+                      "bankName": "Emirates NBD",
+                      "accountNumber": "5000044048",
+                      "routingCode": "38009",
+                      "iban": "SA0380000000608010167519",
+                      "enabled": true,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm60015x34dq87dwub5",
+                        "type": "FIAT",
+                        "name": "Saudi Riyal",
+                        "symbol": "SAR",
+                        "decimals": 2,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS"]
+                      }
+                    },
+                    {
+                      "id": "cmjgtoi3e000px33xrn1hq6yo",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm60012x34dv2hsyaeo",
+                      "country": "USA",
+                      "beneficiaryName": "John",
+                      "bankName": "National Bank of Bahrain",
+                      "accountNumber": "45678934567",
+                      "routingCode": "NBOBBHBM",
+                      "iban": "GB82WEST12345698765432",
+                      "enabled": true,
+                      "metadata": null,
+                      "currency": {
+                        "id": "cmj10enm60012x34dv2hsyaeo",
+                        "type": "FIAT",
+                        "name": "US Dollar",
+                        "symbol": "USD",
+                        "decimals": 2,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    }
+                  ]
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -721,6 +1777,7 @@
                   "country": {
                     "type": "string",
                     "pattern": "^[A-Z]{3}$",
+                    "enum": ["BHD", "SAR", "AED", "USD"],
                     "description": "3-letter ISO country code in uppercase"
                   },
                   "beneficiaryName": {
@@ -749,6 +1806,15 @@
                     "description": "Optional additional metadata"
                   }
                 }
+              },
+              "example": {
+                "currencyId": "cmj10enm60013x34dqg86qxzo",
+                "country": "BHR",
+                "beneficiaryName": "ARP DIGITAL",
+                "bankName": "National Bank of Bahrain",
+                "accountNumber": "3000000001",
+                "routingCode": "TESTBHBM",
+                "iban": "BH00TEST000000000001"
               }
             }
           }
@@ -759,17 +1825,65 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BankAccount"
+                  "$ref": "#/components/schemas/BankAccountCreateResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "id": "cml6icwwf0006wx4lfaudorly",
+                    "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                    "currencyId": "cmj10enm60013x34dqg86qxzo",
+                    "country": "BHR",
+                    "beneficiaryName": "ARP DIGITAL",
+                    "bankName": "National Bank of Bahrain",
+                    "accountNumber": "3000000001",
+                    "routingCode": "TESTBHBM",
+                    "iban": "BH00TEST000000000001",
+                    "enabled": false,
+                    "metadata": null,
+                    "createdAt": "2026-02-03T11:21:11.824Z",
+                    "updatedAt": "2026-02-03T11:21:11.824Z",
+                    "deletedAt": null,
+                    "currency": {
+                      "id": "cmj10enm60013x34dqg86qxzo",
+                      "type": "FIAT",
+                      "name": "Bahraini Dinar",
+                      "symbol": "BHD",
+                      "decimals": 3,
+                      "minTradeAmount": null,
+                      "maxTradeAmount": null,
+                      "hiddenOnUI": false,
+                      "createdAt": "2025-12-11T05:40:24.462Z",
+                      "updatedAt": "2026-02-02T15:46:22.272Z",
+                      "deletedAt": null,
+                      "products": ["OTC", "GPS", "PAY"]
+                    }
+                  }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -805,17 +1919,65 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BankAccount"
+                  "$ref": "#/components/schemas/BankAccountCreateResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "id": "cmjwrt94q0011x642ai9w3ka4",
+                    "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                    "currencyId": "cmj10enm60012x34dv2hsyaeo",
+                    "country": "USA",
+                    "beneficiaryName": "Test US Individual",
+                    "bankName": "JPMorgan Chase",
+                    "accountNumber": "5000000001",
+                    "routingCode": "TESTUS33",
+                    "iban": "US00TEST00000001",
+                    "enabled": true,
+                    "metadata": null,
+                    "createdAt": "2026-01-02T11:08:26.618Z",
+                    "updatedAt": "2026-01-02T11:08:26.618Z",
+                    "deletedAt": null,
+                    "currency": {
+                      "id": "cmj10enm60012x34dv2hsyaeo",
+                      "type": "FIAT",
+                      "name": "US Dollar",
+                      "symbol": "USD",
+                      "decimals": 2,
+                      "minTradeAmount": null,
+                      "maxTradeAmount": null,
+                      "hiddenOnUI": false,
+                      "createdAt": "2025-12-11T05:40:24.462Z",
+                      "updatedAt": "2026-02-02T15:46:22.266Z",
+                      "deletedAt": null,
+                      "products": ["OTC", "GPS", "PAY"]
+                    }
+                  }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -878,20 +2040,373 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Deposit"
+                  "$ref": "#/components/schemas/DepositListResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "deposits": [
+                      {
+                        "id": "cmkpfpgm9000ex73vo2vpwq6i",
+                        "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                        "amount": "1",
+                        "notes": null,
+                        "reference": "1234567890",
+                        "status": "COMPLETED",
+                        "approvalStatus": "APPROVED",
+                        "referenceId": null,
+                        "createdAt": "2026-01-22T12:34:53.410Z",
+                        "sourceTreasuryId": null,
+                        "labels": [],
+                        "externalReference": null,
+                        "currencyId": "cmj10enm60012x34dv2hsyaeo",
+                        "cryptocurrencyId": null,
+                        "chainId": null,
+                        "currency": {
+                          "id": "cmj10enm60012x34dv2hsyaeo",
+                          "type": "FIAT",
+                          "name": "US Dollar",
+                          "symbol": "USD",
+                          "decimals": 2,
+                          "minTradeAmount": null,
+                          "maxTradeAmount": null,
+                          "hiddenOnUI": false,
+                          "products": ["OTC", "GPS", "PAY"]
+                        },
+                        "sourceTreasury": null,
+                        "explorerUrl": null
+                      },
+                      {
+                        "id": "cmkl6x59r001nwx3yu08jhcg0",
+                        "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                        "amount": "1",
+                        "notes": "Fireblocks vault deposit - TxID: 099119b1-1d1d-4b47-abc3-fa782b9e0724",
+                        "reference": "0x262d59594188f27c49fd775f4afd23fcb1a64aa4cad2132cd86d378b07285551",
+                        "status": "COMPLETED",
+                        "approvalStatus": "APPROVED",
+                        "referenceId": "099119b1-1d1d-4b47-abc3-fa782b9e0724",
+                        "createdAt": "2026-01-19T13:17:50.703Z",
+                        "sourceTreasuryId": null,
+                        "labels": ["CRYPTO_DEPOSIT"],
+                        "externalReference": null,
+                        "currencyId": "cmj10enm60017x34dhqgb09bk",
+                        "cryptocurrencyId": "cmj10enmm001ax34dvwbcntj1",
+                        "chainId": "cmj10enlx000zx34d1da1hqaz",
+                        "currency": {
+                          "id": "cmj10enm60017x34dhqgb09bk",
+                          "type": "CRYPTO",
+                          "name": "Tether",
+                          "symbol": "USDT",
+                          "decimals": 6,
+                          "minTradeAmount": null,
+                          "maxTradeAmount": null,
+                          "hiddenOnUI": false,
+                          "products": ["OTC", "GPS", "PAY"]
+                        },
+                        "sourceTreasury": null,
+                        "explorerUrl": null
+                      },
+                      {
+                        "id": "cmkktzadu0017wx3yjli9gx8v",
+                        "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                        "amount": "1",
+                        "notes": null,
+                        "reference": "12345678",
+                        "status": "COMPLETED",
+                        "approvalStatus": "APPROVED",
+                        "referenceId": null,
+                        "createdAt": "2026-01-19T07:15:35.634Z",
+                        "sourceTreasuryId": null,
+                        "labels": [],
+                        "externalReference": null,
+                        "currencyId": "cmj10enm60017x34dhqgb09bk",
+                        "cryptocurrencyId": null,
+                        "chainId": null,
+                        "currency": {
+                          "id": "cmj10enm60017x34dhqgb09bk",
+                          "type": "CRYPTO",
+                          "name": "Tether",
+                          "symbol": "USDT",
+                          "decimals": 6,
+                          "minTradeAmount": null,
+                          "maxTradeAmount": null,
+                          "hiddenOnUI": false,
+                          "products": ["OTC", "GPS", "PAY"]
+                        },
+                        "sourceTreasury": null,
+                        "explorerUrl": null
+                      },
+                      {
+                        "id": "cmkkt1lqt000twx3y635zw5sk",
+                        "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                        "amount": "1",
+                        "notes": null,
+                        "reference": "12345678",
+                        "status": "COMPLETED",
+                        "approvalStatus": "APPROVED",
+                        "referenceId": null,
+                        "createdAt": "2026-01-19T06:49:24.054Z",
+                        "sourceTreasuryId": null,
+                        "labels": [],
+                        "externalReference": null,
+                        "currencyId": "cmj10enm60013x34dqg86qxzo",
+                        "cryptocurrencyId": null,
+                        "chainId": null,
+                        "currency": {
+                          "id": "cmj10enm60013x34dqg86qxzo",
+                          "type": "FIAT",
+                          "name": "Bahraini Dinar",
+                          "symbol": "BHD",
+                          "decimals": 3,
+                          "minTradeAmount": null,
+                          "maxTradeAmount": null,
+                          "hiddenOnUI": false,
+                          "products": ["OTC", "GPS", "PAY"]
+                        },
+                        "sourceTreasury": null,
+                        "explorerUrl": null
+                      },
+                      {
+                        "id": "cmkksu0t0000lwx3y72v9we5f",
+                        "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                        "amount": "100",
+                        "notes": null,
+                        "reference": "12345678",
+                        "status": "COMPLETED",
+                        "approvalStatus": "APPROVED",
+                        "referenceId": null,
+                        "createdAt": "2026-01-19T06:43:30.324Z",
+                        "sourceTreasuryId": "cmj10enus001qx34dj2fu9hsr",
+                        "labels": [],
+                        "externalReference": null,
+                        "currencyId": "cmj10enm60013x34dqg86qxzo",
+                        "cryptocurrencyId": null,
+                        "chainId": null,
+                        "currency": {
+                          "id": "cmj10enm60013x34dqg86qxzo",
+                          "type": "FIAT",
+                          "name": "Bahraini Dinar",
+                          "symbol": "BHD",
+                          "decimals": 3,
+                          "minTradeAmount": null,
+                          "maxTradeAmount": null,
+                          "hiddenOnUI": false,
+                          "products": ["OTC", "GPS", "PAY"]
+                        },
+                        "sourceTreasury": {
+                          "id": "cmj10enus001qx34dj2fu9hsr",
+                          "currencyId": "cmj10enm60013x34dqg86qxzo",
+                          "country": "Bahrain",
+                          "beneficiaryName": "ARP DIGITAL BAHRAIN BSC CLOSED",
+                          "bankName": "National Bank of Bahrain",
+                          "accountNumber": "5000044048",
+                          "routingCode": "NBOBBHBM",
+                          "iban": "BH04NBOB00005000044048",
+                          "enabled": true,
+                          "accountDetails": null
+                        },
+                        "explorerUrl": null
+                      },
+                      {
+                        "id": "cmk5hlkta000bx33w464re6gh",
+                        "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                        "amount": "2",
+                        "notes": null,
+                        "reference": "dfgh",
+                        "status": "COMPLETED",
+                        "approvalStatus": "APPROVED",
+                        "referenceId": null,
+                        "createdAt": "2026-01-08T13:32:27.934Z",
+                        "sourceTreasuryId": "cmj10enuh001ox34dhv36m9fs",
+                        "labels": [],
+                        "externalReference": null,
+                        "currencyId": "cmj10enm60012x34dv2hsyaeo",
+                        "cryptocurrencyId": null,
+                        "chainId": null,
+                        "currency": {
+                          "id": "cmj10enm60012x34dv2hsyaeo",
+                          "type": "FIAT",
+                          "name": "US Dollar",
+                          "symbol": "USD",
+                          "decimals": 2,
+                          "minTradeAmount": null,
+                          "maxTradeAmount": null,
+                          "hiddenOnUI": false,
+                          "products": ["OTC", "GPS", "PAY"]
+                        },
+                        "sourceTreasury": {
+                          "id": "cmj10enuh001ox34dhv36m9fs",
+                          "currencyId": "cmj10enm60012x34dv2hsyaeo",
+                          "country": "Bahrain",
+                          "beneficiaryName": "ARP DIGITAL BAHRAIN BSC CLOSED",
+                          "bankName": "National Bank of Bahrain",
+                          "accountNumber": "5000044053",
+                          "routingCode": "NBOBBHBM",
+                          "iban": "BH63NBOB00005000044053",
+                          "enabled": true,
+                          "accountDetails": null
+                        },
+                        "explorerUrl": null
+                      },
+                      {
+                        "id": "cmk2gszlx000bx43zi3kox7kk",
+                        "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                        "amount": "20",
+                        "notes": null,
+                        "reference": "test",
+                        "status": "COMPLETED",
+                        "approvalStatus": "APPROVED",
+                        "referenceId": null,
+                        "createdAt": "2026-01-06T10:46:55.557Z",
+                        "sourceTreasuryId": "cmj10enun001px34de8hfqppn",
+                        "labels": [],
+                        "externalReference": null,
+                        "currencyId": "cmj10enm60013x34dqg86qxzo",
+                        "cryptocurrencyId": null,
+                        "chainId": null,
+                        "currency": {
+                          "id": "cmj10enm60013x34dqg86qxzo",
+                          "type": "FIAT",
+                          "name": "Bahraini Dinar",
+                          "symbol": "BHD",
+                          "decimals": 3,
+                          "minTradeAmount": null,
+                          "maxTradeAmount": null,
+                          "hiddenOnUI": false,
+                          "products": ["OTC", "GPS", "PAY"]
+                        },
+                        "sourceTreasury": {
+                          "id": "cmj10enun001px34de8hfqppn",
+                          "currencyId": "cmj10enm60013x34dqg86qxzo",
+                          "country": "Bahrain",
+                          "beneficiaryName": "ARP DIGITAL BAHRAIN BSC CLOSED",
+                          "bankName": "Bank of Bahrain and Kuwait (BBK)",
+                          "accountNumber": "100000483721",
+                          "routingCode": "BBKUBHBM",
+                          "iban": "BH32BBKU00100000483721",
+                          "enabled": true,
+                          "accountDetails": null
+                        },
+                        "explorerUrl": null
+                      },
+                      {
+                        "id": "cmjs7d11d0007ww3wnce3jada",
+                        "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                        "amount": "1",
+                        "notes": "Fireblocks vault deposit - TxID: 97acdf85-da7d-427d-8c0a-a0ae8f2a4251",
+                        "reference": "0xd4b04c1ac1aac846c70a99396bcbe9ca30e29c270a1d626b0a54757c3dda9f91",
+                        "status": "COMPLETED",
+                        "approvalStatus": "APPROVED",
+                        "referenceId": "97acdf85-da7d-427d-8c0a-a0ae8f2a4251",
+                        "createdAt": "2025-12-30T06:24:52.609Z",
+                        "sourceTreasuryId": null,
+                        "labels": ["CRYPTO_DEPOSIT"],
+                        "externalReference": null,
+                        "currencyId": "cmj10enm60017x34dhqgb09bk",
+                        "cryptocurrencyId": "cmj10enmm001ax34dvwbcntj1",
+                        "chainId": "cmj10enlx000zx34d1da1hqaz",
+                        "currency": {
+                          "id": "cmj10enm60017x34dhqgb09bk",
+                          "type": "CRYPTO",
+                          "name": "Tether",
+                          "symbol": "USDT",
+                          "decimals": 6,
+                          "minTradeAmount": null,
+                          "maxTradeAmount": null,
+                          "hiddenOnUI": false,
+                          "products": ["OTC", "GPS", "PAY"]
+                        },
+                        "sourceTreasury": null,
+                        "explorerUrl": null
+                      },
+                      {
+                        "id": "cmjqsp4ea0001x140tjbrvxb6",
+                        "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                        "amount": "1",
+                        "notes": null,
+                        "reference": "review",
+                        "status": "COMPLETED",
+                        "approvalStatus": "APPROVED",
+                        "referenceId": null,
+                        "createdAt": "2025-12-29T06:46:36.411Z",
+                        "sourceTreasuryId": null,
+                        "labels": [],
+                        "externalReference": null,
+                        "currencyId": "cmj10enm60015x34dq87dwub5",
+                        "cryptocurrencyId": null,
+                        "chainId": null,
+                        "currency": {
+                          "id": "cmj10enm60015x34dq87dwub5",
+                          "type": "FIAT",
+                          "name": "Saudi Riyal",
+                          "symbol": "SAR",
+                          "decimals": 2,
+                          "minTradeAmount": null,
+                          "maxTradeAmount": null,
+                          "hiddenOnUI": false,
+                          "products": ["OTC", "GPS"]
+                        },
+                        "sourceTreasury": null,
+                        "explorerUrl": null
+                      },
+                      {
+                        "id": "cmjjlhdlz0007vl4ahrjkbg2a",
+                        "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                        "amount": "1",
+                        "notes": "Fireblocks vault deposit - TxID: 2f013e3d-5abf-4d01-96f0-ffce3764edb0",
+                        "reference": "0x40fb16ca622c7a5ff28a9608da67336c070ad4afc17803aa439b7b655c244156",
+                        "status": "COMPLETED",
+                        "approvalStatus": "APPROVED",
+                        "referenceId": "2f013e3d-5abf-4d01-96f0-ffce3764edb0",
+                        "createdAt": "2025-12-24T05:50:14.567Z",
+                        "sourceTreasuryId": null,
+                        "labels": ["CRYPTO_DEPOSIT"],
+                        "externalReference": null,
+                        "currencyId": "cmj10enm60017x34dhqgb09bk",
+                        "cryptocurrencyId": "cmj10enmm001ax34dvwbcntj1",
+                        "chainId": "cmj10enlx000zx34d1da1hqaz",
+                        "currency": {
+                          "id": "cmj10enm60017x34dhqgb09bk",
+                          "type": "CRYPTO",
+                          "name": "Tether",
+                          "symbol": "USDT",
+                          "decimals": 6,
+                          "minTradeAmount": null,
+                          "maxTradeAmount": null,
+                          "hiddenOnUI": false,
+                          "products": ["OTC", "GPS", "PAY"]
+                        },
+                        "sourceTreasury": null,
+                        "explorerUrl": null
+                      }
+                    ],
+                    "total": 21
                   }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -919,6 +2434,7 @@
                 "properties": {
                   "currency": {
                     "type": "string",
+                    "enum": ["BHD", "SAR", "AED", "USD", "USDT", "USDC"],
                     "description": "Currency code"
                   },
                   "amount": {
@@ -948,6 +2464,11 @@
                     "description": "Optional external reference"
                   }
                 }
+              },
+              "example": {
+                "amount": 2,
+                "currency": "AED",
+                "destinationBankAccountId": "cmk6rwspp0018xa3wyx5cp5qx"
               }
             }
           }
@@ -959,16 +2480,55 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Deposit"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "id": "cml6k30nl000cwx4lfc02jfhj",
+                    "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                    "amount": "10",
+                    "notes": null,
+                    "reference": null,
+                    "source": null,
+                    "status": "PROCESSING",
+                    "approvalStatus": "PENDING",
+                    "referenceId": null,
+                    "createdByUserId": "d66fbf12-aa1a-45e4-86f7-df39cd6af66c",
+                    "initiatorType": "API_KEY",
+                    "createdAt": "2026-02-03T12:09:29.361Z",
+                    "updatedAt": "2026-02-03T12:09:29.361Z",
+                    "sourceTreasuryId": "cmj10enuz001rx34dv54wio7v",
+                    "labels": [],
+                    "externalReference": null,
+                    "currencyId": "cmj10enm60015x34dq87dwub5",
+                    "cryptocurrencyId": null,
+                    "chainId": null
+                  }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1003,18 +2563,55 @@
             "description": "Successfully retrieved deposit",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Deposit"
+                "schema": { "$ref": "#/components/schemas/Deposit" },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "id": "cml6k30nl000cwx4lfc02jfhj",
+                    "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                    "amount": "10",
+                    "notes": null,
+                    "reference": null,
+                    "source": null,
+                    "status": "PROCESSING",
+                    "approvalStatus": "PENDING",
+                    "referenceId": null,
+                    "createdByUserId": "d66fbf12-aa1a-45e4-86f7-df39cd6af66c",
+                    "initiatorType": "API_KEY",
+                    "createdAt": "2026-02-03T12:09:29.361Z",
+                    "updatedAt": "2026-02-03T12:09:29.361Z",
+                    "sourceTreasuryId": "cmj10enuz001rx34dv54wio7v",
+                    "labels": [],
+                    "externalReference": null,
+                    "currencyId": "cmj10enm60015x34dq87dwub5",
+                    "cryptocurrencyId": null,
+                    "chainId": null
+                  }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1070,20 +2667,188 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Withdrawal"
+                  "$ref": "#/components/schemas/WithdrawalListResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "withdrawals": [
+                      {
+                        "id": "cmk5i5boe000fx33wpty0jamy",
+                        "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                        "amount": "1",
+                        "notes": null,
+                        "reference": "test",
+                        "status": "COMPLETED",
+                        "approvalStatus": "APPROVED",
+                        "destinationWalletId": null,
+                        "destinationBankAccountId": "cmjik96pb0015wz3wazyrc9p9",
+                        "sourceVaultId": null,
+                        "createdByUserId": "d66fbf12-aa1a-45e4-86f7-df39cd6af66c",
+                        "labels": [],
+                        "externalReference": null,
+                        "createdAt": "2026-01-08T13:47:49.214Z",
+                        "currencyId": "cmj10enm60015x34dq87dwub5",
+                        "cryptocurrencyId": null,
+                        "chainId": null,
+                        "createdByUser": {
+                          "id": "d66fbf12-aa1a-45e4-86f7-df39cd6af66c",
+                          "fullName": "Jaimini Bhandari",
+                          "email": "jennyinfo24@gmail.com"
+                        },
+                        "approvals": [
+                          {
+                            "id": "cmk5i5qac000jx33wm9tr1bqq",
+                            "approvedByUserId": "88741f9f-42e0-4347-9a78-af74f423c237",
+                            "status": "APPROVED",
+                            "approvedBy": {
+                              "id": "88741f9f-42e0-4347-9a78-af74f423c237",
+                              "fullName": "Tester admin",
+                              "email": "arptesteradmin@blondmail.com"
+                            }
+                          }
+                        ],
+                        "destinationBankAccount": {
+                          "id": "cmjik96pb0015wz3wazyrc9p9",
+                          "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                          "currencyId": "cmj10enm60015x34dq87dwub5",
+                          "country": "QAT",
+                          "beneficiaryName": "John",
+                          "bankName": "Emirates NBD",
+                          "accountNumber": "5000044048",
+                          "routingCode": "38009",
+                          "iban": "SA0380000000608010167519",
+                          "enabled": true,
+                          "metadata": null,
+                          "currency": {
+                            "id": "cmj10enm60015x34dq87dwub5",
+                            "type": "FIAT",
+                            "name": "Saudi Riyal",
+                            "symbol": "SAR",
+                            "decimals": 2,
+                            "minTradeAmount": null,
+                            "maxTradeAmount": null,
+                            "hiddenOnUI": false,
+                            "products": ["OTC", "GPS"]
+                          }
+                        },
+                        "destinationWallet": null,
+                        "cryptocurrency": null,
+                        "currency": {
+                          "id": "cmj10enm60015x34dq87dwub5",
+                          "type": "FIAT",
+                          "name": "Saudi Riyal",
+                          "symbol": "SAR",
+                          "decimals": 2,
+                          "minTradeAmount": null,
+                          "maxTradeAmount": null,
+                          "hiddenOnUI": false,
+                          "products": ["OTC", "GPS"]
+                        },
+                        "explorerUrl": null
+                      },
+                      {
+                        "id": "cmjgts23o000rx33xh1i6vji0",
+                        "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                        "amount": "2",
+                        "notes": null,
+                        "reference": "test",
+                        "status": "COMPLETED",
+                        "approvalStatus": "APPROVED",
+                        "destinationWalletId": null,
+                        "destinationBankAccountId": "cmjgtoi3e000px33xrn1hq6yo",
+                        "sourceVaultId": null,
+                        "createdByUserId": "d66fbf12-aa1a-45e4-86f7-df39cd6af66c",
+                        "labels": [],
+                        "externalReference": null,
+                        "createdAt": "2025-12-22T07:19:11.268Z",
+                        "currencyId": "cmj10enm60012x34dv2hsyaeo",
+                        "cryptocurrencyId": null,
+                        "chainId": null,
+                        "createdByUser": {
+                          "id": "d66fbf12-aa1a-45e4-86f7-df39cd6af66c",
+                          "fullName": "Jaimini Bhandari",
+                          "email": "jennyinfo24@gmail.com"
+                        },
+                        "approvals": [
+                          {
+                            "id": "cmjgtt50s000vx33xz4t93ysl",
+                            "approvedByUserId": "d66fbf12-aa1a-45e4-86f7-df39cd6af66c",
+                            "status": "APPROVED",
+                            "approvedBy": {
+                              "id": "d66fbf12-aa1a-45e4-86f7-df39cd6af66c",
+                              "fullName": "Jaimini Bhandari",
+                              "email": "jennyinfo24@gmail.com"
+                            }
+                          }
+                        ],
+                        "destinationBankAccount": {
+                          "id": "cmjgtoi3e000px33xrn1hq6yo",
+                          "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                          "currencyId": "cmj10enm60012x34dv2hsyaeo",
+                          "country": "USA",
+                          "beneficiaryName": "John",
+                          "bankName": "National Bank of Bahrain",
+                          "accountNumber": "45678934567",
+                          "routingCode": "NBOBBHBM",
+                          "iban": "GB82WEST12345698765432",
+                          "enabled": true,
+                          "metadata": null,
+                          "currency": {
+                            "id": "cmj10enm60012x34dv2hsyaeo",
+                            "type": "FIAT",
+                            "name": "US Dollar",
+                            "symbol": "USD",
+                            "decimals": 2,
+                            "minTradeAmount": null,
+                            "maxTradeAmount": null,
+                            "hiddenOnUI": false,
+                            "products": ["OTC", "GPS", "PAY"]
+                          }
+                        },
+                        "destinationWallet": null,
+                        "cryptocurrency": null,
+                        "currency": {
+                          "id": "cmj10enm60012x34dv2hsyaeo",
+                          "type": "FIAT",
+                          "name": "US Dollar",
+                          "symbol": "USD",
+                          "decimals": 2,
+                          "minTradeAmount": null,
+                          "maxTradeAmount": null,
+                          "hiddenOnUI": false,
+                          "products": ["OTC", "GPS", "PAY"]
+                        },
+                        "explorerUrl": null
+                      }
+                    ],
+                    "total": 2
                   }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1111,6 +2876,7 @@
                 "properties": {
                   "currency": {
                     "type": "string",
+                    "enum": ["BHD", "SAR", "AED", "USD", "USDT", "USDC"],
                     "description": "Currency code"
                   },
                   "amount": {
@@ -1153,6 +2919,11 @@
                     "description": "Optional external reference"
                   }
                 }
+              },
+              "example": {
+                "amount": 2,
+                "currency": "AED",
+                "destinationBankAccountId": "cmk6rwspp0018xa3wyx5cp5qx"
               }
             }
           }
@@ -1164,16 +2935,87 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Withdrawal"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "id": "cml6m4hdz000ewx4l7odkdyg4",
+                    "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                    "amount": "2",
+                    "notes": null,
+                    "reference": null,
+                    "source": null,
+                    "status": "PROCESSING",
+                    "approvalStatus": "PENDING",
+                    "destinationWalletId": null,
+                    "destinationBankAccountId": "cmk6rwspp0018xa3wyx5cp5qx",
+                    "sourceVaultId": null,
+                    "createdByUserId": "d66fbf12-aa1a-45e4-86f7-df39cd6af66c",
+                    "initiatorType": "API_KEY",
+                    "feeAmount": "0",
+                    "labels": [],
+                    "externalReference": null,
+                    "createdAt": "2026-02-03T13:06:36.936Z",
+                    "updatedAt": "2026-02-03T13:06:36.936Z",
+                    "currencyId": "cmj10enm50011x34d8fq1w4j6",
+                    "cryptocurrencyId": null,
+                    "chainId": null,
+                    "destinationBankAccount": {
+                      "id": "cmk6rwspp0018xa3wyx5cp5qx",
+                      "orgId": "74d14bfb-a6f0-4859-86f8-75ec3e0adfa0",
+                      "currencyId": "cmj10enm50011x34d8fq1w4j6",
+                      "country": "ARE",
+                      "beneficiaryName": "John",
+                      "bankName": "Emirates NBD",
+                      "accountNumber": "1029384756",
+                      "routingCode": "ERTY",
+                      "iban": "AE456789345678904567",
+                      "enabled": false,
+                      "metadata": null,
+                      "createdAt": "2026-01-09T11:08:53.725Z",
+                      "updatedAt": "2026-01-09T11:08:53.725Z",
+                      "deletedAt": null,
+                      "currency": {
+                        "id": "cmj10enm50011x34d8fq1w4j6",
+                        "type": "FIAT",
+                        "name": "UAE Dirham",
+                        "symbol": "AED",
+                        "decimals": 2,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "createdAt": "2025-12-11T05:40:24.462Z",
+                        "updatedAt": "2026-02-02T15:46:22.200Z",
+                        "deletedAt": null,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    }
+                  }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1215,11 +3057,26 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1234,15 +3091,180 @@
         "operationId": "listCurrencies",
         "tags": ["Currencies"],
         "security": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successfully retrieved currencies",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Currency"
+                  "$ref": "#/components/schemas/CurrenciesListResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": [
+                    {
+                      "id": "cmj10enm60013x34dqg86qxzo",
+                      "type": "FIAT",
+                      "name": "Bahraini Dinar",
+                      "symbol": "BHD",
+                      "decimals": 3,
+                      "minTradeAmount": null,
+                      "maxTradeAmount": null,
+                      "hiddenOnUI": false,
+                      "products": ["OTC", "GPS", "PAY"],
+                      "cryptocurrencies": []
+                    },
+                    {
+                      "id": "cmj10enm60015x34dq87dwub5",
+                      "type": "FIAT",
+                      "name": "Saudi Riyal",
+                      "symbol": "SAR",
+                      "decimals": 2,
+                      "minTradeAmount": null,
+                      "maxTradeAmount": null,
+                      "hiddenOnUI": false,
+                      "products": ["OTC", "GPS"],
+                      "cryptocurrencies": []
+                    },
+                    {
+                      "id": "cmj10enm60017x34dhqgb09bk",
+                      "type": "CRYPTO",
+                      "name": "Tether",
+                      "symbol": "USDT",
+                      "decimals": 6,
+                      "minTradeAmount": null,
+                      "maxTradeAmount": null,
+                      "hiddenOnUI": false,
+                      "products": ["OTC", "GPS", "PAY"],
+                      "cryptocurrencies": [
+                        {
+                          "id": "cmj10enmm001ax34dvwbcntj1",
+                          "fireblocksId": "USDT_B75VRLGX_WILI",
+                          "name": "Tether",
+                          "symbol": "USDT",
+                          "chainId": "cmj10enlx000zx34d1da1hqaz",
+                          "assetId": "cmj10enm60017x34dhqgb09bk",
+                          "contractAddress": "0x36ee09ccbdF6349b87cE3bbAcED6ba1F25eC8046",
+                          "decimals": 6,
+                          "minWithdrawAmount": null,
+                          "maxWithdrawAmount": null,
+                          "chain": {
+                            "id": "cmj10enlx000zx34d1da1hqaz",
+                            "externalId": "sepolia",
+                            "name": "Ethereum Testnet Sepolia",
+                            "fireblocksId": "ETH",
+                            "nativeTokenSymbol": "ETH",
+                            "products": ["OTC", "GPS", "PAY"]
+                          }
+                        },
+                        {
+                          "id": "cmj10enmm001bx34dj3w6fabw",
+                          "fireblocksId": "USDT_TRX_TEST4",
+                          "name": "Tether",
+                          "symbol": "USDT",
+                          "chainId": "cmj10enlx0010x34dqnnpqqax",
+                          "assetId": "cmj10enm60017x34dhqgb09bk",
+                          "contractAddress": "TG3XXyExBkPp9nzdajDZsozEu4BkaSJozs",
+                          "decimals": 6,
+                          "minWithdrawAmount": null,
+                          "maxWithdrawAmount": null,
+                          "chain": {
+                            "id": "cmj10enlx0010x34dqnnpqqax",
+                            "externalId": "shasta",
+                            "name": "TRON Testnet Shasta",
+                            "fireblocksId": "TRX",
+                            "nativeTokenSymbol": "TRX",
+                            "products": ["OTC", "GPS"]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "cmj10enm50011x34d8fq1w4j6",
+                      "type": "FIAT",
+                      "name": "UAE Dirham",
+                      "symbol": "AED",
+                      "decimals": 2,
+                      "minTradeAmount": null,
+                      "maxTradeAmount": null,
+                      "hiddenOnUI": false,
+                      "products": ["OTC", "GPS", "PAY"],
+                      "cryptocurrencies": []
+                    },
+                    {
+                      "id": "cmj10enm60018x34db2ltamx7",
+                      "type": "CRYPTO",
+                      "name": "USD Coin",
+                      "symbol": "USDC",
+                      "decimals": 6,
+                      "minTradeAmount": null,
+                      "maxTradeAmount": null,
+                      "hiddenOnUI": false,
+                      "products": ["OTC", "GPS", "PAY"],
+                      "cryptocurrencies": [
+                        {
+                          "id": "cmj10enmm0019x34dct1w0d8j",
+                          "fireblocksId": "USDC_ETH_TEST5_0GER",
+                          "name": "USD Coin",
+                          "symbol": "USDC",
+                          "chainId": "cmj10enlx000zx34d1da1hqaz",
+                          "assetId": "cmj10enm60018x34db2ltamx7",
+                          "contractAddress": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+                          "decimals": 6,
+                          "minWithdrawAmount": null,
+                          "maxWithdrawAmount": null,
+                          "chain": {
+                            "id": "cmj10enlx000zx34d1da1hqaz",
+                            "externalId": "sepolia",
+                            "name": "Ethereum Testnet Sepolia",
+                            "fireblocksId": "ETH",
+                            "nativeTokenSymbol": "ETH",
+                            "products": ["OTC", "GPS", "PAY"]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "cmj10enm60012x34dv2hsyaeo",
+                      "type": "FIAT",
+                      "name": "US Dollar",
+                      "symbol": "USD",
+                      "decimals": 2,
+                      "minTradeAmount": null,
+                      "maxTradeAmount": null,
+                      "hiddenOnUI": false,
+                      "products": ["OTC", "GPS", "PAY"],
+                      "cryptocurrencies": []
+                    }
+                  ],
+                  "pagination": {
+                    "total": 6,
+                    "page": 1,
+                    "limit": 10,
+                    "totalPages": 1
                   }
                 }
               }
@@ -1286,17 +3308,50 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Currency"
+                  "$ref": "#/components/schemas/CurrencyResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "id": "cmj10enm60012x34dv2hsyaeo",
+                    "type": "FIAT",
+                    "name": "US Dollar",
+                    "symbol": "USD",
+                    "decimals": 2,
+                    "minTradeAmount": null,
+                    "maxTradeAmount": null,
+                    "hiddenOnUI": false,
+                    "createdAt": "2025-12-11T05:40:24.462Z",
+                    "updatedAt": "2026-02-02T15:46:22.266Z",
+                    "deletedAt": null,
+                    "products": ["OTC", "GPS", "PAY"],
+                    "cryptocurrencies": []
+                  }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1311,26 +3366,192 @@
         "operationId": "listCryptocurrencies",
         "tags": ["Cryptocurrencies"],
         "security": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successfully retrieved cryptocurrencies",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Cryptocurrency"
+                  "$ref": "#/components/schemas/CryptocurrenciesListResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": [
+                    {
+                      "id": "cmj10enmm001ax34dvwbcntj1",
+                      "fireblocksId": "USDT_B75VRLGX_WILI",
+                      "name": "Tether",
+                      "symbol": "USDT",
+                      "chainId": "cmj10enlx000zx34d1da1hqaz",
+                      "assetId": "cmj10enm60017x34dhqgb09bk",
+                      "contractAddress": "0x36ee09ccbdF6349b87cE3bbAcED6ba1F25eC8046",
+                      "decimals": 6,
+                      "minWithdrawAmount": null,
+                      "maxWithdrawAmount": null,
+                      "createdAt": "2025-12-11T05:40:24.478Z",
+                      "updatedAt": "2025-12-11T05:40:24.478Z",
+                      "deletedAt": null,
+                      "chain": {
+                        "id": "cmj10enlx000zx34d1da1hqaz",
+                        "externalId": "sepolia",
+                        "name": "Ethereum Testnet Sepolia",
+                        "fireblocksId": "ETH",
+                        "nativeTokenSymbol": "ETH",
+                        "createdAt": "2025-12-11T05:40:24.453Z",
+                        "updatedAt": "2026-02-02T15:46:22.187Z",
+                        "deletedAt": null,
+                        "products": ["OTC", "GPS", "PAY"]
+                      },
+                      "currency": {
+                        "id": "cmj10enm60017x34dhqgb09bk",
+                        "type": "CRYPTO",
+                        "name": "Tether",
+                        "symbol": "USDT",
+                        "decimals": 6,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "createdAt": "2025-12-11T05:40:24.462Z",
+                        "updatedAt": "2026-02-02T15:46:22.289Z",
+                        "deletedAt": null,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmj10enmm001bx34dj3w6fabw",
+                      "fireblocksId": "USDT_TRX_TEST4",
+                      "name": "Tether",
+                      "symbol": "USDT",
+                      "chainId": "cmj10enlx0010x34dqnnpqqax",
+                      "assetId": "cmj10enm60017x34dhqgb09bk",
+                      "contractAddress": "TG3XXyExBkPp9nzdajDZsozEu4BkaSJozs",
+                      "decimals": 6,
+                      "minWithdrawAmount": null,
+                      "maxWithdrawAmount": null,
+                      "createdAt": "2025-12-11T05:40:24.478Z",
+                      "updatedAt": "2025-12-11T05:40:24.478Z",
+                      "deletedAt": null,
+                      "chain": {
+                        "id": "cmj10enlx0010x34dqnnpqqax",
+                        "externalId": "shasta",
+                        "name": "TRON Testnet Shasta",
+                        "fireblocksId": "TRX",
+                        "nativeTokenSymbol": "TRX",
+                        "createdAt": "2025-12-11T05:40:24.453Z",
+                        "updatedAt": "2026-02-02T15:46:22.193Z",
+                        "deletedAt": null,
+                        "products": ["OTC", "GPS"]
+                      },
+                      "currency": {
+                        "id": "cmj10enm60017x34dhqgb09bk",
+                        "type": "CRYPTO",
+                        "name": "Tether",
+                        "symbol": "USDT",
+                        "decimals": 6,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "createdAt": "2025-12-11T05:40:24.462Z",
+                        "updatedAt": "2026-02-02T15:46:22.289Z",
+                        "deletedAt": null,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    },
+                    {
+                      "id": "cmj10enmm0019x34dct1w0d8j",
+                      "fireblocksId": "USDC_ETH_TEST5_0GER",
+                      "name": "USD Coin",
+                      "symbol": "USDC",
+                      "chainId": "cmj10enlx000zx34d1da1hqaz",
+                      "assetId": "cmj10enm60018x34db2ltamx7",
+                      "contractAddress": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+                      "decimals": 6,
+                      "minWithdrawAmount": null,
+                      "maxWithdrawAmount": null,
+                      "createdAt": "2025-12-11T05:40:24.478Z",
+                      "updatedAt": "2025-12-11T05:40:24.478Z",
+                      "deletedAt": null,
+                      "chain": {
+                        "id": "cmj10enlx000zx34d1da1hqaz",
+                        "externalId": "sepolia",
+                        "name": "Ethereum Testnet Sepolia",
+                        "fireblocksId": "ETH",
+                        "nativeTokenSymbol": "ETH",
+                        "createdAt": "2025-12-11T05:40:24.453Z",
+                        "updatedAt": "2026-02-02T15:46:22.187Z",
+                        "deletedAt": null,
+                        "products": ["OTC", "GPS", "PAY"]
+                      },
+                      "currency": {
+                        "id": "cmj10enm60018x34db2ltamx7",
+                        "type": "CRYPTO",
+                        "name": "USD Coin",
+                        "symbol": "USDC",
+                        "decimals": 6,
+                        "minTradeAmount": null,
+                        "maxTradeAmount": null,
+                        "hiddenOnUI": false,
+                        "createdAt": "2025-12-11T05:40:24.462Z",
+                        "updatedAt": "2026-02-02T15:46:22.293Z",
+                        "deletedAt": null,
+                        "products": ["OTC", "GPS", "PAY"]
+                      }
+                    }
+                  ],
+                  "pagination": {
+                    "total": 3,
+                    "page": 1,
+                    "limit": 10,
+                    "totalPages": 1
                   }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1363,17 +3584,75 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Cryptocurrency"
+                  "$ref": "#/components/schemas/CryptocurrencyResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "id": "cmj10enmm001ax34dvwbcntj1",
+                    "fireblocksId": "USDT_B75VRLGX_WILI",
+                    "name": "Tether",
+                    "symbol": "USDT",
+                    "chainId": "cmj10enlx000zx34d1da1hqaz",
+                    "assetId": "cmj10enm60017x34dhqgb09bk",
+                    "contractAddress": "0x36ee09ccbdF6349b87cE3bbAcED6ba1F25eC8046",
+                    "decimals": 6,
+                    "minWithdrawAmount": null,
+                    "maxWithdrawAmount": null,
+                    "createdAt": "2025-12-11T05:40:24.478Z",
+                    "updatedAt": "2025-12-11T05:40:24.478Z",
+                    "deletedAt": null,
+                    "chain": {
+                      "id": "cmj10enlx000zx34d1da1hqaz",
+                      "externalId": "sepolia",
+                      "name": "Ethereum Testnet Sepolia",
+                      "fireblocksId": "ETH",
+                      "nativeTokenSymbol": "ETH",
+                      "createdAt": "2025-12-11T05:40:24.453Z",
+                      "updatedAt": "2026-02-02T15:46:22.187Z",
+                      "deletedAt": null,
+                      "products": ["OTC", "GPS", "PAY"]
+                    },
+                    "currency": {
+                      "id": "cmj10enm60017x34dhqgb09bk",
+                      "type": "CRYPTO",
+                      "name": "Tether",
+                      "symbol": "USDT",
+                      "decimals": 6,
+                      "minTradeAmount": null,
+                      "maxTradeAmount": null,
+                      "hiddenOnUI": false,
+                      "createdAt": "2025-12-11T05:40:24.462Z",
+                      "updatedAt": "2026-02-02T15:46:22.289Z",
+                      "deletedAt": null,
+                      "products": ["OTC", "GPS", "PAY"]
+                    }
+                  }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1388,26 +3667,185 @@
         "operationId": "listBlockchains",
         "tags": ["Blockchains"],
         "security": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successfully retrieved blockchains",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Blockchain"
+                  "$ref": "#/components/schemas/BlockchainsListResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": [
+                    {
+                      "id": "cmj10enlx000zx34d1da1hqaz",
+                      "externalId": "sepolia",
+                      "name": "Ethereum Testnet Sepolia",
+                      "fireblocksId": "ETH",
+                      "nativeTokenSymbol": "ETH",
+                      "createdAt": "2025-12-11T05:40:24.453Z",
+                      "updatedAt": "2026-02-02T15:46:22.187Z",
+                      "deletedAt": null,
+                      "products": ["OTC", "GPS", "PAY"],
+                      "cryptocurrencies": [
+                        {
+                          "id": "cmj10enmm0019x34dct1w0d8j",
+                          "fireblocksId": "USDC_ETH_TEST5_0GER",
+                          "name": "USD Coin",
+                          "symbol": "USDC",
+                          "chainId": "cmj10enlx000zx34d1da1hqaz",
+                          "assetId": "cmj10enm60018x34db2ltamx7",
+                          "contractAddress": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+                          "decimals": 6,
+                          "minWithdrawAmount": null,
+                          "maxWithdrawAmount": null,
+                          "createdAt": "2025-12-11T05:40:24.478Z",
+                          "updatedAt": "2025-12-11T05:40:24.478Z",
+                          "deletedAt": null,
+                          "currency": {
+                            "id": "cmj10enm60018x34db2ltamx7",
+                            "type": "CRYPTO",
+                            "name": "USD Coin",
+                            "symbol": "USDC",
+                            "decimals": 6,
+                            "minTradeAmount": null,
+                            "maxTradeAmount": null,
+                            "hiddenOnUI": false,
+                            "createdAt": "2025-12-11T05:40:24.462Z",
+                            "updatedAt": "2026-02-02T15:46:22.293Z",
+                            "deletedAt": null,
+                            "products": ["OTC", "GPS", "PAY"]
+                          }
+                        },
+                        {
+                          "id": "cmj10enmm001ax34dvwbcntj1",
+                          "fireblocksId": "USDT_B75VRLGX_WILI",
+                          "name": "Tether",
+                          "symbol": "USDT",
+                          "chainId": "cmj10enlx000zx34d1da1hqaz",
+                          "assetId": "cmj10enm60017x34dhqgb09bk",
+                          "contractAddress": "0x36ee09ccbdF6349b87cE3bbAcED6ba1F25eC8046",
+                          "decimals": 6,
+                          "minWithdrawAmount": null,
+                          "maxWithdrawAmount": null,
+                          "createdAt": "2025-12-11T05:40:24.478Z",
+                          "updatedAt": "2025-12-11T05:40:24.478Z",
+                          "deletedAt": null,
+                          "currency": {
+                            "id": "cmj10enm60017x34dhqgb09bk",
+                            "type": "CRYPTO",
+                            "name": "Tether",
+                            "symbol": "USDT",
+                            "decimals": 6,
+                            "minTradeAmount": null,
+                            "maxTradeAmount": null,
+                            "hiddenOnUI": false,
+                            "createdAt": "2025-12-11T05:40:24.462Z",
+                            "updatedAt": "2026-02-02T15:46:22.289Z",
+                            "deletedAt": null,
+                            "products": ["OTC", "GPS", "PAY"]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "cmj10enlx0010x34dqnnpqqax",
+                      "externalId": "shasta",
+                      "name": "TRON Testnet Shasta",
+                      "fireblocksId": "TRX",
+                      "nativeTokenSymbol": "TRX",
+                      "createdAt": "2025-12-11T05:40:24.453Z",
+                      "updatedAt": "2026-02-02T15:46:22.193Z",
+                      "deletedAt": null,
+                      "products": ["OTC", "GPS"],
+                      "cryptocurrencies": [
+                        {
+                          "id": "cmj10enmm001bx34dj3w6fabw",
+                          "fireblocksId": "USDT_TRX_TEST4",
+                          "name": "Tether",
+                          "symbol": "USDT",
+                          "chainId": "cmj10enlx0010x34dqnnpqqax",
+                          "assetId": "cmj10enm60017x34dhqgb09bk",
+                          "contractAddress": "TG3XXyExBkPp9nzdajDZsozEu4BkaSJozs",
+                          "decimals": 6,
+                          "minWithdrawAmount": null,
+                          "maxWithdrawAmount": null,
+                          "createdAt": "2025-12-11T05:40:24.478Z",
+                          "updatedAt": "2025-12-11T05:40:24.478Z",
+                          "deletedAt": null,
+                          "currency": {
+                            "id": "cmj10enm60017x34dhqgb09bk",
+                            "type": "CRYPTO",
+                            "name": "Tether",
+                            "symbol": "USDT",
+                            "decimals": 6,
+                            "minTradeAmount": null,
+                            "maxTradeAmount": null,
+                            "hiddenOnUI": false,
+                            "createdAt": "2025-12-11T05:40:24.462Z",
+                            "updatedAt": "2026-02-02T15:46:22.289Z",
+                            "deletedAt": null,
+                            "products": ["OTC", "GPS", "PAY"]
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "pagination": {
+                    "total": 2,
+                    "page": 1,
+                    "limit": 10,
+                    "totalPages": 1
                   }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
@@ -1446,11 +3884,26 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized: Invalid or missing API key for creating a transaction.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Unauthorized" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to create a transaction. Please provide a valid API key."
+                    },
+                    "code": { "type": "string", "example": "INVALID_API_KEY" }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Unauthorized",
+                  "message": "You are not authorized to create a transaction. Please provide a valid API key.",
+                  "code": "INVALID_API_KEY"
                 }
               }
             }
